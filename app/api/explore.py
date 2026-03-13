@@ -8,7 +8,9 @@ Five endpoint groups mirroring the explore CLI tool:
 - calculator:   price calculation based on selections + quantity
 """
 
+import json
 from collections import Counter, defaultdict
+from pathlib import Path
 
 from fastapi import APIRouter
 
@@ -43,6 +45,27 @@ from app.services.global_pricing import (
 from app.services.sub_dimensions import get_sub_dimension_parser
 
 router = APIRouter(prefix="/api/v1/explore", tags=["explore"])
+
+_CONFIG_DIR = Path(__file__).resolve().parent.parent / "config" / "service_configs"
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# 0. SERVICE CONFIG — default selections for a service
+# ═══════════════════════════════════════════════════════════════════════
+
+@router.get("/service-config/{service_name}")
+async def get_service_config(service_name: str):
+    """Return default configuration for a service (selections, sub_selections, etc.)."""
+    slug = service_name.lower().replace(" ", "_")
+    config_path = _CONFIG_DIR / f"{slug}.json"
+    if not config_path.exists():
+        return {"service_name": service_name, "defaults": {}}
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    return {
+        "service_name": service_name,
+        "defaults": config.get("defaults", {}),
+    }
+
 
 # ── Cascade dimension definitions ────────────────────────────────────
 

@@ -32,11 +32,15 @@ function createItem(serviceName) {
     subSelections: {},
     quantity: 1,
     hoursPerMonth: 730,
+    hoursUnit: 'hours',   // 'hours' | 'days' | 'months' — display unit for duration
     cascadeData: null, // last cascade response
     cost: null,        // monthly cost number
     meters: null,      // meter breakdown array
     error: null,
     loading: false,
+    metersCache: null,     // MetersResponse.groups — all meter data (all type/term)
+    metersCacheKey: null,  // cache key: `${region}|${product}|${sku}`
+    upfrontCost: null,     // Reservation total term cost (not monthly)
   };
   state.items.push(item);
   emit('item-added', { item });

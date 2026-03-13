@@ -83,6 +83,37 @@ export async function fetchCalculator(itemId, items) {
   return request('/calculator', { items }, ctrl.signal);
 }
 
+/**
+ * Fetch all meter groups (all type/term combos) for a specific configuration.
+ * Returns MetersResponse with groups containing tiered pricing data.
+ * @param {number} itemId - Used for abort key
+ * @param {string} serviceName
+ * @param {string} region
+ * @param {string} product
+ * @param {string} sku
+ */
+export async function fetchMeters(itemId, serviceName, region, product, sku) {
+  const ctrl = getController(`meters-${itemId}`);
+  return request('/meters', {
+    service_name: serviceName,
+    region,
+    product,
+    sku,
+  }, ctrl.signal);
+}
+
+// ── Service Config ───────────────────────────────────────────
+
+/**
+ * Fetch default configuration for a service (selections, sub_selections, etc.).
+ * @param {string} serviceName
+ */
+export async function fetchServiceConfig(serviceName) {
+  const res = await fetch(`${BASE}/service-config/${encodeURIComponent(serviceName)}`);
+  if (!res.ok) throw new Error(`Config ${res.status}`);
+  return res.json();
+}
+
 // ── Product Catalog ──────────────────────────────────────────
 
 let catalogCache = null;

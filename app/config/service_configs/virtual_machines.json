@@ -42,6 +42,14 @@
   ],
   "quantity_model": "instances_x_hours",
   "defaults": {
-    "hours_per_month": 730
+    "hours_per_month": 730,
+    "selections": {
+      "armRegionName": "eastus",
+      "skuName": "D2 v3"
+    },
+    "sub_selections": {
+      "os": "Linux",
+      "tier": "Standard"
+    }
   }
 }

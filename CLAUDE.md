@@ -57,13 +57,27 @@ Azure.cn CSV API → downloader.py → parser.py (clean/validate) → importer.p
 - **`data_pipeline/`** — CSV download, parse, and import logic
 
 ### Key API Endpoints
+
+**Explore API** (used by frontend demo — proxies Azure Global Retail Price API):
 | Endpoint | Purpose |
 |----------|---------|
-| `GET /api/v1/products/categories` | Service family → service name tree |
-| `GET /api/v1/products/search` | Product search with fuzzy matching |
-| `POST /api/v1/products/{service_name}/configurations` | Cascading filter — returns available options per dimension given current selections |
-| `POST /api/v1/products/{service_name}/meters` | Meter list with tiered pricing for a configured product |
-| `POST /api/v1/pricing/calculate` | Multi-item price calculation with tiered pricing support |
+| `GET /api/v1/explore/service-config/{service_name}` | Default selections/config for a service |
+| `POST /api/v1/explore/cascade` | Cascading filter with sub-dimension support |
+| `POST /api/v1/explore/meters` | All meter/tier pricing for a config (all type/term combos) |
+| `POST /api/v1/explore/calculator` | Server-side price calculation (legacy, replaced by frontend local calc) |
+
+**Products API** (catalog/search):
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /api/v1/products/catalog` | Full product catalog (families + services) |
+| `GET /api/v1/products/search` | Product search by keyword |
+
+**Production API** (backed by local PostgreSQL — not yet connected to frontend):
+| Endpoint | Purpose |
+|----------|---------|
+| `POST /api/v1/products/{service_name}/configurations` | Cascading filter |
+| `POST /api/v1/products/{service_name}/meters` | Meter list with tiered pricing |
+| `POST /api/v1/pricing/calculate` | Multi-item price calculation |
 | `POST /api/v1/export/excel` | Excel export of estimate |
 
 ### Core Algorithm: Cascading Filter
@@ -73,4 +87,18 @@ The cascading filter is the central interaction. Dimension order: `arm_region_na
 Some products (e.g., Storage Hot LRS) use tiered pricing via `tier_min_units`. Multiple price rows exist for the same meter at different tier thresholds. The pricing engine must apply the correct tier rates based on usage quantity.
 
 ### Frontend
-Minimal single-page demo (`frontend/`) using vanilla HTML/JS/CSS, served as FastAPI static files. Not a production frontend.
+Single-page demo (`frontend/`) using vanilla HTML/JS/CSS, served as FastAPI static files. Not a production frontend.
+
+**Two-phase calculation model** (implemented in Task 1-6):
+- Phase 1: Dimension changes → `POST /explore/cascade` → auto-select → `POST /explore/meters` (fetches all type/term pricing, cached in `item.metersCache`)
+- Phase 2: Savings/quantity/duration changes → `pricing.js` local calculation (no API calls)
+
+**Key frontend modules** (`frontend/js/`):
+| Module | Role |
+|--------|------|
+| `pricing.js` | Pure-function pricing engine: `calculateTieredCost()`, `calculateLocalPrice()`, `getAvailableSavingsOptions()` |
+| `api.js` | API client: `fetchCascade()`, `fetchMeters()`, `fetchServiceConfig()`, `fetchPreload()` |
+| `state.js` | State management + event bus. Item fields: `metersCache`, `metersCacheKey`, `upfrontCost`, `hoursUnit` |
+| `components/estimate-card.js` | Estimate card component: cascading dropdowns, savings radio buttons, duration unit switcher, meter breakdown, price summary |
+| `components/nav-area.js` | Navigation: product catalog sidebar, search, "Add to estimate" |
+| `components/summary-bar.js` | Sticky bottom bar with total cost |

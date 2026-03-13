@@ -4,7 +4,8 @@
  */
 
 import { getItem, updateItem, removeItem, emit } from '../state.js';
-import { fetchCascade, fetchCalculator, fetchPreload } from '../api.js';
+import { fetchCascade, fetchPreload, fetchMeters, fetchServiceConfig } from '../api.js';
+import { calculateLocalPrice, getAvailableSavingsOptions } from '../pricing.js';
 
 // ── Static vs dynamic dimension sets ────────────────────────
 // Static dimensions always show all options from preload data.
@@ -70,22 +71,39 @@ export class EstimateCard {
   }
 
   async initCard() {
-    // Apply service-specific defaults
-    const defaults = SERVICE_DEFAULTS[this.item.serviceName];
+    // Fetch service config and preload in parallel
+    const [configResult, preloadResult] = await Promise.allSettled([
+      fetchServiceConfig(this.item.serviceName),
+      fetchPreload(this.item.serviceName),
+    ]);
+
+    // Apply defaults from config API, with hardcoded fallback
+    const item = this.item;
+    let defaults = SERVICE_DEFAULTS[item.serviceName];
+    if (configResult.status === 'fulfilled' && configResult.value.defaults) {
+      const cfg = configResult.value.defaults;
+      defaults = {
+        selections: cfg.selections || {},
+        subSelections: cfg.sub_selections || {},
+      };
+      if (cfg.hours_per_month) {
+        item.hoursPerMonth = cfg.hours_per_month;
+      }
+    }
+
     if (defaults) {
-      const item = this.item;
-      Object.assign(item.selections, defaults.selections);
-      Object.assign(item.subSelections, defaults.subSelections);
+      Object.assign(item.selections, defaults.selections || {});
+      Object.assign(item.subSelections, defaults.subSelections || {});
       updateItem(this.itemId, item);
     }
 
-    try {
-      this.preloadData = await fetchPreload(this.item.serviceName);
-      this.render();          // Render static dropdowns immediately
-      this.triggerCascade();  // Fetch dynamic dimensions
-    } catch (err) {
-      this.triggerCascade();  // Preload failed → fall back to full cascade
+    // Use preload data if available
+    if (preloadResult.status === 'fulfilled') {
+      this.preloadData = preloadResult.value;
+      this.render();
     }
+
+    this.triggerCascade();
   }
 
   get item() { return getItem(this.itemId); }
@@ -103,6 +121,9 @@ export class EstimateCard {
 
     this.el.classList.toggle('collapsed', this.collapsed);
 
+    const headerSummary = this.renderHeaderSummary(item);
+    const upfrontHtml = this.renderHeaderUpfront(item);
+
     this.el.innerHTML = `
       <div class="card-loading ${item.loading ? '' : 'hidden'}">
         <div class="spinner"></div>
@@ -111,12 +132,18 @@ export class EstimateCard {
         <button class="card-collapse-toggle" data-action="toggle-collapse" title="${this.collapsed ? 'Expand' : 'Collapse'}">
           <span class="chevron">${chevron}</span>
         </button>
-        <div class="card-title">
-          <span class="card-title-icon">🖥️</span>
-          ${item.serviceName} #${item.id}
+        <div class="card-title-area">
+          <div class="card-title">
+            <span class="card-title-icon">🖥️</span>
+            ${item.serviceName} #${item.id}
+          </div>
+          ${headerSummary}
         </div>
         <div class="card-actions">
-          <span class="${costClass}">${cost}/mo</span>
+          <div class="card-cost-group">
+            ${upfrontHtml}
+            <span class="${costClass}">${cost}/mo</span>
+          </div>
           ${discountBadge}
           <button class="btn btn-danger btn-sm btn-delete">✕ Remove</button>
         </div>
@@ -126,6 +153,7 @@ export class EstimateCard {
         ${this.renderError(item)}
         ${this.renderQuantity(item)}
         ${this.renderMeters(item)}
+        ${this.renderPriceSummary(item)}
       </div>
     `;
 
@@ -189,12 +217,8 @@ export class EstimateCard {
       html += this.selectGroup('Instance', 'skuName', [], null, true);
     }
 
-    // 7. Savings option — dynamic
-    if (data) {
-      html += this.renderSavingsDropdown(item, data);
-    } else {
-      html += this.selectGroup('Savings Option', 'savings', [], null, true);
-    }
+    // 7. Savings option — radio buttons
+    html += this.renderSavingsRadio(item);
 
     return html;
   }
@@ -216,55 +240,148 @@ export class EstimateCard {
     `;
   }
 
-  renderSavingsDropdown(item, data) {
-    const typeDim = data.dimensions.find(d => d.field === 'type');
-    const termDim = data.dimensions.find(d => d.field === 'term');
-    const availableTypes = new Set(typeDim?.options || []);
-    const availableTerms = new Set(termDim?.options || []);
+  renderSavingsRadio(item) {
+    // Determine available options from metersCache (with discount) or cascade (without)
+    let options;
+    if (item.metersCache) {
+      options = getAvailableSavingsOptions(
+        item.metersCache, item.quantity || 1, item.hoursPerMonth || 730,
+      );
+    } else if (item.cascadeData) {
+      const data = item.cascadeData;
+      const typeDim = data.dimensions.find(d => d.field === 'type');
+      const termDim = data.dimensions.find(d => d.field === 'term');
+      const availableTypes = new Set(typeDim?.options || []);
+      const availableTerms = new Set(termDim?.options || []);
+      options = SAVINGS_OPTIONS
+        .filter(opt => {
+          if (!availableTypes.has(opt.type)) return false;
+          if (opt.term && !availableTerms.has(opt.term)) return false;
+          return true;
+        })
+        .map(opt => ({ ...opt, discountPercent: null }));
+    } else {
+      return '';
+    }
 
-    // Build available savings options
-    const available = SAVINGS_OPTIONS.filter(opt => {
-      if (!availableTypes.has(opt.type)) return false;
-      if (opt.term && !availableTerms.has(opt.term)) return false;
-      return true;
-    });
+    if (options.length === 0) return '';
 
-    // Current selection
     const currentType = item.selections.type || 'Consumption';
     const currentTerm = item.selections.term || null;
     const currentKey = savingsKey(currentType, currentTerm);
+    const radioName = `savings-${this.itemId}`;
+    const disabled = item.loading ? ' disabled' : '';
 
-    const opts = available.map((opt, _) => {
+    // Group by type
+    const payg = options.filter(o => o.type === 'Consumption');
+    const sp = options.filter(o => o.type === 'SavingsPlanConsumption');
+    const ri = options.filter(o => o.type === 'Reservation');
+
+    let html = '<div class="savings-section">';
+
+    // PAYG — standalone
+    for (const opt of payg) {
       const key = savingsKey(opt.type, opt.term);
-      const sel = key === currentKey ? ' selected' : '';
-      return `<option value="${key}"${sel}>${opt.label}</option>`;
-    }).join('');
+      const checked = key === currentKey ? ' checked' : '';
+      html += `
+        <label class="savings-radio">
+          <input type="radio" name="${radioName}" value="${key}"${checked}${disabled}>
+          <span class="savings-label">${this.escHtml(opt.label)}</span>
+        </label>`;
+    }
 
-    return `
-      <div class="form-group">
-        <label class="form-label">Savings Option</label>
-        <select class="form-select" data-field="savings" ${item.loading ? 'disabled' : ''}>
-          ${opts}
-        </select>
-      </div>
-    `;
+    // Savings Plan group
+    if (sp.length > 0) {
+      html += '<div class="savings-group">';
+      html += '<div class="savings-group-title">Savings plan</div>';
+      for (const opt of sp) {
+        const key = savingsKey(opt.type, opt.term);
+        const checked = key === currentKey ? ' checked' : '';
+        const discount = opt.discountPercent != null
+          ? `<span class="savings-discount">~${opt.discountPercent}% discount</span>`
+          : '';
+        html += `
+          <label class="savings-radio">
+            <input type="radio" name="${radioName}" value="${key}"${checked}${disabled}>
+            <span class="savings-label">${this.escHtml(opt.label)}</span>
+            ${discount}
+          </label>`;
+      }
+      html += '</div>';
+    }
+
+    // Reservation group
+    if (ri.length > 0) {
+      html += '<div class="savings-group">';
+      html += '<div class="savings-group-title">Reservations</div>';
+      for (const opt of ri) {
+        const key = savingsKey(opt.type, opt.term);
+        const checked = key === currentKey ? ' checked' : '';
+        const discount = opt.discountPercent != null
+          ? `<span class="savings-discount">~${opt.discountPercent}% discount</span>`
+          : '';
+        html += `
+          <label class="savings-radio">
+            <input type="radio" name="${radioName}" value="${key}"${checked}${disabled}>
+            <span class="savings-label">${this.escHtml(opt.label)}</span>
+            ${discount}
+          </label>`;
+      }
+      html += '</div>';
+    }
+
+    html += '</div>';
+    return html;
   }
 
   renderQuantity(item) {
-    return `
-      <div class="quantity-row">
-        <div class="quantity-group">
-          <label class="form-label">VMs</label>
-          <input type="number" class="form-input" data-field="quantity"
-                 value="${item.quantity}" min="1" step="1" ${item.loading ? 'disabled' : ''}>
-        </div>
-        <div class="quantity-group">
-          <label class="form-label">Hours / month</label>
-          <input type="number" class="form-input" data-field="hoursPerMonth"
-                 value="${item.hoursPerMonth}" min="1" max="744" step="1" ${item.loading ? 'disabled' : ''}>
-        </div>
-      </div>
-    `;
+    const type = item.selections.type || 'Consumption';
+    const isConsumption = type === 'Consumption';
+    const disabled = item.loading ? ' disabled' : '';
+
+    let html = '<div class="quantity-row">';
+
+    // Always show VMs
+    html += `
+      <div class="quantity-group">
+        <label class="form-label">VMs</label>
+        <input type="number" class="form-input" data-field="quantity"
+               value="${item.quantity}" min="1" step="1"${disabled}>
+      </div>`;
+
+    // Duration only for Consumption (PAYG)
+    if (isConsumption) {
+      const unit = item.hoursUnit || 'hours';
+      const displayValue = this.hoursToDisplay(item.hoursPerMonth, unit);
+      html += `
+        <div class="quantity-group quantity-duration">
+          <label class="form-label">Duration</label>
+          <div class="duration-input-group">
+            <input type="number" class="form-input" data-field="duration"
+                   value="${displayValue}" min="0" step="any"${disabled}>
+            <select class="form-select duration-unit" data-field="hoursUnit"${disabled}>
+              <option value="hours"${unit === 'hours' ? ' selected' : ''}>Hours</option>
+              <option value="days"${unit === 'days' ? ' selected' : ''}>Days</option>
+              <option value="months"${unit === 'months' ? ' selected' : ''}>Months</option>
+            </select>
+          </div>
+        </div>`;
+    }
+
+    html += '</div>';
+    return html;
+  }
+
+  hoursToDisplay(hours, unit) {
+    if (unit === 'days') return +(hours / 24).toFixed(1);
+    if (unit === 'months') return +(hours / 730).toFixed(2);
+    return hours;
+  }
+
+  displayToHours(value, unit) {
+    if (unit === 'days') return value * 24;
+    if (unit === 'months') return value * 730;
+    return value;
   }
 
   renderError(item) {
@@ -307,19 +424,85 @@ export class EstimateCard {
     `;
   }
 
+  renderHeaderSummary(item) {
+    const sku = item.selections.skuName;
+    if (!sku) return '';
+
+    const qty = item.quantity || 1;
+    const type = item.selections.type || 'Consumption';
+    const term = item.selections.term || null;
+
+    let text = `${qty} ${sku}`;
+
+    // Duration for PAYG
+    if (type === 'Consumption') {
+      const unit = item.hoursUnit || 'hours';
+      const displayValue = this.hoursToDisplay(item.hoursPerMonth, unit);
+      const unitLabel = unit.charAt(0).toUpperCase() + unit.slice(1);
+      text += ` \u00d7 ${displayValue} ${unitLabel}`;
+    }
+
+    // Savings label
+    text += ` (${this.getSavingsLabel(type, term)})`;
+
+    return `<div class="card-summary-text">${this.escHtml(text)}</div>`;
+  }
+
+  renderHeaderUpfront(item) {
+    const type = item.selections.type || 'Consumption';
+    if (type !== 'Reservation' || item.upfrontCost == null) return '';
+    return `<span class="card-cost-upfront">Upfront: ${fmt.format(item.upfrontCost)}</span>`;
+  }
+
+  getSavingsLabel(type, term) {
+    if (type === 'Consumption') return 'Pay as you go';
+    if (type === 'Reservation') return term ? `${term} Reserved` : 'Reserved';
+    if (type === 'SavingsPlanConsumption') return term ? `${term} Savings Plan` : 'Savings Plan';
+    return type;
+  }
+
+  renderPriceSummary(item) {
+    if (item.cost == null) return '';
+
+    const type = item.selections.type || 'Consumption';
+    let html = '<div class="price-summary">';
+
+    // Upfront for Reservation
+    if (type === 'Reservation' && item.upfrontCost != null) {
+      html += `
+        <div class="price-summary-row">
+          <span>Upfront cost</span>
+          <span>${fmt.format(item.upfrontCost)}</span>
+        </div>`;
+    }
+
+    // Monthly cost
+    html += `
+      <div class="price-summary-row price-summary-total">
+        <span>Monthly cost</span>
+        <span>${fmt.format(item.cost)}</span>
+      </div>`;
+
+    // PAYG equivalent for non-Consumption
+    if (type !== 'Consumption' && item.paygCost != null) {
+      html += `
+        <div class="price-summary-row price-summary-payg">
+          <span>PAYG equivalent</span>
+          <span class="price-strikethrough">${fmt.format(item.paygCost)}</span>
+        </div>`;
+    }
+
+    html += '</div>';
+    return html;
+  }
+
   renderDiscountBadge(item) {
     if (item.cost == null || !item.paygCost || item.paygCost <= 0) return '';
     const type = item.selections.type || 'Consumption';
     if (type === 'Consumption') return '';
 
-    // For Reservation, monthly_cost is total term cost — convert to monthly
-    let monthlyCost = item.cost;
-    if (type === 'Reservation' && item.selections.term) {
-      const months = item.selections.term === '3 Years' ? 36 : 12;
-      monthlyCost = item.cost / months;
-    }
-
-    const discount = ((item.paygCost - monthlyCost) / item.paygCost) * 100;
+    // item.cost is already monthly (calculateLocalPrice handles Reservation conversion)
+    const discount = ((item.paygCost - item.cost) / item.paygCost) * 100;
     if (discount <= 0) return '';
     return `<span class="card-discount">~${Math.round(discount)}% discount</span>`;
   }
@@ -332,14 +515,30 @@ export class EstimateCard {
   // ── Events ──────────────────────────────────────────────
 
   bindEvents() {
-    // Dropdowns
-    this.el.querySelectorAll('.form-select').forEach(sel => {
+    // Dropdowns (exclude duration-unit which has its own handler)
+    this.el.querySelectorAll('.form-select:not(.duration-unit)').forEach(sel => {
       sel.addEventListener('change', (e) => this.onSelectChange(e));
     });
 
-    // Quantity inputs
-    this.el.querySelectorAll('.form-input[data-field="quantity"], .form-input[data-field="hoursPerMonth"]').forEach(inp => {
+    // Savings radio buttons
+    this.el.querySelectorAll('.savings-section input[type="radio"]').forEach(radio => {
+      radio.addEventListener('change', (e) => this.onSavingsChange(e.target.value));
+    });
+
+    // Quantity + duration inputs
+    this.el.querySelectorAll('.form-input[data-field="quantity"], .form-input[data-field="duration"]').forEach(inp => {
       inp.addEventListener('input', (e) => this.onQuantityChange(e));
+    });
+
+    // Duration unit selector
+    this.el.querySelectorAll('.duration-unit').forEach(sel => {
+      sel.addEventListener('change', (e) => {
+        const item = this.item;
+        if (!item) return;
+        item.hoursUnit = e.target.value;
+        updateItem(this.itemId, item);
+        this.render();
+      });
     });
 
     // Collapse toggle
@@ -368,6 +567,17 @@ export class EstimateCard {
     });
   }
 
+  onSavingsChange(value) {
+    const item = this.item;
+    if (!item) return;
+    const [type, term] = value.split('|');
+    item.selections.type = type;
+    item.selections.term = term || null;
+    if (!term) delete item.selections.term;
+    updateItem(this.itemId, item);
+    this.recalculateLocal();
+  }
+
   onSelectChange(e) {
     const field = e.target.dataset.field;
     const value = e.target.value;
@@ -381,6 +591,9 @@ export class EstimateCard {
       item.selections.term = term || null;
       // Clear term from selections if empty
       if (!term) delete item.selections.term;
+      updateItem(this.itemId, item);
+      this.recalculateLocal();
+      return;  // No cascade needed for savings changes
     } else if (field.startsWith('sub:')) {
       const subField = field.slice(4);
       if (value) {
@@ -425,10 +638,14 @@ export class EstimateCard {
     const item = this.item;
     if (!item) return;
 
-    item[field] = value;
+    if (field === 'duration') {
+      item.hoursPerMonth = this.displayToHours(value, item.hoursUnit || 'hours');
+    } else {
+      item[field] = value;
+    }
     updateItem(this.itemId, item);
 
-    debounce(`qty-${this.itemId}`, () => this.triggerCalculator(), 300);
+    debounce(`qty-${this.itemId}`, () => this.recalculateLocal(), 300);
   }
 
   // ── API calls ─────────────────────────────────────────
@@ -511,8 +728,8 @@ export class EstimateCard {
         return;
       }
 
-      // Try to calculate if fully configured
-      this.triggerCalculator();
+      // Fetch meters and calculate locally if fully configured
+      this.fetchAndCacheMeters();
 
     } catch (err) {
       if (err.name === 'AbortError') return;
@@ -521,11 +738,10 @@ export class EstimateCard {
     }
   }
 
-  async triggerCalculator() {
+  async fetchAndCacheMeters() {
     const item = this.item;
     if (!item) return;
 
-    // Need at minimum: region, product, sku
     const { armRegionName, productName, skuName } = item.selections;
     if (!armRegionName || !productName || !skuName) {
       updateItem(this.itemId, { cost: null, meters: null });
@@ -534,34 +750,47 @@ export class EstimateCard {
       return;
     }
 
-    const calcItem = {
-      service_name: item.serviceName,
-      region: armRegionName,
-      product: productName,
-      sku: skuName,
-      type: item.selections.type || 'Consumption',
-      term: item.selections.term || null,
-      quantity: item.quantity || 1,
-      hours_per_month: item.hoursPerMonth || 730,
-    };
+    const cacheKey = `${armRegionName}|${productName}|${skuName}`;
+    if (item.metersCacheKey === cacheKey && item.metersCache) {
+      // Cache hit — calculate locally without API call
+      this.recalculateLocal();
+      return;
+    }
 
     try {
-      const resp = await fetchCalculator(this.itemId, [calcItem]);
-      if (resp.items.length > 0) {
-        const result = resp.items[0];
-        updateItem(this.itemId, {
-          cost: result.monthly_cost,
-          paygCost: result.payg_monthly_cost ?? null,
-          meters: result.meters,
-          error: null,
-        });
-      }
-      this.render();
-      emit('total-changed');
+      const resp = await fetchMeters(
+        this.itemId, item.serviceName, armRegionName, productName, skuName,
+      );
+      updateItem(this.itemId, {
+        metersCache: resp.groups,
+        metersCacheKey: cacheKey,
+      });
+      this.recalculateLocal();
     } catch (err) {
       if (err.name === 'AbortError') return;
-      // Don't overwrite cascade error; calculator errors are non-blocking
-      console.warn('Calculator error:', err);
+      console.warn('Meters fetch error:', err);
     }
+  }
+
+  recalculateLocal() {
+    const item = this.item;
+    if (!item || !item.metersCache) return;
+
+    const type = item.selections.type || 'Consumption';
+    const term = item.selections.term || null;
+    const result = calculateLocalPrice(
+      item.metersCache, type, term,
+      item.quantity || 1, item.hoursPerMonth || 730,
+    );
+
+    updateItem(this.itemId, {
+      cost: result.monthlyCost,
+      upfrontCost: result.upfrontCost,
+      paygCost: result.paygCost,
+      meters: result.meters,
+      error: null,
+    });
+    this.render();
+    emit('total-changed');
   }
 }
