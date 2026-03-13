@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.api.explore import router as explore_router
+from app.api.products import router as products_router
 
 app = FastAPI(
     title="Azure.cn Pricing Calculator",
@@ -24,6 +25,7 @@ app.add_middleware(
 )
 
 app.include_router(explore_router)
+app.include_router(products_router)
 
 
 @app.get("/health")

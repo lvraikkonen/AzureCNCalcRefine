@@ -1,0 +1,206 @@
+{
+  "families": [
+    {
+      "key": "compute",
+      "label": "Compute",
+      "order": 1,
+      "services": [
+        {
+          "service_name": "Virtual Machines",
+          "description": "Provision Windows and Linux virtual machines in seconds",
+          "icon": "virtual-machines",
+          "popular": true
+        },
+        {
+          "service_name": "App Service",
+          "description": "Quickly create powerful cloud apps for web and mobile",
+          "icon": "app-service",
+          "popular": true
+        },
+        {
+          "service_name": "Azure Functions",
+          "description": "Execute event-driven serverless code functions",
+          "icon": "azure-functions",
+          "popular": false
+        },
+        {
+          "service_name": "Azure Kubernetes Service (AKS)",
+          "description": "Deploy and scale containers on managed Kubernetes",
+          "icon": "aks",
+          "popular": true
+        },
+        {
+          "service_name": "Container Instances",
+          "description": "Run containers without managing servers",
+          "icon": "container-instances",
+          "popular": false
+        }
+      ]
+    },
+    {
+      "key": "networking",
+      "label": "Networking",
+      "order": 2,
+      "services": [
+        {
+          "service_name": "Virtual Network",
+          "description": "Provision private networks with optional VPN connectivity",
+          "icon": "virtual-network",
+          "popular": false
+        },
+        {
+          "service_name": "Load Balancer",
+          "description": "Deliver high availability and network performance to your apps",
+          "icon": "load-balancer",
+          "popular": false
+        },
+        {
+          "service_name": "VPN Gateway",
+          "description": "Establish secure, cross-premises connectivity",
+          "icon": "vpn-gateway",
+          "popular": false
+        },
+        {
+          "service_name": "Application Gateway",
+          "description": "Build secure, scalable web front ends",
+          "icon": "application-gateway",
+          "popular": false
+        }
+      ]
+    },
+    {
+      "key": "storage",
+      "label": "Storage",
+      "order": 3,
+      "services": [
+        {
+          "service_name": "Storage Accounts",
+          "description": "Durable, highly available, and massively scalable cloud storage",
+          "icon": "storage-accounts",
+          "popular": true
+        },
+        {
+          "service_name": "Managed Disks",
+          "description": "High-performance, durable block storage for Azure VMs",
+          "icon": "managed-disks",
+          "popular": false
+        }
+      ]
+    },
+    {
+      "key": "databases",
+      "label": "Databases",
+      "order": 4,
+      "services": [
+        {
+          "service_name": "SQL Database",
+          "description": "Build apps that scale with managed SQL database in the cloud",
+          "icon": "sql-database",
+          "popular": true
+        },
+        {
+          "service_name": "Azure Cosmos DB",
+          "description": "Build or modernize scalable, high-performance apps",
+          "icon": "cosmos-db",
+          "popular": true
+        },
+        {
+          "service_name": "Azure Database for MySQL",
+          "description": "Fully managed, scalable MySQL database",
+          "icon": "mysql",
+          "popular": false
+        },
+        {
+          "service_name": "Azure Database for PostgreSQL",
+          "description": "Fully managed, intelligent PostgreSQL database",
+          "icon": "postgresql",
+          "popular": false
+        }
+      ]
+    },
+    {
+      "key": "ai-machine-learning",
+      "label": "AI + Machine Learning",
+      "order": 5,
+      "services": [
+        {
+          "service_name": "Cognitive Services",
+          "description": "Add smart API capabilities for contextual interactions",
+          "icon": "cognitive-services",
+          "popular": false
+        }
+      ]
+    },
+    {
+      "key": "web",
+      "label": "Web",
+      "order": 6,
+      "services": [
+        {
+          "service_name": "Azure CDN",
+          "description": "Fast, reliable content delivery network with global reach",
+          "icon": "cdn",
+          "popular": false
+        }
+      ]
+    },
+    {
+      "key": "integration",
+      "label": "Integration",
+      "order": 7,
+      "services": [
+        {
+          "service_name": "API Management",
+          "description": "Publish APIs securely and at scale",
+          "icon": "api-management",
+          "popular": false
+        },
+        {
+          "service_name": "Service Bus",
+          "description": "Reliable cloud messaging as a service",
+          "icon": "service-bus",
+          "popular": false
+        }
+      ]
+    },
+    {
+      "key": "security",
+      "label": "Security",
+      "order": 8,
+      "services": [
+        {
+          "service_name": "Key Vault",
+          "description": "Safeguard cryptographic keys and other secrets",
+          "icon": "key-vault",
+          "popular": false
+        }
+      ]
+    },
+    {
+      "key": "devops",
+      "label": "DevOps",
+      "order": 9,
+      "services": [
+        {
+          "service_name": "Azure DevOps",
+          "description": "Services for teams to share code, track work, and ship software",
+          "icon": "devops",
+          "popular": false
+        }
+      ]
+    },
+    {
+      "key": "analytics",
+      "label": "Analytics",
+      "order": 10,
+      "services": [
+        {
+          "service_name": "HDInsight",
+          "description": "Provision Hadoop, Spark, and other open-source clusters",
+          "icon": "hdinsight",
+          "popular": false
+        }
+      ]
+    }
+  ]
+}

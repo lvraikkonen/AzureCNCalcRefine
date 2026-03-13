@@ -4,6 +4,7 @@
  */
 
 const BASE = '/api/v1/explore';
+const PRODUCTS_BASE = '/api/v1/products';
 
 // Track active controllers per item+type for cancellation
 const controllers = new Map();
@@ -80,4 +81,29 @@ export function fetchPreload(serviceName) {
 export async function fetchCalculator(itemId, items) {
   const ctrl = getController(`calc-${itemId}`);
   return request('/calculator', { items }, ctrl.signal);
+}
+
+// ── Product Catalog ──────────────────────────────────────────
+
+let catalogCache = null;
+
+/**
+ * Fetch (or return cached) product catalog.
+ */
+export async function fetchCatalog() {
+  if (catalogCache) return catalogCache;
+  const res = await fetch(`${PRODUCTS_BASE}/catalog`);
+  if (!res.ok) throw new Error(`Catalog ${res.status}`);
+  catalogCache = await res.json();
+  return catalogCache;
+}
+
+/**
+ * Search products by keyword.
+ * @param {string} query
+ */
+export async function fetchProductSearch(query) {
+  const res = await fetch(`${PRODUCTS_BASE}/search?q=${encodeURIComponent(query)}`);
+  if (!res.ok) throw new Error(`Search ${res.status}`);
+  return res.json();
 }

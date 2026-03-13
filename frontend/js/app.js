@@ -7,7 +7,7 @@ import { initEstimateList } from './components/estimate-list.js';
 import { initSummaryBar } from './components/summary-bar.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  renderServicePicker(document.getElementById('service-grid'));
+  renderServicePicker();
   initEstimateList(
     document.getElementById('estimate-list'),
     document.getElementById('estimate-empty'),

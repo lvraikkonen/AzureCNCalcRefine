@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Azure Pricing Calculator (Demo)</title>
+  <title>Azure.cn Pricing Calculator</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+  <!-- ── Header ──────────────────────────────────────────── -->
   <header class="header">
     <div class="header-inner">
       <div class="header-logo">
@@ -14,24 +15,48 @@
           <path d="M33.7 26H58.9L36.5 71.4L10 71.3L33.7 26Z" fill="#fff"/>
           <path d="M53.5 32.8L62.1 47.7L41 71.4H68.3L86 71.3L53.5 32.8Z" fill="#fff" opacity="0.8"/>
         </svg>
-        <span>Azure Pricing Calculator</span>
-        <span class="header-badge">Demo</span>
+        <span>Azure.cn Pricing Calculator</span>
       </div>
     </div>
   </header>
 
   <main class="main">
-    <section class="service-picker" id="service-picker">
-      <h2 class="section-title">Add a service to your estimate</h2>
-      <div class="service-grid" id="service-grid">
-        <!-- Rendered by service-picker.js -->
+    <!-- ── Navigation Area ────────────────────────────────── -->
+    <section class="nav-area" id="nav-area">
+      <!-- Tab Bar -->
+      <div class="tab-bar">
+        <button class="tab-item active" data-tab="products">Products</button>
+        <button class="tab-item" data-tab="templates" disabled>Estimate Templates</button>
+        <button class="tab-item" data-tab="saved" disabled>Saved Estimates</button>
+        <button class="tab-item" data-tab="faq" disabled>FAQs</button>
+      </div>
+      <p class="nav-hint">Select a product to include it in your estimate.</p>
+
+      <!-- Search Bar -->
+      <div class="search-bar">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242.156a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+        </svg>
+        <input type="text" class="search-input" id="search-input" placeholder="Search products">
+        <button class="search-clear hidden" id="search-clear" type="button">&times;</button>
+      </div>
+
+      <!-- Product Catalog: Sidebar + Cards -->
+      <div class="catalog-container">
+        <nav class="family-sidebar" id="family-sidebar">
+          <!-- Rendered by service-picker.js -->
+        </nav>
+        <div class="product-grid" id="product-grid">
+          <!-- Rendered by service-picker.js -->
+        </div>
       </div>
     </section>
 
+    <!-- ── Estimate Area ──────────────────────────────────── -->
     <section class="estimate-panel" id="estimate-panel">
       <h2 class="section-title">Your Estimate</h2>
       <div class="estimate-empty" id="estimate-empty">
-        <p>No items yet. Click <strong>+ Add</strong> on a service above to begin.</p>
+        <p>No items yet. Click <strong>Add to estimate</strong> on a product above to begin.</p>
       </div>
       <div class="estimate-list" id="estimate-list">
         <!-- Rendered by estimate-list.js -->
@@ -39,14 +64,12 @@
     </section>
   </main>
 
+  <!-- ── Summary Bar ──────────────────────────────────────── -->
   <footer class="summary-bar" id="summary-bar">
     <div class="summary-inner">
       <div class="summary-label">Estimated monthly cost</div>
       <div class="summary-total" id="summary-total">$0.00</div>
       <div class="summary-currency">USD</div>
-    </div>
-    <div class="summary-disclaimer">
-      Demo only — prices from Azure Global API (USD). Not for production use.
     </div>
   </footer>
 
