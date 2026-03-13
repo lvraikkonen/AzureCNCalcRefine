@@ -1,0 +1,8 @@
+chat/
+sample-data/
+
+.env
+
+.claude/
+
+__pycache__/

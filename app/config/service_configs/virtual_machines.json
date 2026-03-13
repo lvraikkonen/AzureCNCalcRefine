@@ -1,0 +1,47 @@
+{
+  "service_name": "Virtual Machines",
+  "sub_dimensions": {
+    "target_field": "product_name",
+    "parser": "vm_product_parser",
+    "dimensions": [
+      {
+        "field": "os",
+        "label": "Operating System",
+        "order": 0,
+        "default": null
+      },
+      {
+        "field": "deployment",
+        "label": "Deployment",
+        "order": 1,
+        "default": "Virtual Machines"
+      },
+      {
+        "field": "tier",
+        "label": "Tier",
+        "order": 2,
+        "default": "Standard"
+      },
+      {
+        "field": "category",
+        "label": "Category",
+        "order": 3,
+        "default": null
+      },
+      {
+        "field": "instance_series",
+        "label": "Instance Series",
+        "order": 4,
+        "default": null
+      }
+    ]
+  },
+  "excluded_products": [
+    "Virtual Machines RI",
+    "Dedicated Host Reservation"
+  ],
+  "quantity_model": "instances_x_hours",
+  "defaults": {
+    "hours_per_month": 730
+  }
+}
