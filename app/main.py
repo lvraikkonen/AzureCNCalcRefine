@@ -3,13 +3,17 @@
 Run with:
     uv run uvicorn app.main:app --reload
 """
-
+import mimetypes
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.api.explore import router as explore_router
 from app.api.products import router as products_router
+
+# Fix MIME types for JS/CSS modules - Windows registry may map .js as text/plain
+mimetypes.add_type("application/javascript", ".js")
+mimetypes.add_type("text/css", ".css")
 
 app = FastAPI(
     title="Azure.cn Pricing Calculator",
