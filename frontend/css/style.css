@@ -372,6 +372,42 @@ body {
 .card-title-icon {
   color: var(--azure-blue);
 }
+.card-title-text {
+  cursor: pointer;
+  border-bottom: 1px dashed transparent;
+  transition: border-color var(--transition);
+}
+.card-title-text:hover {
+  border-bottom-color: var(--text-light);
+}
+.card-edit-name-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-light);
+  padding: 0 4px;
+  line-height: 1;
+  transition: color var(--transition);
+}
+.card-edit-name-btn:hover {
+  color: var(--azure-blue);
+}
+.card-edit-name-btn.hidden {
+  display: none;
+}
+.card-name-input {
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font);
+  color: var(--text);
+  border: 1px solid var(--border-focus);
+  border-radius: var(--radius);
+  padding: 1px 6px;
+  outline: none;
+  width: 220px;
+  box-shadow: 0 0 0 1px var(--border-focus);
+}
 .card-summary-text {
   font-size: 12px;
   color: var(--text-muted);
@@ -415,6 +451,18 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+/* ── Tier Section Header ─────────────────────────────────── */
+.tier-section-header {
+  grid-column: 1 / -1;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--azure-dark);
+  background: var(--azure-light);
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  margin-top: 4px;
 }
 
 /* ── Form Controls ────────────────────────────────────────── */

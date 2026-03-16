@@ -1,0 +1,22 @@
+{
+  "service_name": "App Service",
+  "api_service_name": "Azure App Service",
+  "sub_dimensions": {
+    "target_field": "product_name",
+    "parser": "appservice_product_parser",
+    "dimensions": [
+      { "field": "os", "label": "Operating System", "order": 0 },
+      { "field": "tier", "label": "Tier", "order": 1 }
+    ]
+  },
+  "excluded_products": ["Azure App Service Domain"],
+  "quantity_model": "instances_x_hours",
+  "quantity_label": "Instances",
+  "static_subs": ["os", "tier"],
+  "hidden_subs": [],
+  "defaults": {
+    "hours_per_month": 730,
+    "selections": { "armRegionName": "westus" },
+    "sub_selections": { "os": "Windows", "tier": "Premium V3" }
+  }
+}

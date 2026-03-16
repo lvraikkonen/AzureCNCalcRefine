@@ -41,6 +41,9 @@
     "Dedicated Host Reservation"
   ],
   "quantity_model": "instances_x_hours",
+  "quantity_label": "VMs",
+  "static_subs": ["os", "tier", "category"],
+  "hidden_subs": ["deployment"],
   "defaults": {
     "hours_per_month": 730,
     "selections": {

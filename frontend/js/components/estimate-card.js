@@ -11,7 +11,8 @@ import { calculateLocalPrice, getAvailableSavingsOptions } from '../pricing.js';
 // Static dimensions always show all options from preload data.
 // Dynamic dimensions are filtered by cascade responses.
 const STATIC_MAIN = new Set(['armRegionName']);
-const STATIC_SUBS = new Set(['os', 'tier', 'category']);
+const DEFAULT_STATIC_SUBS = new Set(['os', 'tier', 'category']);
+const DEFAULT_HIDDEN_SUBS = new Set(['deployment']);
 
 // ── Service defaults (applied on card creation) ─────────────
 const SERVICE_DEFAULTS = {
@@ -19,6 +20,12 @@ const SERVICE_DEFAULTS = {
     selections: { armRegionName: 'eastus' },
     subSelections: { os: 'Linux', tier: 'Standard' },
   },
+};
+
+// ── Service icon mapping ─────────────────────────────────────
+const SERVICE_ICONS = {
+  'Virtual Machines': '🖥️',
+  'App Service': '🌐',
 };
 
 // ── Savings option mapping ──────────────────────────────────
@@ -80,14 +87,23 @@ export class EstimateCard {
     // Apply defaults from config API, with hardcoded fallback
     const item = this.item;
     let defaults = SERVICE_DEFAULTS[item.serviceName];
-    if (configResult.status === 'fulfilled' && configResult.value.defaults) {
-      const cfg = configResult.value.defaults;
-      defaults = {
-        selections: cfg.selections || {},
-        subSelections: cfg.sub_selections || {},
+    if (configResult.status === 'fulfilled') {
+      const configData = configResult.value;
+      // Store service config for per-service behavior
+      item.serviceConfig = {
+        quantity_label: configData.quantity_label || 'VMs',
+        static_subs: configData.static_subs || null,
+        hidden_subs: configData.hidden_subs || [],
       };
-      if (cfg.hours_per_month) {
-        item.hoursPerMonth = cfg.hours_per_month;
+      if (configData.defaults) {
+        const cfg = configData.defaults;
+        defaults = {
+          selections: cfg.selections || {},
+          subSelections: cfg.sub_selections || {},
+        };
+        if (cfg.hours_per_month) {
+          item.hoursPerMonth = cfg.hours_per_month;
+        }
       }
     }
 
@@ -107,6 +123,24 @@ export class EstimateCard {
   }
 
   get item() { return getItem(this.itemId); }
+
+  get staticSubs() {
+    const cfg = this.item?.serviceConfig;
+    return cfg?.static_subs ? new Set(cfg.static_subs) : DEFAULT_STATIC_SUBS;
+  }
+
+  get hiddenSubs() {
+    const cfg = this.item?.serviceConfig;
+    return cfg?.hidden_subs ? new Set(cfg.hidden_subs) : DEFAULT_HIDDEN_SUBS;
+  }
+
+  get quantityLabel() {
+    return this.item?.serviceConfig?.quantity_label || 'VMs';
+  }
+
+  get serviceIcon() {
+    return SERVICE_ICONS[this.item?.serviceName] || '📦';
+  }
 
   // ── Render ──────────────────────────────────────────────
 
@@ -134,8 +168,9 @@ export class EstimateCard {
         </button>
         <div class="card-title-area">
           <div class="card-title">
-            <span class="card-title-icon">🖥️</span>
-            ${item.serviceName} #${item.id}
+            <span class="card-title-icon">${this.serviceIcon}</span>
+            <span class="card-title-text" data-action="edit-name" title="Click to rename">${this.escHtml(item.customName || `${item.serviceName} #${item.id}`)}</span>
+            <button class="card-edit-name-btn" data-action="edit-name" title="Rename">✎</button>
           </div>
           ${headerSummary}
         </div>
@@ -180,31 +215,45 @@ export class EstimateCard {
       html += this.selectGroup('Region', 'armRegionName', regionDim.options, item.selections.armRegionName, false);
     }
 
-    // 2-4. Static sub-dimensions (os, tier, category) — from preload
+    // 2+. Static sub-dimensions (os, tier, category, etc.) — from preload
+    const staticSubSet = this.staticSubs;
+    const hiddenSubSet = this.hiddenSubs;
     const preloadProductDim = (preload || data)?.dimensions.find(d => d.field === 'productName');
+    let tierSelected = null;
     if (preloadProductDim?.sub_dimensions) {
       const staticSubs = preloadProductDim.sub_dimensions
-        .filter(sd => STATIC_SUBS.has(sd.field))
+        .filter(sd => staticSubSet.has(sd.field) && !hiddenSubSet.has(sd.field))
         .sort((a, b) => a.order - b.order);
       for (const sd of staticSubs) {
         html += this.selectGroup(sd.label, `sub:${sd.field}`, sd.options, item.subSelections[sd.field], false);
+        if (sd.field === 'tier') tierSelected = item.subSelections[sd.field] || null;
       }
+    }
+
+    // Tier section header — show selected tier as a header above the Instance dropdown
+    if (tierSelected) {
+      html += `<div class="tier-section-header">${this.escHtml(tierSelected)}</div>`;
     }
 
     // ── Dynamic dimensions (from cascadeData, filtered by selections) ──
 
-    // 5. Instance Series — dynamic sub-dimension
+    // Dynamic sub-dimensions (e.g. instance_series for VM)
     const cascadeProductDim = data?.dimensions.find(d => d.field === 'productName');
     if (cascadeProductDim?.sub_dimensions) {
       const dynamicSubs = cascadeProductDim.sub_dimensions
-        .filter(sd => !STATIC_SUBS.has(sd.field) && sd.field !== 'deployment')
+        .filter(sd => !staticSubSet.has(sd.field) && !hiddenSubSet.has(sd.field))
         .sort((a, b) => a.order - b.order);
       for (const sd of dynamicSubs) {
         html += this.selectGroup(sd.label, `sub:${sd.field}`, sd.options, item.subSelections[sd.field], item.loading);
       }
     } else if (!data) {
-      // Cascade not yet returned — show disabled placeholder for instance_series
-      html += this.selectGroup('Instance Series', 'sub:instance_series', [], null, true);
+      // Cascade not yet returned — show disabled placeholder for dynamic sub-dims
+      // Only show placeholder if this service has dynamic sub-dims (e.g. VM has instance_series)
+      const allSubs = preloadProductDim?.sub_dimensions || [];
+      const dynamicPlaceholders = allSubs.filter(sd => !staticSubSet.has(sd.field) && !hiddenSubSet.has(sd.field));
+      for (const sd of dynamicPlaceholders) {
+        html += this.selectGroup(sd.label, `sub:${sd.field}`, [], null, true);
+      }
     }
 
     // 6. SKU (skuName) — dynamic
@@ -341,10 +390,10 @@ export class EstimateCard {
 
     let html = '<div class="quantity-row">';
 
-    // Always show VMs
+    // Quantity (VMs / Instances / etc.)
     html += `
       <div class="quantity-group">
-        <label class="form-label">VMs</label>
+        <label class="form-label">${this.escHtml(this.quantityLabel)}</label>
         <input type="number" class="form-input" data-field="quantity"
                value="${item.quantity}" min="1" step="1"${disabled}>
       </div>`;
@@ -512,6 +561,42 @@ export class EstimateCard {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  // ── Inline rename ───────────────────────────────────────
+
+  startEditName() {
+    const titleText = this.el.querySelector('.card-title-text');
+    const editBtn = this.el.querySelector('.card-edit-name-btn');
+    if (!titleText) return;
+
+    const item = this.item;
+    const currentName = item.customName || `${item.serviceName} #${item.id}`;
+
+    // Replace text span with an input
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'card-name-input';
+    input.value = currentName;
+    input.maxLength = 60;
+    titleText.replaceWith(input);
+    if (editBtn) editBtn.classList.add('hidden');
+    input.focus();
+    input.select();
+
+    const commit = () => {
+      const val = input.value.trim();
+      const defaultName = `${item.serviceName} #${item.id}`;
+      item.customName = val && val !== defaultName ? val : null;
+      updateItem(this.itemId, item);
+      this.render();
+    };
+
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') input.blur();
+      if (e.key === 'Escape') { input.value = currentName; input.blur(); }
+    });
+  }
+
   // ── Events ──────────────────────────────────────────────
 
   bindEvents() {
@@ -538,6 +623,14 @@ export class EstimateCard {
         item.hoursUnit = e.target.value;
         updateItem(this.itemId, item);
         this.render();
+      });
+    });
+
+    // Edit name (click on title text or pencil icon)
+    this.el.querySelectorAll('[data-action="edit-name"]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.startEditName();
       });
     });
 
@@ -604,8 +697,11 @@ export class EstimateCard {
       // Clear productName when sub-dim changes (it will be auto-selected)
       delete item.selections.productName;
       // If a static sub-dim changed, also clear dynamic sub-dims downstream
-      if (STATIC_SUBS.has(subField)) {
-        delete item.subSelections.instance_series;
+      if (this.staticSubs.has(subField)) {
+        // Clear all non-static sub-selections
+        for (const key of Object.keys(item.subSelections)) {
+          if (!this.staticSubs.has(key)) delete item.subSelections[key];
+        }
         delete item.selections.skuName;
       }
     } else {
@@ -617,7 +713,9 @@ export class EstimateCard {
       }
       // If a static main dim changed (e.g. Region), clear dynamic downstream
       if (STATIC_MAIN.has(field)) {
-        delete item.subSelections.instance_series;
+        for (const key of Object.keys(item.subSelections)) {
+          if (!this.staticSubs.has(key)) delete item.subSelections[key];
+        }
         delete item.selections.skuName;
         delete item.selections.productName;
       }
@@ -666,6 +764,7 @@ export class EstimateCard {
       );
 
       // Auto-select single options (skip static dimensions)
+      const _staticSubs = this.staticSubs;
       let changed = false;
       for (const dim of data.dimensions) {
         if (dim.field === 'productName') {
@@ -677,7 +776,7 @@ export class EstimateCard {
           // Auto-select dynamic sub-dimensions with single option (skip static)
           if (dim.sub_dimensions) {
             for (const sd of dim.sub_dimensions) {
-              if (STATIC_SUBS.has(sd.field)) continue;
+              if (_staticSubs.has(sd.field)) continue;
               if (sd.options.length === 1 && item.subSelections[sd.field] !== sd.options[0]) {
                 item.subSelections[sd.field] = sd.options[0];
                 changed = true;
@@ -710,7 +809,7 @@ export class EstimateCard {
       const productDim = data.dimensions.find(d => d.field === 'productName');
       if (productDim?.sub_dimensions) {
         for (const sd of productDim.sub_dimensions) {
-          if (STATIC_SUBS.has(sd.field)) continue;
+          if (_staticSubs.has(sd.field)) continue;
           const sel = item.subSelections[sd.field];
           if (sel && !sd.options.includes(sel)) {
             delete item.subSelections[sd.field];

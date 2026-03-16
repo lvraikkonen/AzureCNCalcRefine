@@ -49,6 +49,28 @@ router = APIRouter(prefix="/api/v1/explore", tags=["explore"])
 _CONFIG_DIR = Path(__file__).resolve().parent.parent / "config" / "service_configs"
 
 
+def _load_service_config(service_name: str) -> dict | None:
+    """Load the JSON config file for a service, or None if not found."""
+    slug = service_name.lower().replace(" ", "_")
+    config_path = _CONFIG_DIR / f"{slug}.json"
+    if not config_path.exists():
+        return None
+    return json.loads(config_path.read_text(encoding="utf-8"))
+
+
+def _resolve_api_service_name(service_name: str) -> str:
+    """Return the Azure API serviceName for a given catalog service name.
+
+    Some services have a mismatch between the catalog name and the API
+    filter value (e.g. catalog "App Service" → API "Azure App Service").
+    Falls back to service_name if no mapping is configured.
+    """
+    config = _load_service_config(service_name)
+    if config and "api_service_name" in config:
+        return config["api_service_name"]
+    return service_name
+
+
 # ═══════════════════════════════════════════════════════════════════════
 # 0. SERVICE CONFIG — default selections for a service
 # ═══════════════════════════════════════════════════════════════════════
@@ -56,14 +78,26 @@ _CONFIG_DIR = Path(__file__).resolve().parent.parent / "config" / "service_confi
 @router.get("/service-config/{service_name}")
 async def get_service_config(service_name: str):
     """Return default configuration for a service (selections, sub_selections, etc.)."""
-    slug = service_name.lower().replace(" ", "_")
-    config_path = _CONFIG_DIR / f"{slug}.json"
-    if not config_path.exists():
+    config = _load_service_config(service_name)
+    if not config:
         return {"service_name": service_name, "defaults": {}}
-    config = json.loads(config_path.read_text(encoding="utf-8"))
+
+    # Derive static_subs and hidden_subs from sub_dimensions config
+    sub_dims_config = config.get("sub_dimensions", {})
+    all_sub_fields = [d["field"] for d in sub_dims_config.get("dimensions", [])]
+    # For VM: os, tier, category are static; deployment is hidden; instance_series is dynamic
+    # For App Service: os, tier are static (all 2 dims); nothing hidden
+    # Convention: sub-dims with order < (total - 1) that aren't hidden are static
+    # Use explicit lists from config if present, otherwise derive sensible defaults
+    static_subs = config.get("static_subs", all_sub_fields)
+    hidden_subs = config.get("hidden_subs", [])
+
     return {
         "service_name": service_name,
         "defaults": config.get("defaults", {}),
+        "quantity_label": config.get("quantity_label", "VMs"),
+        "static_subs": static_subs,
+        "hidden_subs": hidden_subs,
     }
 
 
@@ -115,7 +149,8 @@ def _collect_options(items: list[dict], field: str) -> list[str]:
 @router.get("/service/{service_name}", response_model=ServiceResponse)
 async def explore_service(service_name: str, region: str | None = None):
     """按服务查询各维度值域分布（不过滤 isPrimaryMeterRegion）。"""
-    filters = build_api_filters(service_name, region=region)
+    api_name = _resolve_api_service_name(service_name)
+    filters = build_api_filters(api_name, region=region)
     items = await fetch_global_prices(filters)
 
     dim_names = ["productName", "skuName", "type", "term", "unitOfMeasure"]
@@ -151,8 +186,9 @@ async def explore_cascade(req: CascadeRequest):
     每次用户变更选择后，前端重新调用此接口获取更新后的选项。
     """
     # Build API-level filters — pass selected dimensions to avoid 10k-row truncation
+    api_name = _resolve_api_service_name(req.service_name)
     api_filters = build_api_filters(
-        req.service_name,
+        api_name,
         region=req.selections.get("armRegionName"),
         product=req.selections.get("productName"),
         sku=req.selections.get("skuName"),
@@ -243,8 +279,9 @@ async def explore_cascade(req: CascadeRequest):
 @router.post("/meters", response_model=MetersResponse)
 async def explore_meters(req: MetersRequest):
     """查看具体配置的 meter 分层定价结构。"""
+    api_name = _resolve_api_service_name(req.service_name)
     filters = build_api_filters(
-        req.service_name, region=req.region, product=req.product, sku=req.sku,
+        api_name, region=req.region, product=req.product, sku=req.sku,
     )
     items = await fetch_global_prices(filters)
 
@@ -298,8 +335,9 @@ async def explore_productparse(req: ProductParseRequest):
     """使用 vm_parser 解析 productName，展示子维度拆解结果。"""
     from app.services.sub_dimensions.vm_parser import parse_vm_product_name
 
+    api_name = _resolve_api_service_name(req.service_name)
     filters = build_api_filters(
-        req.service_name, region=req.region, product=req.product,
+        api_name, region=req.region, product=req.product,
     )
     items = await fetch_global_prices(filters)
 
@@ -353,8 +391,9 @@ async def explore_productparse(req: ProductParseRequest):
 
 async def _calculate_one(item: CalculatorItem) -> CalculatorLineResult:
     """Calculate monthly cost for a single configuration."""
+    api_name = _resolve_api_service_name(item.service_name)
     filters = build_api_filters(
-        item.service_name,
+        api_name,
         region=item.region,
         product=item.product,
         sku=item.sku,

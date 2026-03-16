@@ -6,10 +6,12 @@ sub-dimension metadata for frontend filtering.
 
 Currently supported:
 - "Virtual Machines" → VmProductNameParser (parses productName → os, deployment, tier, category, instance_series)
+- "App Service" → AppServiceProductNameParser (parses productName → os, tier)
 """
 
 from .base import SubDimensionDef, SubDimensionParser
 from .vm_parser import VmParsedProduct, parse_vm_product_name
+from .appservice_parser import AppServiceParsedProduct, parse_appservice_product_name
 
 from app.schemas.configuration import SubDimension
 
@@ -53,10 +55,37 @@ class VmProductNameParser(SubDimensionParser):
         return str(raw_value)
 
 
+class AppServiceProductNameParser(SubDimensionParser):
+    """Extracts os/tier from App Service productName values."""
+
+    _SUB_DIMS = [
+        SubDimensionDef(field="os", label="Operating System", attr="os", order=0),
+        SubDimensionDef(field="tier", label="Tier", attr="tier", order=1),
+    ]
+
+    def target_field(self) -> str:
+        return "product_name"
+
+    def parse(self, value: str) -> AppServiceParsedProduct:
+        return parse_appservice_product_name(value)
+
+    def sub_dimension_definitions(self) -> list[SubDimensionDef]:
+        return self._SUB_DIMS
+
+    def is_excluded(self, parsed: object) -> bool:
+        return isinstance(parsed, AppServiceParsedProduct) and parsed.excluded
+
+    def normalize_value(self, field: str, raw_value: object) -> str | None:
+        if raw_value is None or raw_value == "":
+            return None
+        return str(raw_value)
+
+
 # ── Registry ──────────────────────────────────────────────────────────
 
 _REGISTRY: dict[str, SubDimensionParser] = {
     "Virtual Machines": VmProductNameParser(),
+    "App Service": AppServiceProductNameParser(),
 }
 
 

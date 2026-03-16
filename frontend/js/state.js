@@ -28,6 +28,7 @@ function createItem(serviceName) {
   const item = {
     id: nextId++,
     serviceName,
+    customName: null,      // user-editable display name (null = use default)
     selections: {},
     subSelections: {},
     quantity: 1,
@@ -41,6 +42,7 @@ function createItem(serviceName) {
     metersCache: null,     // MetersResponse.groups — all meter data (all type/term)
     metersCacheKey: null,  // cache key: `${region}|${product}|${sku}`
     upfrontCost: null,     // Reservation total term cost (not monthly)
+    serviceConfig: null,   // service config from API (quantity_label, static_subs, hidden_subs)
   };
   state.items.push(item);
   emit('item-added', { item });
