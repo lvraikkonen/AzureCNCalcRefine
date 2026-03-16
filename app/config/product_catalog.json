@@ -199,6 +199,12 @@
           "description": "Provision Hadoop, Spark, and other open-source clusters",
           "icon": "hdinsight",
           "popular": false
+        },
+        {
+          "service_name": "Power BI Embedded",
+          "description": "Embed fully interactive data visualizations in your applications",
+          "icon": "power-bi-embedded",
+          "popular": false
         }
       ]
     }

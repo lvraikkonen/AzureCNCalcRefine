@@ -253,3 +253,58 @@ const SERVICE_ICONS = {
 ### Q: 定价模型不是 instances × hours 怎么办？
 
 当前 `quantity_model` 字段已预留但尚未实现差异化逻辑。如果遇到按月计费（`1/Month`）或按量计费（`10K`）的产品，需要在 `pricing.js` 的 `calculateLocalPrice()` 中扩展计算逻辑。
+
+---
+
+## 实例：无子维度产品（Power BI Embedded）
+
+某些产品结构极为简单：只有一个 productName，不需要子维度拆解。Power BI Embedded 就是典型案例：
+
+| 特征 | 值 |
+|------|-----|
+| productName | 1 个：`Power BI Embedded` |
+| skuName | 8 个：A1–A8 |
+| type | 仅 Consumption |
+| unitOfMeasure | `1 Hour` |
+| tierMinimumUnits | 0.0（无阶梯） |
+| Reservation / SavingsPlan | 无 |
+
+### 接入步骤
+
+这类产品只需 **配置**，无需编写解析器：
+
+1. **产品目录** — `product_catalog.json` 中添加到对应 family
+2. **服务配置** — 创建 `service_configs/power_bi_embedded.json`，不包含 `sub_dimensions`、`api_service_name`
+3. **图标**（可选）— `estimate-card.js` 中添加 `SERVICE_ICONS` 条目
+
+不需要：parser、`__init__.py` 注册、`explore.py` 改动、`pricing.js` 改动。
+
+### 配置文件示例
+
+```json
+{
+  "service_name": "Power BI Embedded",
+  "quantity_label": "Nodes",
+  "static_subs": [],
+  "hidden_subs": [],
+  "defaults": {
+    "hours_per_month": 730,
+    "selections": { "armRegionName": "eastus" }
+  }
+}
+```
+
+---
+
+## 已知限制：多计量单位产品
+
+某些产品（如 Event Grid）包含多个 meter，且各 meter 的 `unitOfMeasure` 不同：
+
+| meter | unitOfMeasure |
+|-------|---------------|
+| Operations | `100K` |
+| Advanced Filtering | `1M` |
+| MQTT Messages | `1M` |
+| Namespace | `1 Hour` |
+
+当前前端的数量输入模型是「数量 × 小时」，假定所有 meter 共享同一个数量输入。对于多计量单位产品，用户需要为每个 meter 分别输入用量，这需要 UI 层面的扩展支持。此类产品暂时无法接入。

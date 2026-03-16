@@ -26,6 +26,7 @@ const SERVICE_DEFAULTS = {
 const SERVICE_ICONS = {
   'Virtual Machines': '🖥️',
   'App Service': '🌐',
+  'Power BI Embedded': '📊',
 };
 
 // ── Savings option mapping ──────────────────────────────────

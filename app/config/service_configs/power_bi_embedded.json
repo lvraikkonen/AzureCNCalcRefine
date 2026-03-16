@@ -1,0 +1,10 @@
+{
+  "service_name": "Power BI Embedded",
+  "quantity_label": "Nodes",
+  "static_subs": [],
+  "hidden_subs": [],
+  "defaults": {
+    "hours_per_month": 730,
+    "selections": { "armRegionName": "eastus" }
+  }
+}
