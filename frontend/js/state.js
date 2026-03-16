@@ -70,4 +70,8 @@ function getTotalCost() {
   return state.items.reduce((sum, item) => sum + (item.cost || 0), 0);
 }
 
-export { state, bus, emit, on, createItem, getItem, updateItem, removeItem, getTotalCost };
+function getTotalUpfrontCost() {
+  return state.items.reduce((sum, item) => sum + (item.upfrontCost || 0), 0);
+}
+
+export { state, bus, emit, on, createItem, getItem, updateItem, removeItem, getTotalCost, getTotalUpfrontCost };

@@ -67,9 +67,18 @@
   <!-- ── Summary Bar ──────────────────────────────────────── -->
   <footer class="summary-bar" id="summary-bar">
     <div class="summary-inner">
-      <div class="summary-label">Estimated monthly cost</div>
-      <div class="summary-total" id="summary-total">$0.00</div>
-      <div class="summary-currency">USD</div>
+      <div class="summary-costs">
+        <div class="summary-cost-row summary-upfront-row hidden" id="summary-upfront-row">
+          <span class="summary-label">Upfront cost</span>
+          <span class="summary-upfront" id="summary-upfront">$0.00</span>
+          <span class="summary-currency">USD</span>
+        </div>
+        <div class="summary-cost-row">
+          <span class="summary-label">Estimated monthly cost</span>
+          <span class="summary-total" id="summary-total">$0.00</span>
+          <span class="summary-currency">USD</span>
+        </div>
+      </div>
     </div>
   </footer>
 

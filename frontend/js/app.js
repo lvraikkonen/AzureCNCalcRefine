@@ -12,5 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('estimate-list'),
     document.getElementById('estimate-empty'),
   );
-  initSummaryBar(document.getElementById('summary-total'));
+  initSummaryBar(
+    document.getElementById('summary-total'),
+    document.getElementById('summary-upfront'),
+    document.getElementById('summary-upfront-row'),
+  );
 });
