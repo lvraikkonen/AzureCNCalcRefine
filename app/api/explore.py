@@ -39,6 +39,7 @@ from app.services.global_pricing import (
     build_api_filters,
     calculate_tiered_cost,
     fetch_global_prices,
+    filter_non_devtest,
     filter_primary_non_devtest,
     get_effective_term,
 )
@@ -56,6 +57,31 @@ def _load_service_config(service_name: str) -> dict | None:
     if not config_path.exists():
         return None
     return json.loads(config_path.read_text(encoding="utf-8"))
+
+
+def _load_sku_groups(service_name: str) -> dict[str, list[str]] | None:
+    """Load sku_groups mapping from service config, or None if not defined.
+
+    sku_groups maps virtual tier names to lists of real API skuName values.
+    E.g. {"Standard": ["Standard", "Hybrid Connections", "WCF Relay"]}
+    """
+    config = _load_service_config(service_name)
+    if config and "sku_groups" in config:
+        return config["sku_groups"]
+    return None
+
+
+def _resolve_sku_group(sku_groups: dict[str, list[str]], selected_sku: str) -> list[str]:
+    """Expand a virtual tier name to real skuName values."""
+    return sku_groups.get(selected_sku, [selected_sku])
+
+
+def _reverse_sku_group(sku_groups: dict[str, list[str]], raw_sku: str) -> str | None:
+    """Map a raw API skuName to its virtual tier name, or None if not in any group."""
+    for group_name, members in sku_groups.items():
+        if raw_sku in members:
+            return group_name
+    return None
 
 
 def _resolve_api_service_name(service_name: str) -> str:
@@ -190,15 +216,18 @@ async def explore_cascade(req: CascadeRequest):
     """
     # Build API-level filters — pass selected dimensions to avoid 10k-row truncation
     api_name = _resolve_api_service_name(req.service_name)
+    sku_groups = _load_sku_groups(req.service_name)
+    # When sku_groups is defined, don't pass virtual tier to API (it's not a real skuName)
+    api_sku = None if sku_groups else req.selections.get("skuName")
     api_filters = build_api_filters(
         api_name,
         region=req.selections.get("armRegionName"),
         product=req.selections.get("productName"),
-        sku=req.selections.get("skuName"),
+        sku=api_sku,
     )
     items = await fetch_global_prices(api_filters)
     total_rows = len(items)
-    items = filter_primary_non_devtest(items)
+    items = filter_non_devtest(items)
     filtered_rows = len(items)
 
     # Sub-dimension parser (if available for this service)
@@ -222,6 +251,10 @@ async def explore_cascade(req: CascadeRequest):
                 sel_val = req.selections[other_field]
                 if other_field == "term":
                     filtered = [i for i in filtered if get_effective_term(i) == sel_val]
+                elif other_field == "skuName" and sku_groups:
+                    # Expand virtual tier to real skuNames
+                    real_skus = set(_resolve_sku_group(sku_groups, sel_val))
+                    filtered = [i for i in filtered if i.get("skuName") in real_skus]
                 else:
                     filtered = [i for i in filtered if i.get(other_field) == sel_val]
 
@@ -230,6 +263,17 @@ async def explore_cascade(req: CascadeRequest):
             filtered = [i for i in filtered if i.get("productName") in valid_pnames]
 
         options = _collect_options(filtered, field)
+
+        # Map raw skuNames to virtual group names
+        if field == "skuName" and sku_groups:
+            mapped = []
+            seen = set()
+            for raw in options:
+                group = _reverse_sku_group(sku_groups, raw)
+                if group and group not in seen:
+                    seen.add(group)
+                    mapped.append(group)
+            options = sorted(mapped)
 
         # Visibility: term only visible when type is Reservation/SavingsPlan
         visible = True
@@ -283,23 +327,42 @@ async def explore_cascade(req: CascadeRequest):
 async def explore_meters(req: MetersRequest):
     """查看具体配置的 meter 分层定价结构。"""
     api_name = _resolve_api_service_name(req.service_name)
+    sku_groups = _load_sku_groups(req.service_name)
+    # When sku_groups is defined, don't pass virtual tier to API; filter locally instead
+    api_sku = None if sku_groups else req.sku
     filters = build_api_filters(
-        api_name, region=req.region, product=req.product, sku=req.sku,
+        api_name, region=req.region, product=req.product, sku=api_sku,
     )
     items = await fetch_global_prices(filters)
+    # Local filter: expand virtual tier to real skuNames
+    if sku_groups and req.sku:
+        real_skus = set(_resolve_sku_group(sku_groups, req.sku))
+        items = [i for i in items if i.get("skuName") in real_skus]
 
-    # Group by (meterName, type, effectiveTerm)
+    # Group by (meterName, type, effectiveTerm, unitOfMeasure)
     meter_groups: dict[tuple, list[dict]] = defaultdict(list)
     for item in items:
         key = (
             item.get("meterName", ""),
             item.get("type", ""),
             get_effective_term(item),
+            item.get("unitOfMeasure", ""),
         )
         meter_groups[key].append(item)
 
+    # Dedup: when same meter has both hourly and monthly, keep monthly only
+    monthly_keys = {
+        (m, t, tm)
+        for (m, t, tm, u) in meter_groups
+        if u == "1/Month"
+    }
+    meter_groups = {
+        k: v for k, v in meter_groups.items()
+        if not (k[3] in ("1 Hour", "1/Hour") and (k[0], k[1], k[2]) in monthly_keys)
+    }
+
     groups = []
-    for (meter, typ, term), rows in sorted(meter_groups.items()):
+    for (meter, typ, term, _unit), rows in sorted(meter_groups.items()):
         tiers = sorted(rows, key=lambda r: float(r.get("tierMinimumUnits", 0)))
         groups.append(MeterGroup(
             product=rows[0].get("productName", ""),
@@ -392,6 +455,10 @@ async def explore_productparse(req: ProductParseRequest):
 # 5. CALCULATOR — price calculation
 # ═══════════════════════════════════════════════════════════════════════
 
+def _is_hourly_unit(unit: str) -> bool:
+    return unit in ("1 Hour", "1/Hour")
+
+
 async def _calculate_one(item: CalculatorItem) -> CalculatorLineResult:
     """Calculate monthly cost for a single configuration."""
     api_name = _resolve_api_service_name(item.service_name)
@@ -410,17 +477,25 @@ async def _calculate_one(item: CalculatorItem) -> CalculatorLineResult:
     if item.term:
         matched = [i for i in matched if get_effective_term(i) == item.term]
 
-    # Group by meterName
-    meter_groups: dict[str, list[dict]] = defaultdict(list)
+    # Group by (meterName, unitOfMeasure)
+    meter_groups: dict[tuple[str, str], list[dict]] = defaultdict(list)
     for row in matched:
-        meter_groups[row.get("meterName", "")].append(row)
+        meter_groups[(row.get("meterName", ""), row.get("unitOfMeasure", ""))].append(row)
+
+    # Dedup: when same meter has both hourly and monthly, keep monthly only
+    monthly_meter_names = {
+        m for (m, u) in meter_groups if u == "1/Month"
+    }
+    meter_groups = {
+        k: v for k, v in meter_groups.items()
+        if not (k[1] in ("1 Hour", "1/Hour") and k[0] in monthly_meter_names)
+    }
 
     meter_costs: list[MeterCost] = []
     total = 0.0
 
-    for meter_name, rows in sorted(meter_groups.items()):
+    for (meter_name, unit), rows in sorted(meter_groups.items()):
         tiers = sorted(rows, key=lambda r: float(r.get("tierMinimumUnits", 0)))
-        unit = rows[0].get("unitOfMeasure", "")
 
         tier_models = [
             PriceTier(
@@ -443,7 +518,7 @@ async def _calculate_one(item: CalculatorItem) -> CalculatorLineResult:
             # Reservation: unitPrice is total for the term, per instance
             usage = item.quantity
             cost = float(tiers[0].get("unitPrice", 0)) * item.quantity
-        elif unit == "1 Hour":
+        elif _is_hourly_unit(unit):
             # Per-hour pricing: usage = hours × instances
             usage = item.hours_per_month * item.quantity
             cost = calculate_tiered_cost(tiers, usage)
@@ -466,17 +541,22 @@ async def _calculate_one(item: CalculatorItem) -> CalculatorLineResult:
     if item.type != "Consumption":
         consumption_rows = [i for i in all_items if i.get("type") == "Consumption"]
         if consumption_rows:
-            payg_groups: dict[str, list[dict]] = defaultdict(list)
+            payg_groups: dict[tuple[str, str], list[dict]] = defaultdict(list)
             for row in consumption_rows:
-                payg_groups[row.get("meterName", "")].append(row)
+                payg_groups[(row.get("meterName", ""), row.get("unitOfMeasure", ""))].append(row)
+            # Dedup: monthly over hourly
+            payg_monthly_names = {m for (m, u) in payg_groups if u == "1/Month"}
+            payg_groups = {
+                k: v for k, v in payg_groups.items()
+                if not (k[1] in ("1 Hour", "1/Hour") and k[0] in payg_monthly_names)
+            }
             payg_total = 0.0
-            for m_name, rows in payg_groups.items():
+            for (m_name, p_unit), rows in payg_groups.items():
                 tiers = sorted(rows, key=lambda r: float(r.get("tierMinimumUnits", 0)))
-                unit = rows[0].get("unitOfMeasure", "")
                 if item.meter_quantities is not None:
                     usage = item.meter_quantities.get(m_name, 0)
                     payg_total += calculate_tiered_cost(tiers, usage)
-                elif unit == "1 Hour":
+                elif _is_hourly_unit(p_unit):
                     payg_total += calculate_tiered_cost(
                         tiers, item.hours_per_month * item.quantity,
                     )

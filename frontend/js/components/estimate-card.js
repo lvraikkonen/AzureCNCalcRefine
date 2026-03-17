@@ -6,6 +6,7 @@
 import { getItem, updateItem, removeItem, emit } from '../state.js';
 import { fetchCascade, fetchPreload, fetchMeters, fetchServiceConfig } from '../api.js';
 import { calculateLocalPrice, calculatePerMeterPrice, getAvailableSavingsOptions } from '../pricing.js';
+import { buildGroupedRegions, getRegionDisplay } from '../regions.js';
 
 // ── Static vs dynamic dimension sets ────────────────────────
 // Static dimensions always show all options from preload data.
@@ -29,6 +30,7 @@ const SERVICE_ICONS = {
   'Power BI Embedded': '📊',
   'Azure Firewall': '🛡️',
   'Event Grid': '⚡',
+  'Service Bus': '🚌',
 };
 
 // ── Savings option mapping ──────────────────────────────────
@@ -229,11 +231,11 @@ export class EstimateCard {
 
     // ── Static dimensions (always from preload, full option set) ──
 
-    // 1. Region — static
+    // 1. Region — static, grouped by country/geography
     const regionSource = preload || data;
     const regionDim = regionSource.dimensions.find(d => d.field === 'armRegionName');
     if (regionDim) {
-      html += this.selectGroup('Region', 'armRegionName', regionDim.options, item.selections.armRegionName, false);
+      html += this.selectRegionGroup(regionDim.options, item.selections.armRegionName);
     }
 
     // 2+. Static sub-dimensions (os, tier, category, etc.) — from preload
@@ -306,6 +308,29 @@ export class EstimateCard {
       <div class="form-group">
         <label class="form-label">${label}</label>
         <select class="form-select" data-field="${name}" ${disabled ? 'disabled' : ''}>
+          <option value="">— Select —</option>
+          ${opts}
+        </select>
+      </div>
+    `;
+  }
+
+  selectRegionGroup(options, selected) {
+    const grouped = buildGroupedRegions(options || []);
+    let opts = '';
+    for (const { group, regions } of grouped) {
+      opts += `<optgroup label="${this.escHtml(group)}">`;
+      for (const r of regions) {
+        const sel = r.slug === selected ? ' selected' : '';
+        opts += `<option value="${this.escHtml(r.slug)}"${sel}>${this.escHtml(r.display)}</option>`;
+      }
+      opts += '</optgroup>';
+    }
+
+    return `
+      <div class="form-group">
+        <label class="form-label">Region</label>
+        <select class="form-select" data-field="armRegionName">
           <option value="">— Select —</option>
           ${opts}
         </select>
@@ -466,12 +491,13 @@ export class EstimateCard {
       matched = item.metersCache.filter(g => g.type === 'Consumption');
     }
 
-    // Deduplicate by meter name
+    // Deduplicate by meter name + unit (defensive: backend already deduplicates)
     const seen = new Set();
     const meterInfos = [];
     for (const g of matched) {
-      if (!seen.has(g.meter)) {
-        seen.add(g.meter);
+      const dedupKey = `${g.meter}|${g.unit}`;
+      if (!seen.has(dedupKey)) {
+        seen.add(dedupKey);
         meterInfos.push({ name: g.meter, unit: g.unit, tiers: g.tiers });
       }
     }
@@ -485,7 +511,8 @@ export class EstimateCard {
     let html = '<div class="per-meter-quantity">';
 
     for (const m of meterInfos) {
-      const isHourly = m.unit === '1 Hour';
+      const isHourly = m.unit === '1 Hour' || m.unit === '1/Hour';
+      const isMonthly = m.unit === '1/Month';
       const unitPrice = m.tiers?.[0]?.unit_price ?? 0;
       // Compute this meter's cost for display
       const usage = meterQty[m.name] ?? 0;
@@ -522,14 +549,40 @@ export class EstimateCard {
             <span class="per-meter-price">${fmt.format(unitPrice)}</span>
             <span class="per-meter-field-label">Per ${this.escHtml(this.getUnitLabel(m.name))} Hour</span>
           </div>`;
-      } else {
-        // Volume meter: quantity input
-        const qty = meterQty[m.name] ?? 0;
+      } else if (isMonthly) {
+        // Monthly fixed-fee meter: units × price/mo = cost
+        const baseQty = meterQty[m.name] ?? 0;
         html += `
           <div class="per-meter-field">
             <input type="number" class="form-input per-meter-input" data-meter="${this.escHtml(m.name)}"
-                   value="${qty}" min="0" step="any"${disabled}>
-            <span class="per-meter-field-label">× ${this.escHtml(m.unit)} ${this.escHtml(m.name)}</span>
+                   value="${baseQty}" min="0" step="1"${disabled}>
+            <span class="per-meter-field-label">${this.escHtml(this.getUnitLabel(m.name))}</span>
+          </div>
+          <span class="per-meter-op">×</span>
+          <div class="per-meter-field">
+            <span class="per-meter-price">${fmt.format(unitPrice)}/mo</span>
+          </div>`;
+      } else {
+        // Volume meter: quantity input with optional unit conversion (GB/TB)
+        const baseQty = meterQty[m.name] ?? 0;
+        const volumeUnits = item.meterVolumeUnits || {};
+        const isGB = m.unit === '1 GB';
+        const displayUnit = isGB ? (volumeUnits[m.name] || 'GB') : null;
+        const displayQty = displayUnit === 'TB' ? baseQty / 1024 : baseQty;
+
+        html += `
+          <div class="per-meter-field">
+            <input type="number" class="form-input per-meter-input" data-meter="${this.escHtml(m.name)}"
+                   value="${displayQty}" min="0" step="any"${disabled}>`;
+        if (isGB) {
+          html += `
+            <select class="form-select per-meter-volume-unit" data-meter="${this.escHtml(m.name)}"${disabled}>
+              <option value="GB"${displayUnit === 'GB' ? ' selected' : ''}>GB</option>
+              <option value="TB"${displayUnit === 'TB' ? ' selected' : ''}>TB</option>
+            </select>`;
+        }
+        html += `
+            <span class="per-meter-field-label">${this.escHtml(this.getVolumeLabel(m.name, m.unit))}</span>
           </div>`;
       }
 
@@ -567,7 +620,23 @@ export class EstimateCard {
     const lower = meterName.toLowerCase();
     if (lower.includes('throughput')) return 'Throughput Units';
     if (lower.includes('deployment')) return 'Deployments';
+    if (lower.includes('messaging unit')) return 'Messaging Units';
+    if (lower.includes('base unit')) return 'Namespaces';
+    if (lower.includes('listener unit')) return 'Listener Units';
+    if (lower.includes('capacity unit')) return 'Capacity Units';
     return 'Units';
+  }
+
+  /** Get a short label for volume meter inputs instead of the full meter name. */
+  getVolumeLabel(meterName, unit) {
+    if (unit === '1M') return 'Million';
+    if (unit === '10K') return '× 10K';
+    if (unit === '100 Hours') return '× 100-Hour Blocks';
+    if (unit === '1') {
+      if (meterName.toLowerCase().includes('connection')) return 'Connections';
+      return 'Units';
+    }
+    return unit;
   }
 
   /** Generate free-tier hint text if the first tier starts at 0 with price 0. */
@@ -576,7 +645,8 @@ export class EstimateCard {
     const sorted = [...tiers].sort((a, b) => a.tier_min_units - b.tier_min_units);
     if (sorted[0].tier_min_units === 0 && sorted[0].unit_price === 0) {
       const freeAmount = sorted[1].tier_min_units;
-      return `The first ${freeAmount.toLocaleString()} ${unit === '1 Hour' ? 'hours' : unit} per month are included.`;
+      const unitLabel = (unit === '1 Hour' || unit === '1/Hour') ? 'hours' : unit;
+      return `The first ${freeAmount.toLocaleString()} ${unitLabel} per month are included.`;
     }
     return null;
   }
@@ -765,8 +835,8 @@ export class EstimateCard {
   // ── Events ──────────────────────────────────────────────
 
   bindEvents() {
-    // Dropdowns (exclude duration-unit which has its own handler)
-    this.el.querySelectorAll('.form-select:not(.duration-unit)').forEach(sel => {
+    // Dropdowns (exclude duration-unit and per-meter-volume-unit which have their own handlers)
+    this.el.querySelectorAll('.form-select:not(.duration-unit):not(.per-meter-volume-unit)').forEach(sel => {
       sel.addEventListener('change', (e) => this.onSelectChange(e));
     });
 
@@ -788,6 +858,11 @@ export class EstimateCard {
     // Per-meter hourly inputs (units and hours)
     this.el.querySelectorAll('.per-meter-hourly-units, .per-meter-hourly-hours').forEach(inp => {
       inp.addEventListener('input', (e) => this.onPerMeterHourlyChange(e));
+    });
+
+    // Per-meter volume unit selector (GB/TB)
+    this.el.querySelectorAll('.per-meter-volume-unit').forEach(sel => {
+      sel.addEventListener('change', (e) => this.onPerMeterVolumeUnitChange(e));
     });
 
     // Duration unit selector
@@ -923,15 +998,30 @@ export class EstimateCard {
 
   onPerMeterQuantityChange(e) {
     const meterName = e.target.dataset.meter;
-    const value = parseFloat(e.target.value) || 0;
+    const displayValue = parseFloat(e.target.value) || 0;
     const item = this.item;
     if (!item) return;
 
     if (!item.meterQuantities) item.meterQuantities = {};
-    item.meterQuantities[meterName] = value;
+    // Convert display value to base unit (GB) if volume unit is TB
+    const volumeUnit = (item.meterVolumeUnits || {})[meterName] || 'GB';
+    item.meterQuantities[meterName] = volumeUnit === 'TB' ? displayValue * 1024 : displayValue;
     updateItem(this.itemId, item);
 
     debounce(`qty-${this.itemId}`, () => this.recalculateLocal(), 300);
+  }
+
+  onPerMeterVolumeUnitChange(e) {
+    const meterName = e.target.dataset.meter;
+    const newUnit = e.target.value;  // 'GB' or 'TB'
+    const item = this.item;
+    if (!item) return;
+
+    if (!item.meterVolumeUnits) item.meterVolumeUnits = {};
+    item.meterVolumeUnits[meterName] = newUnit;
+    // meterQuantities stays in base unit (GB), no conversion needed
+    updateItem(this.itemId, item);
+    this.render();
   }
 
   onPerMeterHourlyChange(e) {
@@ -1080,6 +1170,7 @@ export class EstimateCard {
         metersCacheKey: cacheKey,
         meterQuantities: {},       // Clear per-meter quantities on cache refresh
         meterHourlyDetails: {},    // Clear hourly decomposition too
+        meterVolumeUnits: {},      // Clear volume unit selections too
       });
       this.recalculateLocal();
     } catch (err) {
@@ -1122,7 +1213,7 @@ export class EstimateCard {
     let focusedMeter = null;
     if (focused?.dataset?.meter) {
       focusedMeter = focused.dataset.meter;
-      for (const cls of ['per-meter-input', 'per-meter-hourly-units', 'per-meter-hourly-hours']) {
+      for (const cls of ['per-meter-input', 'per-meter-hourly-units', 'per-meter-hourly-hours', 'per-meter-volume-unit']) {
         if (focused.classList.contains(cls)) { focusClass = cls; break; }
       }
     }

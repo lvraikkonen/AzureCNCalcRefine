@@ -505,6 +505,18 @@ body {
 .form-select option:disabled {
   color: var(--text-light);
 }
+.form-select optgroup {
+  font-weight: 600;
+  font-style: normal;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.form-select optgroup option {
+  font-weight: 400;
+  color: var(--text-primary);
+  padding-left: 12px;
+  font-size: 14px;
+}
 .form-hint {
   font-size: 11px;
   color: var(--text-light);
@@ -743,6 +755,12 @@ body {
   width: 100px;
   padding: 6px 8px;
   font-size: 14px;
+}
+.per-meter-field .per-meter-volume-unit {
+  width: 64px;
+  font-size: 13px;
+  padding: 6px 4px;
+  margin-top: 2px;
 }
 .per-meter-field-label {
   font-size: 11px;

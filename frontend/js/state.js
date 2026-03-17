@@ -43,6 +43,7 @@ function createItem(serviceName) {
     metersCacheKey: null,  // cache key: `${region}|${product}|${sku}`
     meterQuantities: {},   // per-meter resolved usage: { "meterName": number } (for per_meter model)
     meterHourlyDetails: {}, // hourly meter decomposition: { "meterName": { units, hours } }
+    meterVolumeUnits: {},  // per-meter display unit for volume meters: { "meterName": "GB" | "TB" }
     upfrontCost: null,     // Reservation total term cost (not monthly)
     serviceConfig: null,   // service config from API (quantity_label, static_subs, hidden_subs, quantity_model, etc.)
   };

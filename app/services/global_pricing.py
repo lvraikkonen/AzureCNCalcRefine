@@ -47,6 +47,15 @@ def filter_primary_non_devtest(items: list[dict]) -> list[dict]:
     ]
 
 
+def filter_non_devtest(items: list[dict]) -> list[dict]:
+    """Exclude DevTestConsumption only (no isPrimaryMeterRegion filter).
+
+    Used by cascade where isPrimaryMeterRegion would incorrectly hide
+    regions for services like Azure Firewall whose items are all non-primary.
+    """
+    return [i for i in items if i.get("type") != "DevTestConsumption"]
+
+
 def build_api_filters(
     service_name: str,
     region: str | None = None,

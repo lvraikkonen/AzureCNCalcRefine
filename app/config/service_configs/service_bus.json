@@ -1,0 +1,17 @@
+{
+  "service_name": "Service Bus",
+  "quantity_model": "per_meter",
+  "quantity_label": "Usage",
+  "dimension_labels": { "skuName": "Tier" },
+  "hidden_dimensions": ["productName"],
+  "static_subs": [],
+  "hidden_subs": [],
+  "sku_groups": {
+    "Basic": ["Basic"],
+    "Standard": ["Standard", "Hybrid Connections", "WCF Relay"],
+    "Premium": ["Premium"]
+  },
+  "defaults": {
+    "selections": { "armRegionName": "eastus" }
+  }
+}

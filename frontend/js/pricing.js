@@ -5,6 +5,11 @@
  * app/api/explore.py (_calculate_one) for local price computation.
  */
 
+/** Check if a unitOfMeasure represents hourly pricing. */
+function isHourlyUnit(unit) {
+  return unit === '1 Hour' || unit === '1/Hour';
+}
+
 /** Convert a term string like "1 Year", "3 Years", "5 Years" to months. */
 function termToMonths(term) {
   const match = term && term.match(/^(\d+)\s+Year/i);
@@ -63,7 +68,7 @@ export function calculateLocalPrice(metersGroups, type, term, quantity, hoursPer
       // Reservation: unitPrice is total for the term, per instance
       usage = quantity;
       cost = group.tiers[0].unit_price * quantity;
-    } else if (unit === '1 Hour') {
+    } else if (isHourlyUnit(unit)) {
       // Per-hour pricing: usage = hours x instances
       usage = hoursPerMonth * quantity;
       cost = calculateTieredCost(group.tiers, usage);
@@ -99,7 +104,7 @@ export function calculateLocalPrice(metersGroups, type, term, quantity, hoursPer
     if (consumptionGroups.length > 0) {
       let paygTotal = 0;
       for (const group of consumptionGroups) {
-        if (group.unit === '1 Hour') {
+        if (isHourlyUnit(group.unit)) {
           paygTotal += calculateTieredCost(group.tiers, hoursPerMonth * quantity);
         } else {
           paygTotal += calculateTieredCost(group.tiers, quantity);
