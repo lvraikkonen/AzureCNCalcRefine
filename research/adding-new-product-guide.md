@@ -296,15 +296,96 @@ const SERVICE_ICONS = {
 
 ---
 
-## 已知限制：多计量单位产品
+## 实例：Pattern B — 多计量单位产品（Event Grid、Azure Firewall）
 
-某些产品（如 Event Grid）包含多个 meter，且各 meter 的 `unitOfMeasure` 不同：
+某些产品（如 Event Grid、Azure Firewall）的 `productName` 是单一固定值，Tier 信息来自 `skuName`，定价由多个不同 `unitOfMeasure` 的 meter 组成。这类产品使用 `per_meter` 数量模型。
 
-| meter | unitOfMeasure |
-|-------|---------------|
-| Operations | `100K` |
-| Advanced Filtering | `1M` |
-| MQTT Messages | `1M` |
-| Namespace | `1 Hour` |
+**三种产品定价模式对比**：
 
-当前前端的数量输入模型是「数量 × 小时」，假定所有 meter 共享同一个数量输入。对于多计量单位产品，用户需要为每个 meter 分别输入用量，这需要 UI 层面的扩展支持。此类产品暂时无法接入。
+| 模式 | 代表产品 | productName | skuName | 定价结构 | quantity_model |
+|------|---------|-------------|---------|---------|----------------|
+| **A** | VM, App Service | 多个，编码子维度 | 实例规格 | 单 meter × hours | `instances_x_hours` |
+| **B** | Azure Firewall, Event Grid | 单一固定值 | 代表 Tier | 多 meter，不同单位 | `per_meter` |
+| **C** | Power BI Embedded | 单一固定值 | 实例规格 | 单 meter × hours | `instances_x_hours` |
+
+### 接入步骤
+
+Pattern B 产品只需**配置**，无需编写解析器：
+
+1. **产品目录** — `product_catalog.json` 中添加到对应 family
+2. **服务配置** — 创建 JSON 配置，设置 `quantity_model: "per_meter"` 和 `hidden_dimensions`
+3. **图标**（可选）— `estimate-card.js` 中添加 `SERVICE_ICONS` 条目
+
+### 配置文件示例（Event Grid）
+
+```json
+{
+  "service_name": "Event Grid",
+  "quantity_model": "per_meter",
+  "quantity_label": "Usage",
+  "dimension_labels": { "skuName": "Tier" },
+  "hidden_dimensions": ["productName"],
+  "static_subs": [],
+  "hidden_subs": [],
+  "defaults": {
+    "selections": { "armRegionName": "eastus" }
+  }
+}
+```
+
+### 配置字段说明
+
+| 字段 | 说明 |
+|------|------|
+| `quantity_model: "per_meter"` | 每个 meter 独立输入用量（而非全局 quantity × hours） |
+| `dimension_labels` | 自定义维度标签映射，如 `{ "skuName": "Tier" }` 将下拉框标签从 "Instance" 改为 "Tier" |
+| `hidden_dimensions` | 隐藏的主维度（如 `["productName"]`），适用于 productName 只有单一固定值的场景 |
+
+### 前端行为（per_meter 模式）
+
+当 `quantity_model === "per_meter"` 时，前端替换全局数量输入为 **per-meter 输入区**：
+
+- **Hourly meter**（unit = "1 Hour"）：显示 `[数量] × [小时] × 单价 = 费用`
+- **Volume meter**（unit = "1M"/"100K" 等）：显示 `[数量] × 单位 = 费用`
+- 带免费层的 meter 显示提示（如 "The first 1,000,000 1M per month are included."）
+- 每个 meter 的费用实时显示在行尾
+
+### 状态结构
+
+per_meter 模式在 state.js 的 item 中使用两个字段：
+
+```javascript
+meterQuantities: {}      // { "meterName": finalUsage } — 计算用的最终用量
+meterHourlyDetails: {}   // { "meterName": { units, hours } } — hourly meter 的 UI 分解
+```
+
+---
+
+## 服务配置完整字段参考
+
+```jsonc
+{
+  // ── 名称映射 ──
+  "service_name": "Xxx Service",
+  "api_service_name": "Azure Xxx Service",   // 仅当 API 名称与 catalog 不同时
+
+  // ── 子维度定义（仅 Pattern A 需要）──
+  "sub_dimensions": { ... },
+  "excluded_products": [],
+
+  // ── 前端行为 ──
+  "quantity_model": "instances_x_hours",      // "instances_x_hours" | "per_meter"
+  "quantity_label": "Instances",
+  "static_subs": [],
+  "hidden_subs": [],
+  "dimension_labels": {},                     // { "skuName": "Tier" } 等
+  "hidden_dimensions": [],                    // ["productName"] 等
+
+  // ── 默认值 ──
+  "defaults": {
+    "hours_per_month": 730,
+    "selections": { "armRegionName": "eastus" },
+    "sub_selections": {}
+  }
+}
+```

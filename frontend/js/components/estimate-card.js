@@ -5,7 +5,7 @@
 
 import { getItem, updateItem, removeItem, emit } from '../state.js';
 import { fetchCascade, fetchPreload, fetchMeters, fetchServiceConfig } from '../api.js';
-import { calculateLocalPrice, getAvailableSavingsOptions } from '../pricing.js';
+import { calculateLocalPrice, calculatePerMeterPrice, getAvailableSavingsOptions } from '../pricing.js';
 
 // ── Static vs dynamic dimension sets ────────────────────────
 // Static dimensions always show all options from preload data.
@@ -27,6 +27,8 @@ const SERVICE_ICONS = {
   'Virtual Machines': '🖥️',
   'App Service': '🌐',
   'Power BI Embedded': '📊',
+  'Azure Firewall': '🛡️',
+  'Event Grid': '⚡',
 };
 
 // ── Savings option mapping ──────────────────────────────────
@@ -35,6 +37,7 @@ const SAVINGS_OPTIONS = [
   { label: 'Pay as you go', type: 'Consumption', term: null },
   { label: '1 Year Reserved', type: 'Reservation', term: '1 Year' },
   { label: '3 Year Reserved', type: 'Reservation', term: '3 Years' },
+  { label: '5 Year Reserved', type: 'Reservation', term: '5 Years' },
   { label: '1 Year Savings Plan', type: 'SavingsPlanConsumption', term: '1 Year' },
   { label: '3 Year Savings Plan', type: 'SavingsPlanConsumption', term: '3 Years' },
 ];
@@ -93,8 +96,11 @@ export class EstimateCard {
       // Store service config for per-service behavior
       item.serviceConfig = {
         quantity_label: configData.quantity_label || 'VMs',
+        quantity_model: configData.quantity_model || 'instances_x_hours',
         static_subs: configData.static_subs || null,
         hidden_subs: configData.hidden_subs || [],
+        dimension_labels: configData.dimension_labels || {},
+        hidden_dimensions: configData.hidden_dimensions || [],
       };
       if (configData.defaults) {
         const cfg = configData.defaults;
@@ -137,6 +143,20 @@ export class EstimateCard {
 
   get quantityLabel() {
     return this.item?.serviceConfig?.quantity_label || 'VMs';
+  }
+
+  get quantityModel() {
+    return this.item?.serviceConfig?.quantity_model || 'instances_x_hours';
+  }
+
+  getDimensionLabel(field, defaultLabel) {
+    const labels = this.item?.serviceConfig?.dimension_labels;
+    return labels?.[field] || defaultLabel;
+  }
+
+  isDimensionHidden(field) {
+    const hidden = this.item?.serviceConfig?.hidden_dimensions;
+    return hidden?.includes(field) || false;
   }
 
   get serviceIcon() {
@@ -217,11 +237,13 @@ export class EstimateCard {
     }
 
     // 2+. Static sub-dimensions (os, tier, category, etc.) — from preload
+    // Skip if productName dimension is hidden (Pattern B: no sub-dimensions)
+    const productHidden = this.isDimensionHidden('productName');
     const staticSubSet = this.staticSubs;
     const hiddenSubSet = this.hiddenSubs;
     const preloadProductDim = (preload || data)?.dimensions.find(d => d.field === 'productName');
     let tierSelected = null;
-    if (preloadProductDim?.sub_dimensions) {
+    if (!productHidden && preloadProductDim?.sub_dimensions) {
       const staticSubs = preloadProductDim.sub_dimensions
         .filter(sd => staticSubSet.has(sd.field) && !hiddenSubSet.has(sd.field))
         .sort((a, b) => a.order - b.order);
@@ -238,16 +260,16 @@ export class EstimateCard {
 
     // ── Dynamic dimensions (from cascadeData, filtered by selections) ──
 
-    // Dynamic sub-dimensions (e.g. instance_series for VM)
+    // Dynamic sub-dimensions (e.g. instance_series for VM) — skip if productName hidden
     const cascadeProductDim = data?.dimensions.find(d => d.field === 'productName');
-    if (cascadeProductDim?.sub_dimensions) {
+    if (!productHidden && cascadeProductDim?.sub_dimensions) {
       const dynamicSubs = cascadeProductDim.sub_dimensions
         .filter(sd => !staticSubSet.has(sd.field) && !hiddenSubSet.has(sd.field))
         .sort((a, b) => a.order - b.order);
       for (const sd of dynamicSubs) {
         html += this.selectGroup(sd.label, `sub:${sd.field}`, sd.options, item.subSelections[sd.field], item.loading);
       }
-    } else if (!data) {
+    } else if (!productHidden && !data) {
       // Cascade not yet returned — show disabled placeholder for dynamic sub-dims
       // Only show placeholder if this service has dynamic sub-dims (e.g. VM has instance_series)
       const allSubs = preloadProductDim?.sub_dimensions || [];
@@ -258,13 +280,14 @@ export class EstimateCard {
     }
 
     // 6. SKU (skuName) — dynamic
+    const skuLabel = this.getDimensionLabel('skuName', 'Instance');
     if (data) {
       const skuDim = data.dimensions.find(d => d.field === 'skuName');
       if (skuDim) {
-        html += this.selectGroup('Instance', 'skuName', skuDim.options, item.selections.skuName, item.loading);
+        html += this.selectGroup(skuLabel, 'skuName', skuDim.options, item.selections.skuName, item.loading);
       }
     } else {
-      html += this.selectGroup('Instance', 'skuName', [], null, true);
+      html += this.selectGroup(skuLabel, 'skuName', [], null, true);
     }
 
     // 7. Savings option — radio buttons
@@ -296,6 +319,7 @@ export class EstimateCard {
     if (item.metersCache) {
       options = getAvailableSavingsOptions(
         item.metersCache, item.quantity || 1, item.hoursPerMonth || 730,
+        { meterQuantities: item.meterQuantities, quantityModel: this.quantityModel },
       );
     } else if (item.cascadeData) {
       const data = item.cascadeData;
@@ -385,6 +409,11 @@ export class EstimateCard {
   }
 
   renderQuantity(item) {
+    // Per-meter quantity model — render a table with per-meter inputs
+    if (this.quantityModel === 'per_meter') {
+      return this.renderPerMeterQuantity(item);
+    }
+
     const type = item.selections.type || 'Consumption';
     const isConsumption = type === 'Consumption';
     const disabled = item.loading ? ' disabled' : '';
@@ -420,6 +449,136 @@ export class EstimateCard {
 
     html += '</div>';
     return html;
+  }
+
+  renderPerMeterQuantity(item) {
+    if (!item.metersCache) {
+      return '<div class="quantity-row"><span class="form-hint">Select configuration to see meters...</span></div>';
+    }
+
+    // Get unique meter names from Consumption groups for quantity inputs
+    const type = item.selections.type || 'Consumption';
+    const term = item.selections.term || null;
+    let matched = item.metersCache.filter(g => g.type === type);
+    if (term) matched = matched.filter(g => g.term === term);
+    // If no groups match selected type/term, fall back to Consumption
+    if (matched.length === 0) {
+      matched = item.metersCache.filter(g => g.type === 'Consumption');
+    }
+
+    // Deduplicate by meter name
+    const seen = new Set();
+    const meterInfos = [];
+    for (const g of matched) {
+      if (!seen.has(g.meter)) {
+        seen.add(g.meter);
+        meterInfos.push({ name: g.meter, unit: g.unit, tiers: g.tiers });
+      }
+    }
+
+    if (meterInfos.length === 0) return '';
+
+    const disabled = item.loading ? ' disabled' : '';
+    const meterQty = item.meterQuantities || {};
+    const hourlyDetails = item.meterHourlyDetails || {};
+
+    let html = '<div class="per-meter-quantity">';
+
+    for (const m of meterInfos) {
+      const isHourly = m.unit === '1 Hour';
+      const unitPrice = m.tiers?.[0]?.unit_price ?? 0;
+      // Compute this meter's cost for display
+      const usage = meterQty[m.name] ?? 0;
+      const meterCost = this.computeSingleMeterCost(m.tiers, usage);
+
+      html += `<div class="per-meter-section">`;
+      html += `<div class="per-meter-header">${this.escHtml(m.name)}</div>`;
+
+      // Free tier hint
+      const freeTierInfo = this.getFreeTierInfo(m.tiers, m.unit);
+      if (freeTierInfo) {
+        html += `<div class="per-meter-free-hint"><span class="info-icon">ⓘ</span> ${this.escHtml(freeTierInfo)}</div>`;
+      }
+
+      html += '<div class="per-meter-input-row">';
+
+      if (isHourly) {
+        // Hourly meter: units × hours × price = cost
+        const details = hourlyDetails[m.name] || { units: 0, hours: 730 };
+        html += `
+          <div class="per-meter-field">
+            <input type="number" class="form-input per-meter-hourly-units" data-meter="${this.escHtml(m.name)}"
+                   value="${details.units}" min="0" step="1"${disabled}>
+            <span class="per-meter-field-label">${this.escHtml(this.getUnitLabel(m.name))}</span>
+          </div>
+          <span class="per-meter-op">×</span>
+          <div class="per-meter-field">
+            <input type="number" class="form-input per-meter-hourly-hours" data-meter="${this.escHtml(m.name)}"
+                   value="${details.hours}" min="0" step="any"${disabled}>
+            <span class="per-meter-field-label">Hours</span>
+          </div>
+          <span class="per-meter-op">×</span>
+          <div class="per-meter-field">
+            <span class="per-meter-price">${fmt.format(unitPrice)}</span>
+            <span class="per-meter-field-label">Per ${this.escHtml(this.getUnitLabel(m.name))} Hour</span>
+          </div>`;
+      } else {
+        // Volume meter: quantity input
+        const qty = meterQty[m.name] ?? 0;
+        html += `
+          <div class="per-meter-field">
+            <input type="number" class="form-input per-meter-input" data-meter="${this.escHtml(m.name)}"
+                   value="${qty}" min="0" step="any"${disabled}>
+            <span class="per-meter-field-label">× ${this.escHtml(m.unit)} ${this.escHtml(m.name)}</span>
+          </div>`;
+      }
+
+      // Cost display
+      html += `
+        <span class="per-meter-eq">=</span>
+        <span class="per-meter-cost">${fmt.format(meterCost)}</span>
+      `;
+
+      html += '</div></div>';  // close input-row and section
+    }
+
+    html += '</div>';
+    return html;
+  }
+
+  /** Compute cost for a single meter given its tiers and usage. */
+  computeSingleMeterCost(tiers, usage) {
+    if (!tiers || tiers.length === 0 || usage <= 0) return 0;
+    const sorted = [...tiers].sort((a, b) => a.tier_min_units - b.tier_min_units);
+    let total = 0;
+    for (let i = 0; i < sorted.length; i++) {
+      const tierStart = sorted[i].tier_min_units;
+      const tierPrice = sorted[i].unit_price;
+      if (usage <= tierStart) break;
+      const tierEnd = i + 1 < sorted.length ? sorted[i + 1].tier_min_units : Infinity;
+      total += (Math.min(usage, tierEnd) - tierStart) * tierPrice;
+    }
+    return total;
+  }
+
+  /** Extract a short unit label from meter name (e.g. "Standard Throughput Unit" → "Throughput Units") */
+  getUnitLabel(meterName) {
+    // Try to extract a meaningful label; fall back to "Units"
+    const lower = meterName.toLowerCase();
+    if (lower.includes('throughput')) return 'Throughput Units';
+    if (lower.includes('deployment')) return 'Deployments';
+    return 'Units';
+  }
+
+  /** Generate free-tier hint text if the first tier starts at 0 with price 0. */
+  getFreeTierInfo(tiers, unit) {
+    if (!tiers || tiers.length < 2) return null;
+    const sorted = [...tiers].sort((a, b) => a.tier_min_units - b.tier_min_units);
+    if (sorted[0].tier_min_units === 0 && sorted[0].unit_price === 0) {
+      const freeAmount = sorted[1].tier_min_units;
+      return `The first ${freeAmount.toLocaleString()} ${unit === '1 Hour' ? 'hours' : unit} per month are included.`;
+    }
+    return null;
   }
 
   hoursToDisplay(hours, unit) {
@@ -478,18 +637,23 @@ export class EstimateCard {
     const sku = item.selections.skuName;
     if (!sku) return '';
 
-    const qty = item.quantity || 1;
     const type = item.selections.type || 'Consumption';
     const term = item.selections.term || null;
 
-    let text = `${qty} ${sku}`;
+    let text;
+    if (this.quantityModel === 'per_meter') {
+      text = sku;
+    } else {
+      const qty = item.quantity || 1;
+      text = `${qty} ${sku}`;
 
-    // Duration for PAYG
-    if (type === 'Consumption') {
-      const unit = item.hoursUnit || 'hours';
-      const displayValue = this.hoursToDisplay(item.hoursPerMonth, unit);
-      const unitLabel = unit.charAt(0).toUpperCase() + unit.slice(1);
-      text += ` \u00d7 ${displayValue} ${unitLabel}`;
+      // Duration for PAYG
+      if (type === 'Consumption') {
+        const unit = item.hoursUnit || 'hours';
+        const displayValue = this.hoursToDisplay(item.hoursPerMonth, unit);
+        const unitLabel = unit.charAt(0).toUpperCase() + unit.slice(1);
+        text += ` \u00d7 ${displayValue} ${unitLabel}`;
+      }
     }
 
     // Savings label
@@ -614,6 +778,16 @@ export class EstimateCard {
     // Quantity + duration inputs
     this.el.querySelectorAll('.form-input[data-field="quantity"], .form-input[data-field="duration"]').forEach(inp => {
       inp.addEventListener('input', (e) => this.onQuantityChange(e));
+    });
+
+    // Per-meter quantity inputs (volume meters)
+    this.el.querySelectorAll('.per-meter-input').forEach(inp => {
+      inp.addEventListener('input', (e) => this.onPerMeterQuantityChange(e));
+    });
+
+    // Per-meter hourly inputs (units and hours)
+    this.el.querySelectorAll('.per-meter-hourly-units, .per-meter-hourly-hours').forEach(inp => {
+      inp.addEventListener('input', (e) => this.onPerMeterHourlyChange(e));
     });
 
     // Duration unit selector
@@ -747,6 +921,46 @@ export class EstimateCard {
     debounce(`qty-${this.itemId}`, () => this.recalculateLocal(), 300);
   }
 
+  onPerMeterQuantityChange(e) {
+    const meterName = e.target.dataset.meter;
+    const value = parseFloat(e.target.value) || 0;
+    const item = this.item;
+    if (!item) return;
+
+    if (!item.meterQuantities) item.meterQuantities = {};
+    item.meterQuantities[meterName] = value;
+    updateItem(this.itemId, item);
+
+    debounce(`qty-${this.itemId}`, () => this.recalculateLocal(), 300);
+  }
+
+  onPerMeterHourlyChange(e) {
+    const meterName = e.target.dataset.meter;
+    const value = parseFloat(e.target.value) || 0;
+    const item = this.item;
+    if (!item) return;
+
+    if (!item.meterHourlyDetails) item.meterHourlyDetails = {};
+    if (!item.meterHourlyDetails[meterName]) {
+      item.meterHourlyDetails[meterName] = { units: 0, hours: 730 };
+    }
+
+    const isUnits = e.target.classList.contains('per-meter-hourly-units');
+    if (isUnits) {
+      item.meterHourlyDetails[meterName].units = value;
+    } else {
+      item.meterHourlyDetails[meterName].hours = value;
+    }
+
+    // Resolve final usage: units × hours
+    const details = item.meterHourlyDetails[meterName];
+    if (!item.meterQuantities) item.meterQuantities = {};
+    item.meterQuantities[meterName] = details.units * details.hours;
+    updateItem(this.itemId, item);
+
+    debounce(`qty-${this.itemId}`, () => this.recalculateLocal(), 300);
+  }
+
   // ── API calls ─────────────────────────────────────────
 
   async triggerCascade() {
@@ -864,6 +1078,8 @@ export class EstimateCard {
       updateItem(this.itemId, {
         metersCache: resp.groups,
         metersCacheKey: cacheKey,
+        meterQuantities: {},       // Clear per-meter quantities on cache refresh
+        meterHourlyDetails: {},    // Clear hourly decomposition too
       });
       this.recalculateLocal();
     } catch (err) {
@@ -878,10 +1094,19 @@ export class EstimateCard {
 
     const type = item.selections.type || 'Consumption';
     const term = item.selections.term || null;
-    const result = calculateLocalPrice(
-      item.metersCache, type, term,
-      item.quantity || 1, item.hoursPerMonth || 730,
-    );
+
+    let result;
+    if (this.quantityModel === 'per_meter') {
+      result = calculatePerMeterPrice(
+        item.metersCache, type, term,
+        item.meterQuantities || {},
+      );
+    } else {
+      result = calculateLocalPrice(
+        item.metersCache, type, term,
+        item.quantity || 1, item.hoursPerMonth || 730,
+      );
+    }
 
     updateItem(this.itemId, {
       cost: result.monthlyCost,
@@ -890,7 +1115,29 @@ export class EstimateCard {
       meters: result.meters,
       error: null,
     });
+
+    // Preserve focus on per-meter inputs during re-render
+    const focused = document.activeElement;
+    let focusClass = null;
+    let focusedMeter = null;
+    if (focused?.dataset?.meter) {
+      focusedMeter = focused.dataset.meter;
+      for (const cls of ['per-meter-input', 'per-meter-hourly-units', 'per-meter-hourly-hours']) {
+        if (focused.classList.contains(cls)) { focusClass = cls; break; }
+      }
+    }
+    const selStart = focused?.selectionStart;
+
     this.render();
+
+    if (focusedMeter && focusClass) {
+      const inp = this.el.querySelector(`.${focusClass}[data-meter="${CSS.escape(focusedMeter)}"]`);
+      if (inp) {
+        inp.focus();
+        if (selStart != null) try { inp.setSelectionRange(selStart, selStart); } catch {}
+      }
+    }
+
     emit('total-changed');
   }
 }

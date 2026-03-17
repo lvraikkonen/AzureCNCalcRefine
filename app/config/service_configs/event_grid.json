@@ -1,0 +1,12 @@
+{
+  "service_name": "Event Grid",
+  "quantity_model": "per_meter",
+  "quantity_label": "Usage",
+  "dimension_labels": { "skuName": "Tier" },
+  "hidden_dimensions": ["productName"],
+  "static_subs": [],
+  "hidden_subs": [],
+  "defaults": {
+    "selections": { "armRegionName": "eastus" }
+  }
+}

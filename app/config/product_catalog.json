@@ -65,6 +65,12 @@
           "description": "Build secure, scalable web front ends",
           "icon": "application-gateway",
           "popular": false
+        },
+        {
+          "service_name": "Azure Firewall",
+          "description": "Cloud-native network security to protect your Azure Virtual Network resources",
+          "icon": "azure-firewall",
+          "popular": false
         }
       ]
     },
@@ -153,6 +159,12 @@
           "service_name": "API Management",
           "description": "Publish APIs securely and at scale",
           "icon": "api-management",
+          "popular": false
+        },
+        {
+          "service_name": "Event Grid",
+          "description": "Reliable event delivery at massive scale",
+          "icon": "event-grid",
           "popular": false
         },
         {

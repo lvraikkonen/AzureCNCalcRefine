@@ -127,6 +127,7 @@ class CalculatorItem(BaseModel):
     term: str | None = None
     quantity: float = 1
     hours_per_month: float = 730
+    meter_quantities: dict[str, float] | None = None
 
 
 class MeterCost(BaseModel):

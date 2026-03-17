@@ -96,8 +96,11 @@ async def get_service_config(service_name: str):
         "service_name": service_name,
         "defaults": config.get("defaults", {}),
         "quantity_label": config.get("quantity_label", "VMs"),
+        "quantity_model": config.get("quantity_model", "instances_x_hours"),
         "static_subs": static_subs,
         "hidden_subs": hidden_subs,
+        "dimension_labels": config.get("dimension_labels", {}),
+        "hidden_dimensions": config.get("hidden_dimensions", []),
     }
 
 
@@ -428,8 +431,15 @@ async def _calculate_one(item: CalculatorItem) -> CalculatorLineResult:
             for r in tiers
         ]
 
-        # Determine usage based on unit type
-        if item.type == "Reservation":
+        # Determine usage based on quantity model
+        if item.meter_quantities is not None:
+            # Per-meter quantity model: each meter has its own usage
+            usage = item.meter_quantities.get(meter_name, 0)
+            if item.type == "Reservation":
+                cost = float(tiers[0].get("unitPrice", 0)) * usage
+            else:
+                cost = calculate_tiered_cost(tiers, usage)
+        elif item.type == "Reservation":
             # Reservation: unitPrice is total for the term, per instance
             usage = item.quantity
             cost = float(tiers[0].get("unitPrice", 0)) * item.quantity
@@ -460,10 +470,13 @@ async def _calculate_one(item: CalculatorItem) -> CalculatorLineResult:
             for row in consumption_rows:
                 payg_groups[row.get("meterName", "")].append(row)
             payg_total = 0.0
-            for _, rows in payg_groups.items():
+            for m_name, rows in payg_groups.items():
                 tiers = sorted(rows, key=lambda r: float(r.get("tierMinimumUnits", 0)))
                 unit = rows[0].get("unitOfMeasure", "")
-                if unit == "1 Hour":
+                if item.meter_quantities is not None:
+                    usage = item.meter_quantities.get(m_name, 0)
+                    payg_total += calculate_tiered_cost(tiers, usage)
+                elif unit == "1 Hour":
                     payg_total += calculate_tiered_cost(
                         tiers, item.hours_per_month * item.quantity,
                     )

@@ -99,7 +99,7 @@ uv run python scripts/explore_global_api.py cascade "Virtual Machines" --region 
 
 脚本使用 `get_effective_term()` 统一处理 `term` 和 `reservationTerm`：Reservation 行的期限从 `reservationTerm` 字段读取，其他类型从 `term` 字段读取。`cascade`、`service`、`meters`、`compare` 命令均已适配。
 
-VM Reservation 存在三种期限：`"1 Year"`、`"3 Years"`、`"5 Years"`（稀少）。
+VM Reservation 存在三种期限：`"1 Year"`、`"3 Years"`、`"5 Years"`（稀少）。前端已支持全部三种期限，`termToMonths()` 动态解析 "N Year(s)" 格式。
 
 ---
 
@@ -266,6 +266,8 @@ uv run python scripts/explore_global_api.py meters "Functions" --region Global -
 | Standard Throughput Unit | 1 Hour | 无 | $0.04/小时 |
 
 productName 和 skuName 均唯一（无选择），选定服务后直接进入 meter 用量填写。
+
+**前端已支持**（Pattern B `per_meter` 模式）：productName 自动隐藏，skuName 标签显示为 "Tier"，每个 meter 独立输入用量。Throughput Unit 使用 `units × hours` 输入，Operations 类使用简单数量输入。
 
 ---
 
@@ -829,5 +831,8 @@ curl -s -X POST "http://127.0.0.1:8000/api/v1/explore/productparse" \
 | **Consumption** (`1 Hour`) | `unitPrice × hours_per_month × quantity` | $0.096 × 730 × 2 = $140.16 |
 | **Reservation** | `unitPrice × quantity`（unitPrice 为承诺期总价） | $501 × 1 = $501 |
 | **阶梯定价** | 按 `tierMinimumUnits` 分段累进计算 | Storage 等服务 |
+| **Per-meter**（Pattern B） | 每个 meter 独立用量，hourly meter: `units × hours`，volume meter: `quantity` | Event Grid |
 
 Reservation 的 unitPrice 是**承诺期内总额**（非月度），API 原始数据如此定义。
+
+**Per-meter 模式**（calculator API）：传入 `meter_quantities: { "meterName": usage }` 替代全局 `quantity`/`hours_per_month`，后端按 meter 名查找对应用量进行计算。

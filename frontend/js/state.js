@@ -41,8 +41,10 @@ function createItem(serviceName) {
     loading: false,
     metersCache: null,     // MetersResponse.groups — all meter data (all type/term)
     metersCacheKey: null,  // cache key: `${region}|${product}|${sku}`
+    meterQuantities: {},   // per-meter resolved usage: { "meterName": number } (for per_meter model)
+    meterHourlyDetails: {}, // hourly meter decomposition: { "meterName": { units, hours } }
     upfrontCost: null,     // Reservation total term cost (not monthly)
-    serviceConfig: null,   // service config from API (quantity_label, static_subs, hidden_subs)
+    serviceConfig: null,   // service config from API (quantity_label, static_subs, hidden_subs, quantity_model, etc.)
   };
   state.items.push(item);
   emit('item-added', { item });

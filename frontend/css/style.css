@@ -703,6 +703,75 @@ body {
 }
 .meter-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
 
+/* ── Per-meter quantity sections ──────────────────────────── */
+.per-meter-quantity {
+  margin-top: 12px;
+}
+.per-meter-section {
+  border-top: 1px solid var(--border);
+  padding: 12px 0;
+}
+.per-meter-section:first-child {
+  border-top: none;
+}
+.per-meter-header {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+.per-meter-free-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.per-meter-free-hint .info-icon {
+  color: var(--azure-blue);
+  margin-right: 4px;
+}
+.per-meter-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.per-meter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.per-meter-field .form-input {
+  width: 100px;
+  padding: 6px 8px;
+  font-size: 14px;
+}
+.per-meter-field-label {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.per-meter-op {
+  font-size: 16px;
+  color: var(--text-muted);
+  padding: 0 2px;
+}
+.per-meter-price {
+  font-size: 14px;
+  font-weight: 500;
+}
+.per-meter-eq {
+  font-size: 18px;
+  color: var(--success);
+  font-weight: 600;
+  margin-left: auto;
+  padding: 0 4px;
+}
+.per-meter-cost {
+  font-size: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 80px;
+  text-align: right;
+}
+
 /* ── Summary Bar ──────────────────────────────────────────── */
 .summary-bar {
   position: fixed;

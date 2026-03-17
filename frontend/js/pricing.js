@@ -5,6 +5,12 @@
  * app/api/explore.py (_calculate_one) for local price computation.
  */
 
+/** Convert a term string like "1 Year", "3 Years", "5 Years" to months. */
+function termToMonths(term) {
+  const match = term && term.match(/^(\d+)\s+Year/i);
+  return match ? parseInt(match[1], 10) * 12 : 12;
+}
+
 /**
  * Calculate cost for tiered pricing.
  * Port of app/services/global_pricing.py:calculate_tiered_cost
@@ -82,7 +88,7 @@ export function calculateLocalPrice(metersGroups, type, term, quantity, hoursPer
   // Reservation: total is the full term price; convert to monthly
   if (type === 'Reservation' && term) {
     upfrontCost = total;
-    const termMonths = term === '3 Years' ? 36 : 12;
+    const termMonths = termToMonths(term);
     monthlyCost = total / termMonths;
   }
 
@@ -107,6 +113,73 @@ export function calculateLocalPrice(metersGroups, type, term, quantity, hoursPer
 }
 
 /**
+ * Calculate price for per-meter quantity model.
+ * Each meter has an independent usage quantity supplied via meterQuantities.
+ *
+ * @param {Array} metersGroups - MeterGroup[] from /meters response (all type/term)
+ * @param {string} type - 'Consumption' | 'Reservation' | 'SavingsPlanConsumption'
+ * @param {string|null} term - '1 Year' | '3 Years' | null
+ * @param {Object} meterQuantities - { meterName: number }
+ * @returns {{ monthlyCost: number, upfrontCost: number|null, paygCost: number|null, meters: Array }}
+ */
+export function calculatePerMeterPrice(metersGroups, type, term, meterQuantities) {
+  // Filter groups by type
+  let matched = metersGroups.filter(g => g.type === type);
+
+  // Filter by term (for Reservation / SavingsPlan)
+  if (term) {
+    matched = matched.filter(g => g.term === term);
+  }
+
+  const meters = [];
+  let total = 0;
+
+  for (const group of matched) {
+    const usage = meterQuantities[group.meter] || 0;
+    let cost;
+
+    if (type === 'Reservation') {
+      cost = group.tiers[0].unit_price * usage;
+    } else {
+      cost = calculateTieredCost(group.tiers, usage);
+    }
+
+    meters.push({
+      meter: group.meter,
+      unit: group.unit,
+      usage,
+      monthly_cost: cost,
+    });
+    total += cost;
+  }
+
+  let monthlyCost = total;
+  let upfrontCost = null;
+
+  if (type === 'Reservation' && term) {
+    upfrontCost = total;
+    const termMonths = termToMonths(term);
+    monthlyCost = total / termMonths;
+  }
+
+  // Compute PAYG baseline for discount comparison
+  let paygCost = null;
+  if (type !== 'Consumption') {
+    const consumptionGroups = metersGroups.filter(g => g.type === 'Consumption');
+    if (consumptionGroups.length > 0) {
+      let paygTotal = 0;
+      for (const group of consumptionGroups) {
+        const usage = meterQuantities[group.meter] || 0;
+        paygTotal += calculateTieredCost(group.tiers, usage);
+      }
+      paygCost = paygTotal;
+    }
+  }
+
+  return { monthlyCost, upfrontCost, paygCost, meters };
+}
+
+/**
  * Extract available savings options (type/term combos) from cached meter groups,
  * with discount percentages relative to PAYG.
  *
@@ -115,7 +188,9 @@ export function calculateLocalPrice(metersGroups, type, term, quantity, hoursPer
  * @param {number} hoursPerMonth
  * @returns {Array<{type: string, term: string|null, label: string, discountPercent: number|null}>}
  */
-export function getAvailableSavingsOptions(metersGroups, quantity = 1, hoursPerMonth = 730) {
+export function getAvailableSavingsOptions(metersGroups, quantity = 1, hoursPerMonth = 730, opts = {}) {
+  const { meterQuantities, quantityModel } = opts;
+
   // Collect unique (type, term) combinations
   const seen = new Set();
   const combos = [];
@@ -130,7 +205,12 @@ export function getAvailableSavingsOptions(metersGroups, quantity = 1, hoursPerM
   return combos.map(({ type, term }) => {
     let discountPercent = null;
     if (type !== 'Consumption') {
-      const result = calculateLocalPrice(metersGroups, type, term, quantity, hoursPerMonth);
+      let result;
+      if (quantityModel === 'per_meter' && meterQuantities) {
+        result = calculatePerMeterPrice(metersGroups, type, term, meterQuantities);
+      } else {
+        result = calculateLocalPrice(metersGroups, type, term, quantity, hoursPerMonth);
+      }
       if (result.paygCost && result.paygCost > 0) {
         discountPercent = Math.round((result.paygCost - result.monthlyCost) / result.paygCost * 100);
       }
@@ -138,9 +218,9 @@ export function getAvailableSavingsOptions(metersGroups, quantity = 1, hoursPerM
 
     let label = 'Pay as you go';
     if (type === 'Reservation') {
-      label = term === '3 Years' ? '3 Year Reserved' : '1 Year Reserved';
+      label = term ? `${term} Reserved` : 'Reserved';
     } else if (type === 'SavingsPlanConsumption') {
-      label = term === '3 Years' ? '3 Year Savings Plan' : '1 Year Savings Plan';
+      label = term ? `${term} Savings Plan` : 'Savings Plan';
     }
 
     return { type, term, label, discountPercent };
