@@ -1,0 +1,24 @@
+### Product
+
+- [ ] site-recovery
+- [ ] power-bi-embedded
+- [ ] redis-cache
+- [ ] notification-hub
+- [ ] hdinsight
+- [ ] schedule
+- [ ] service-bus
+- [ ] ip-address
+- [ ] traffic-manager
+- [ ] application-gateway-standard-v2
+- [ ] azure-iot-hub   azure-iot-hub-dps
+- [ ] network-watcher
+- [ ] load-balancer
+- [ ] container-registry    container-registry-additional-storage-container-build
+- [ ] active-directory-b2c
+- [ ] database-migration
+- [ ] azure-firewall
+- [ ] signalr-service
+- [ ] azure-fluid-relay
+- [ ] managed-grafana
+- [ ] azure-ddos-protection   azure-ddos-ipprotection
+- [ ] azure-front-door
