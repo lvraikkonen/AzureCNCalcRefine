@@ -1,21 +1,18 @@
 """Products API — serves the product catalog for the navigation area."""
 
-import json
-from pathlib import Path
-
 from fastapi import APIRouter, Query
+
+from app.services.catalog_cache import get_cached_catalog, load_catalog_from_json
 
 router = APIRouter(prefix="/api/v1/products", tags=["products"])
 
-_CATALOG_PATH = Path(__file__).resolve().parent.parent / "config" / "product_catalog.json"
-_catalog: dict | None = None
-
 
 def _load_catalog() -> dict:
-    global _catalog
-    if _catalog is None:
-        _catalog = json.loads(_CATALOG_PATH.read_text(encoding="utf-8"))
-    return _catalog
+    """Return the product catalog: DB cache first, JSON file fallback."""
+    cached = get_cached_catalog()
+    if cached is not None:
+        return cached
+    return load_catalog_from_json()
 
 
 @router.get("/catalog")

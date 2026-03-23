@@ -98,7 +98,7 @@ var PricePeriodEnum = {
 
 | 产品 slug | 中文名 | 结构 | 复杂度 |
 |-----------|--------|------|--------|
-| signalr-service | Azure SignalR 服务 | 1个Tier, 月费 | 极低 |
+| C | Azure SignalR 服务 | 1个Tier, 月费 | 极低 |
 | azure-ddos-protection | Azure DDoS 网络保护 | 月费 + 超额 | 低 |
 | azure-ddos-ipprotection | Azure DDoS IP保护 | 每IP月费 | 极低 |
 | site-recovery | 站点恢复 | 2个Feature, 线性月费 | 低 |

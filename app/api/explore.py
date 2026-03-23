@@ -43,6 +43,7 @@ from app.services.global_pricing import (
     filter_primary_non_devtest,
     get_effective_term,
 )
+from app.services.config_repo import get_cached_config
 from app.services.sub_dimensions import get_sub_dimension_parser
 
 router = APIRouter(prefix="/api/v1/explore", tags=["explore"])
@@ -51,7 +52,17 @@ _CONFIG_DIR = Path(__file__).resolve().parent.parent / "config" / "service_confi
 
 
 def _load_service_config(service_name: str) -> dict | None:
-    """Load the JSON config file for a service, or None if not found."""
+    """Load the service config: DB cache first, JSON file fallback.
+
+    The DB cache is pre-populated at startup (see app/main.py lifespan) and
+    updated whenever a config is published via the Admin API.  If the database
+    is unavailable or a config has not been migrated yet, we fall back to the
+    JSON files in app/config/service_configs/.
+    """
+    cached = get_cached_config(service_name)
+    if cached is not None:
+        return cached
+    # Fallback: JSON file (used before DB migration or for un-migrated services)
     slug = service_name.lower().replace(" ", "_")
     config_path = _CONFIG_DIR / f"{slug}.json"
     if not config_path.exists():

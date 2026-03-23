@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Azure.cn 计算器 — 配置管理</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/admin/css/admin.css" />
+  <script type="module" src="/admin/js/app.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- ── App Root ─────────────────────────────────────────────────────────── -->
+<div x-data="adminApp()" x-cloak class="flex h-screen overflow-hidden">
+
+  <!-- Sidebar -->
+  <aside class="w-56 bg-white border-r border-gray-200 flex flex-col flex-shrink-0">
+    <div class="p-4 border-b border-gray-200">
+      <div class="text-sm font-semibold text-blue-700">Azure.cn Calc</div>
+      <div class="text-xs text-gray-400">配置管理后台</div>
+    </div>
+    <nav class="flex-1 p-3 space-y-1 text-sm">
+      <a href="#/" :class="['nav-link flex items-center px-3 py-2 rounded-md cursor-pointer hover:bg-gray-50', route.view === 'dashboard' ? 'active' : 'text-gray-700']">
+        <span class="mr-2">📊</span> Dashboard
+      </a>
+      <a href="#/configs" :class="['nav-link flex items-center px-3 py-2 rounded-md cursor-pointer hover:bg-gray-50', route.view.startsWith('config') ? 'active' : 'text-gray-700']">
+        <span class="mr-2">⚙️</span> 服务配置
+      </a>
+      <a href="#/catalog" :class="['nav-link flex items-center px-3 py-2 rounded-md cursor-pointer hover:bg-gray-50', route.view === 'catalog' ? 'active' : 'text-gray-700']">
+        <span class="mr-2">📋</span> 产品目录
+      </a>
+      <a href="#/import" :class="['nav-link flex items-center px-3 py-2 rounded-md cursor-pointer hover:bg-gray-50', route.view === 'import' ? 'active' : 'text-gray-700']">
+        <span class="mr-2">📥</span> 批量导入
+      </a>
+    </nav>
+    <div class="p-3 border-t border-gray-200 text-xs text-gray-400">
+      <a href="/" class="hover:text-blue-600">← 返回计算器</a>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="flex-1 overflow-y-auto">
+
+    <!-- ── Dashboard ───────────────────────────────────────────────────── -->
+    <template x-if="route.view === 'dashboard'">
+      <div class="p-6">
+        <h1 class="text-xl font-semibold mb-6">Dashboard</h1>
+        <div x-show="dashboardLoading" class="text-gray-400">加载中...</div>
+        <template x-if="dashboard">
+          <div>
+            <!-- Stats cards -->
+            <div class="grid grid-cols-4 gap-4 mb-8">
+              <div class="bg-white rounded-lg border p-4">
+                <div class="text-2xl font-bold" x-text="dashboard.total"></div>
+                <div class="text-sm text-gray-500">配置总数</div>
+              </div>
+              <div class="bg-white rounded-lg border p-4">
+                <div class="text-2xl font-bold text-green-600" x-text="dashboard.published"></div>
+                <div class="text-sm text-gray-500">已发布</div>
+              </div>
+              <div class="bg-white rounded-lg border p-4">
+                <div class="text-2xl font-bold text-yellow-600" x-text="dashboard.draft"></div>
+                <div class="text-sm text-gray-500">草稿</div>
+              </div>
+              <div class="bg-white rounded-lg border p-4">
+                <div class="text-2xl font-bold text-gray-400" x-text="dashboard.archived"></div>
+                <div class="text-sm text-gray-500">已归档</div>
+              </div>
+            </div>
+            <!-- Recent changes -->
+            <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">最近修改</h2>
+            <div class="bg-white rounded-lg border divide-y">
+              <template x-for="c in dashboard.recent" :key="c.id">
+                <div class="flex items-center justify-between px-4 py-3">
+                  <div>
+                    <a :href="`#/configs/${encodeURIComponent(c.service_name)}`" class="text-sm font-medium text-blue-700 hover:underline" x-text="c.service_name"></a>
+                    <span class="ml-2 text-xs px-2 py-0.5 rounded-full" :class="statusBadgeClass(c.status)" x-text="c.status"></span>
+                  </div>
+                  <div class="text-xs text-gray-400" x-text="formatDate(c.updated_at)"></div>
+                </div>
+              </template>
+            </div>
+            <div class="mt-4">
+              <a href="#/configs" class="text-sm text-blue-600 hover:underline">查看所有配置 →</a>
+            </div>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <!-- ── Config List ──────────────────────────────────────────────────── -->
+    <template x-if="route.view === 'config-list'">
+      <div class="p-6" x-data="configList()">
+        <div class="flex items-center justify-between mb-4">
+          <h1 class="text-xl font-semibold">服务配置</h1>
+          <a href="#/configs/new" class="bg-blue-600 text-white text-sm px-4 py-2 rounded-md hover:bg-blue-700">+ 新建配置</a>
+        </div>
+        <!-- Filters -->
+        <div class="flex gap-3 mb-4">
+          <input type="text" placeholder="搜索服务名..." x-model="search"
+            class="border border-gray-300 rounded-md px-3 py-1.5 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <select x-model="statusFilter" class="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none">
+            <option value="">全部状态</option>
+            <option value="published">已发布</option>
+            <option value="draft">草稿</option>
+            <option value="archived">已归档</option>
+          </select>
+          <button @click="load()" class="text-sm text-gray-500 hover:text-gray-700 px-2">↻ 刷新</button>
+        </div>
+        <!-- Error -->
+        <div x-show="error" class="mb-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded px-4 py-2" x-text="error"></div>
+        <!-- Loading -->
+        <div x-show="loading" class="text-gray-400 text-sm">加载中...</div>
+        <!-- Table -->
+        <div x-show="!loading" class="bg-white rounded-lg border overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
+              <tr>
+                <th class="px-4 py-3 text-left">服务名</th>
+                <th class="px-4 py-3 text-left">Slug</th>
+                <th class="px-4 py-3 text-left">状态</th>
+                <th class="px-4 py-3 text-left">版本</th>
+                <th class="px-4 py-3 text-left">最后修改</th>
+                <th class="px-4 py-3 text-left">操作</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <template x-for="c in filtered" :key="c.id">
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <a :href="`#/configs/${encodeURIComponent(c.service_name)}`" class="text-blue-700 hover:underline font-medium" x-text="c.service_name"></a>
+                  </td>
+                  <td class="px-4 py-3 text-gray-500 text-xs font-mono" x-text="c.slug"></td>
+                  <td class="px-4 py-3">
+                    <span class="text-xs px-2 py-0.5 rounded-full" :class="statusBadgeClass(c.status)" x-text="c.status"></span>
+                  </td>
+                  <td class="px-4 py-3 text-gray-500" x-text="'v' + c.version"></td>
+                  <td class="px-4 py-3 text-gray-400 text-xs" x-text="formatDate(c.updated_at)"></td>
+                  <td class="px-4 py-3">
+                    <div class="flex gap-2">
+                      <a :href="`#/configs/${encodeURIComponent(c.service_name)}`" class="text-blue-600 hover:underline text-xs">编辑</a>
+                      <a :href="`#/history/${encodeURIComponent(c.service_name)}`" class="text-gray-500 hover:underline text-xs">历史</a>
+                      <button x-show="c.status === 'draft'" @click="publish(c.service_name)"
+                        :disabled="actionLoading === c.service_name"
+                        class="text-green-600 hover:underline text-xs disabled:opacity-50">发布</button>
+                      <button x-show="c.status !== 'archived'" @click="archive(c.service_name)"
+                        :disabled="actionLoading === c.service_name"
+                        class="text-gray-400 hover:text-red-500 text-xs disabled:opacity-50">归档</button>
+                    </div>
+                  </td>
+                </tr>
+              </template>
+              <tr x-show="filtered.length === 0 && !loading">
+                <td colspan="6" class="px-4 py-8 text-center text-gray-400 text-sm">
+                  没有找到匹配的配置
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-2 text-xs text-gray-400" x-text="`共 ${filtered.length} 条`"></div>
+      </div>
+    </template>
+
+    <!-- ── Config Editor (existing) ─────────────────────────────────────── -->
+    <template x-if="route.view === 'config-editor'">
+      <div class="p-6" x-data="configEditor(route.param)">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <a href="#/configs" class="text-gray-400 hover:text-gray-600 text-sm">← 返回列表</a>
+            <h1 class="text-xl font-semibold" x-text="serviceName"></h1>
+            <template x-if="config">
+              <span class="text-xs px-2 py-0.5 rounded-full" :class="statusBadgeClass(config.status)" x-text="config.status + ' v' + config.version"></span>
+            </template>
+          </div>
+          <div class="flex gap-2">
+            <a :href="`#/history/${encodeURIComponent(serviceName)}`" class="text-sm text-gray-500 hover:text-gray-700 px-3 py-1.5 border rounded-md">历史记录</a>
+            <button @click="save()" :disabled="saving"
+              class="bg-gray-600 text-white text-sm px-4 py-1.5 rounded-md hover:bg-gray-700 disabled:opacity-50"
+              x-text="saving ? '保存中...' : '保存草稿'"></button>
+            <button @click="publish()" :disabled="publishing || !config || config.status === 'published'"
+              class="bg-green-600 text-white text-sm px-4 py-1.5 rounded-md hover:bg-green-700 disabled:opacity-50"
+              x-text="publishing ? '发布中...' : '发布'"></button>
+          </div>
+        </div>
+
+        <!-- Alert messages -->
+        <div x-show="error" class="mb-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded px-4 py-2" x-text="error"></div>
+        <div x-show="successMsg" class="mb-4 bg-green-50 border border-green-200 text-green-700 text-sm rounded px-4 py-2" x-text="successMsg"></div>
+
+        <!-- Loading -->
+        <div x-show="loading" class="text-gray-400">加载中...</div>
+
+        <div x-show="!loading">
+          <!-- Panel toggle -->
+          <div class="flex gap-1 mb-4 bg-gray-100 p-1 rounded-lg w-fit">
+            <button @click="switchToForm()"
+              :class="['px-4 py-1.5 text-sm rounded-md transition', activePanel === 'form' ? 'bg-white shadow text-blue-700 font-medium' : 'text-gray-500 hover:text-gray-700']">
+              表单模式
+            </button>
+            <button @click="switchToJson()"
+              :class="['px-4 py-1.5 text-sm rounded-md transition', activePanel === 'json' ? 'bg-white shadow text-blue-700 font-medium' : 'text-gray-500 hover:text-gray-700']">
+              JSON 模式
+            </button>
+          </div>
+
+          <!-- Form Panel -->
+          <div x-show="activePanel === 'form'" class="bg-white rounded-lg border p-6 space-y-5">
+            <!-- service_name (readonly for existing) -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">服务名 (service_name)</label>
+              <input type="text" x-model="formData.service_name" :readonly="!isNew"
+                :class="['w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500', isNew ? '' : 'bg-gray-50 text-gray-500']" />
+            </div>
+            <!-- api_service_name -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">API 服务名 (api_service_name)</label>
+              <input type="text" x-model="formData.api_service_name" placeholder="如与服务名不同才需填写"
+                class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <p class="text-xs text-gray-400 mt-1">Azure Retail Prices API 中的 serviceName 筛选值</p>
+            </div>
+            <!-- quantity_model -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">定价模型 (quantity_model)</label>
+              <select x-model="formData.quantity_model" class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <template x-for="m in quantityModels" :key="m">
+                  <option :value="m" x-text="m"></option>
+                </template>
+              </select>
+              <p class="text-xs text-gray-400 mt-1">instances_x_hours: 实例数×时间；per_meter: 按用量</p>
+            </div>
+            <!-- quantity_label -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">数量标签 (quantity_label)</label>
+              <input type="text" x-model="formData.quantity_label" placeholder="VMs / Instances / Nodes"
+                class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <!-- hours_per_month -->
+            <div x-show="formData.quantity_model === 'instances_x_hours'">
+              <label class="block text-sm font-medium text-gray-700 mb-1">默认每月小时数</label>
+              <input type="number" x-model.number="formData.hours_per_month" min="1" max="744"
+                class="w-32 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <span class="text-xs text-gray-400 ml-2">730 = 平均每月</span>
+            </div>
+            <!-- dimension_labels -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">维度标签 (dimension_labels)</label>
+              <textarea x-model="formData.dimension_labels" rows="3"
+                class="json-editor w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder='{"skuName": "Tier", "productName": "OS"}'></textarea>
+            </div>
+            <!-- hidden_dimensions -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">隐藏维度 (hidden_dimensions)</label>
+              <input type="text" x-model="formData.hidden_dimensions" placeholder="productName, type (逗号分隔)"
+                class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <p class="text-xs text-gray-400 mt-1">填入需要对用户隐藏的 cascade 维度名</p>
+            </div>
+            <!-- Advanced hint -->
+            <div class="text-xs text-gray-400 border-t pt-3">
+              ℹ️ 高级字段（sub_dimensions、sku_groups、excluded_products 等）请切换到 <button @click="switchToJson()" class="text-blue-600 hover:underline">JSON 模式</button>直接编辑。
+            </div>
+          </div>
+
+          <!-- JSON Panel -->
+          <div x-show="activePanel === 'json'" class="space-y-3">
+            <div x-show="jsonError" class="bg-red-50 border border-red-200 text-red-700 text-xs rounded px-3 py-2" x-text="'JSON 解析错误: ' + jsonError"></div>
+            <textarea x-model="jsonText" rows="28" class="json-editor w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+
+          <!-- Validation result -->
+          <div class="mt-4 flex items-center gap-3">
+            <button @click="validate()" class="text-sm text-gray-600 hover:text-gray-800 border px-3 py-1.5 rounded-md">校验配置</button>
+            <template x-if="validation">
+              <div>
+                <span x-show="validation.valid" class="text-green-600 text-sm">✓ 校验通过</span>
+                <span x-show="!validation.valid" class="text-red-600 text-sm">✗ 存在错误</span>
+              </div>
+            </template>
+          </div>
+          <template x-if="validation && (validation.errors.length > 0 || validation.warnings.length > 0)">
+            <div class="mt-2 space-y-1">
+              <template x-for="e in validation.errors" :key="e">
+                <div class="text-xs text-red-600">✗ <span x-text="e"></span></div>
+              </template>
+              <template x-for="w in validation.warnings" :key="w">
+                <div class="text-xs text-yellow-600">⚠ <span x-text="w"></span></div>
+              </template>
+            </div>
+          </template>
+
+          <!-- Metadata -->
+          <div class="mt-6 bg-gray-50 rounded-lg border p-4 space-y-3">
+            <h3 class="text-sm font-medium text-gray-700">保存选项</h3>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">修改人</label>
+              <input type="text" x-model="changedBy" placeholder="你的名字或邮箱（可选）"
+                class="w-64 border rounded px-2 py-1 text-sm focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">变更说明</label>
+              <input type="text" x-model="changeSummary" placeholder="简短描述本次修改内容"
+                class="w-96 border rounded px-2 py-1 text-sm focus:outline-none" />
+            </div>
+          </div>
+
+          <!-- Config metadata (readonly) -->
+          <template x-if="config">
+            <div class="mt-4 text-xs text-gray-400 space-x-4">
+              <span>创建: <span x-text="formatDate(config.created_at)"></span></span>
+              <span>最后修改: <span x-text="config.updated_by || '—'"></span> 于 <span x-text="formatDate(config.updated_at)"></span></span>
+              <span>发布时间: <span x-text="formatDate(config.published_at)"></span></span>
+            </div>
+          </template>
+        </div>
+      </div>
+    </template>
+
+    <!-- ── Config Editor (new) ──────────────────────────────────────────── -->
+    <template x-if="route.view === 'config-editor-new'">
+      <div class="p-6" x-data="configEditor(null)">
+        <div class="flex items-center gap-3 mb-4">
+          <a href="#/configs" class="text-gray-400 hover:text-gray-600 text-sm">← 返回列表</a>
+          <h1 class="text-xl font-semibold">新建服务配置</h1>
+        </div>
+        <div x-show="error" class="mb-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded px-4 py-2" x-text="error"></div>
+        <div x-show="successMsg" class="mb-4 bg-green-50 border border-green-200 text-green-700 text-sm rounded px-4 py-2" x-text="successMsg"></div>
+
+        <!-- Panel toggle -->
+        <div class="flex gap-1 mb-4 bg-gray-100 p-1 rounded-lg w-fit">
+          <button @click="switchToForm()"
+            :class="['px-4 py-1.5 text-sm rounded-md transition', activePanel === 'form' ? 'bg-white shadow text-blue-700 font-medium' : 'text-gray-500']">
+            表单模式
+          </button>
+          <button @click="switchToJson()"
+            :class="['px-4 py-1.5 text-sm rounded-md transition', activePanel === 'json' ? 'bg-white shadow text-blue-700 font-medium' : 'text-gray-500']">
+            JSON 模式
+          </button>
+        </div>
+
+        <!-- Form panel (new) -->
+        <div x-show="activePanel === 'form'" class="bg-white rounded-lg border p-6 space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">服务名 (service_name) *</label>
+            <input type="text" x-model="formData.service_name" placeholder="Virtual Machines"
+              class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">定价模型 *</label>
+            <select x-model="formData.quantity_model" class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none">
+              <template x-for="m in quantityModels" :key="m">
+                <option :value="m" x-text="m"></option>
+              </template>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">数量标签</label>
+            <input type="text" x-model="formData.quantity_label" placeholder="VMs"
+              class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none" />
+          </div>
+          <div class="text-xs text-gray-400 border-t pt-3">
+            更多字段请切换到 JSON 模式编辑。
+          </div>
+        </div>
+
+        <!-- JSON panel (new) -->
+        <div x-show="activePanel === 'json'" class="space-y-3">
+          <div x-show="jsonError" class="bg-red-50 border border-red-200 text-red-700 text-xs rounded px-3 py-2" x-text="'JSON 解析错误: ' + jsonError"></div>
+          <textarea x-model="jsonText" rows="24" class="json-editor w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+
+        <div class="mt-4 flex items-center gap-3">
+          <button @click="validate()" class="text-sm text-gray-600 hover:text-gray-800 border px-3 py-1.5 rounded-md">校验</button>
+          <button @click="save()" :disabled="saving"
+            class="bg-blue-600 text-white text-sm px-4 py-1.5 rounded-md hover:bg-blue-700 disabled:opacity-50"
+            x-text="saving ? '创建中...' : '创建草稿'"></button>
+        </div>
+      </div>
+    </template>
+
+    <!-- ── Version History ──────────────────────────────────────────────── -->
+    <template x-if="route.view === 'version-history'">
+      <div class="p-6" x-data="versionHistory(route.param)">
+        <div class="flex items-center gap-3 mb-4">
+          <a :href="`#/configs/${encodeURIComponent(serviceName)}`" class="text-gray-400 hover:text-gray-600 text-sm">← 返回编辑</a>
+          <h1 class="text-xl font-semibold">版本历史: <span x-text="serviceName"></span></h1>
+        </div>
+        <div x-show="error" class="mb-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded px-4 py-2" x-text="error"></div>
+        <div x-show="loading" class="text-gray-400">加载中...</div>
+
+        <div x-show="!loading" class="space-y-3">
+          <!-- Revert author -->
+          <div class="flex items-center gap-2 mb-4">
+            <input type="text" x-model="changedBy" placeholder="回退操作人（可选）"
+              class="border rounded px-3 py-1.5 text-sm focus:outline-none" />
+          </div>
+
+          <template x-for="entry in history" :key="entry.id">
+            <div class="bg-white rounded-lg border">
+              <div class="flex items-center justify-between px-4 py-3 cursor-pointer" @click="selectVersion(entry)">
+                <div class="flex items-center gap-3">
+                  <span class="font-mono text-sm font-medium">v<span x-text="entry.version"></span></span>
+                  <span class="text-xs px-2 py-0.5 rounded-full" :class="statusBadgeClass(entry.status)" x-text="entry.status"></span>
+                  <span class="text-xs text-gray-400" x-text="entry.change_summary || '无说明'"></span>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="text-xs text-gray-400">
+                    <span x-text="entry.changed_by || '—'"></span> · <span x-text="formatDate(entry.created_at)"></span>
+                  </span>
+                  <button @click.stop="revert(entry.version)" :disabled="reverting"
+                    class="text-xs text-blue-600 hover:underline disabled:opacity-50">回退到此版本</button>
+                  <span class="text-gray-400 text-xs" x-text="selectedVersion?.version === entry.version ? '▲' : '▼'"></span>
+                </div>
+              </div>
+              <!-- JSON preview -->
+              <div x-show="selectedVersion?.version === entry.version" class="border-t px-4 py-3">
+                <pre class="json-preview" x-text="formatJson(entry.config)"></pre>
+              </div>
+            </div>
+          </template>
+
+          <div x-show="history.length === 0" class="text-gray-400 text-sm text-center py-8">
+            暂无历史记录
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- ── Catalog Manager ─────────────────────────────────────────────── -->
+    <template x-if="route.view === 'catalog'">
+      <div class="p-6" x-data="catalogManager()">
+        <div class="flex items-center justify-between mb-4">
+          <h1 class="text-xl font-semibold">产品目录管理</h1>
+          <div class="flex gap-2">
+            <button @click="showNewFamily = !showNewFamily" class="text-sm border px-3 py-1.5 rounded-md hover:bg-gray-50">+ 添加 Family</button>
+            <button @click="showNewService = !showNewService" class="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700">+ 添加服务</button>
+          </div>
+        </div>
+        <div x-show="error" class="mb-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded px-4 py-2" x-text="error"></div>
+        <div x-show="successMsg" class="mb-4 bg-green-50 border border-green-200 text-green-700 text-sm rounded px-4 py-2" x-text="successMsg"></div>
+
+        <!-- New Family form -->
+        <div x-show="showNewFamily" class="bg-white rounded-lg border p-4 mb-4 space-y-3">
+          <h3 class="text-sm font-medium">新建 Family</h3>
+          <div class="flex gap-3">
+            <input type="text" x-model="newFamily.key" placeholder="key (e.g. compute)"
+              class="border rounded px-3 py-1.5 text-sm focus:outline-none w-40" />
+            <input type="text" x-model="newFamily.label" placeholder="显示名 (e.g. Compute)"
+              class="border rounded px-3 py-1.5 text-sm focus:outline-none w-48" />
+            <input type="number" x-model.number="newFamily.order" placeholder="排序"
+              class="border rounded px-3 py-1.5 text-sm focus:outline-none w-20" />
+            <button @click="addFamily()" :disabled="addingFamily"
+              class="bg-blue-600 text-white text-sm px-3 py-1.5 rounded disabled:opacity-50"
+              x-text="addingFamily ? '创建中...' : '创建'"></button>
+          </div>
+        </div>
+
+        <!-- New Service form -->
+        <div x-show="showNewService" class="bg-white rounded-lg border p-4 mb-4 space-y-3">
+          <h3 class="text-sm font-medium">添加服务到目录</h3>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs text-gray-500 block mb-1">Family *</label>
+              <select x-model="newService.family_key" class="w-full border rounded px-3 py-1.5 text-sm focus:outline-none">
+                <option value="">-- 选择 Family --</option>
+                <template x-for="f in families" :key="f.key">
+                  <option :value="f.key" x-text="`${f.key} (${f.label})`"></option>
+                </template>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-gray-500 block mb-1">服务名 *</label>
+              <input type="text" x-model="newService.service_name" placeholder="Virtual Machines"
+                class="w-full border rounded px-3 py-1.5 text-sm focus:outline-none" />
+            </div>
+            <div>
+              <label class="text-xs text-gray-500 block mb-1">描述</label>
+              <input type="text" x-model="newService.description"
+                class="w-full border rounded px-3 py-1.5 text-sm focus:outline-none" />
+            </div>
+            <div>
+              <label class="text-xs text-gray-500 block mb-1">Icon slug</label>
+              <input type="text" x-model="newService.icon" placeholder="virtual-machines"
+                class="w-full border rounded px-3 py-1.5 text-sm focus:outline-none" />
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <label class="flex items-center gap-2 text-sm">
+              <input type="checkbox" x-model="newService.popular" class="rounded" /> 热门产品
+            </label>
+            <button @click="addService()" :disabled="addingService"
+              class="bg-blue-600 text-white text-sm px-3 py-1.5 rounded disabled:opacity-50"
+              x-text="addingService ? '添加中...' : '添加到目录'"></button>
+          </div>
+        </div>
+
+        <!-- Family/Service tree -->
+        <div x-show="loading" class="text-gray-400">加载中...</div>
+        <div class="space-y-4">
+          <template x-for="family in families" :key="family.key">
+            <div class="bg-white rounded-lg border">
+              <!-- Family header -->
+              <div class="flex items-center justify-between px-4 py-3 border-b bg-gray-50 rounded-t-lg">
+                <div class="flex items-center gap-2">
+                  <span class="font-medium text-sm" x-text="family.label"></span>
+                  <span class="text-xs text-gray-400 font-mono" x-text="family.key"></span>
+                  <span class="text-xs text-gray-400">order: <span x-text="family.order"></span></span>
+                </div>
+                <button @click="deleteFamily(family.key)" :disabled="deletingKey === family.key"
+                  class="text-xs text-red-400 hover:text-red-600 disabled:opacity-50">删除</button>
+              </div>
+              <!-- Services -->
+              <div class="divide-y">
+                <template x-for="svc in family.services" :key="svc.service_name">
+                  <div class="flex items-center justify-between px-4 py-2.5">
+                    <div class="flex items-center gap-3">
+                      <span class="text-sm" x-text="svc.service_name"></span>
+                      <span x-show="svc.popular" class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">热门</span>
+                      <span class="text-xs text-gray-400" x-text="svc.description"></span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <a :href="`#/configs/${encodeURIComponent(svc.service_name)}`" class="text-xs text-blue-600 hover:underline">配置</a>
+                      <button @click="deleteService(svc.service_name)" :disabled="deletingKey === svc.service_name"
+                        class="text-xs text-gray-400 hover:text-red-500 disabled:opacity-50">移除</button>
+                    </div>
+                  </div>
+                </template>
+                <div x-show="family.services.length === 0" class="px-4 py-3 text-xs text-gray-400 italic">
+                  此 family 下暂无服务
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </template>
+
+    <!-- ── Import ──────────────────────────────────────────────────────── -->
+    <template x-if="route.view === 'import'">
+      <div class="p-6" x-data="importPage()">
+        <h1 class="text-xl font-semibold mb-4">批量导入</h1>
+        <div class="bg-white rounded-lg border p-6 max-w-2xl">
+          <h2 class="text-sm font-medium mb-2">从 JSON 文件导入服务配置</h2>
+          <p class="text-sm text-gray-500 mb-4">
+            从 <code class="bg-gray-100 px-1 py-0.5 rounded text-xs">app/config/service_configs/*.json</code>
+            导入所有服务配置到数据库，导入后状态为 <strong>published</strong>。
+          </p>
+          <div class="flex items-center gap-4 mb-4">
+            <label class="flex items-center gap-2 text-sm">
+              <input type="checkbox" x-model="overwrite" class="rounded" />
+              覆盖已有记录
+            </label>
+          </div>
+          <button @click="runImport()" :disabled="running"
+            class="bg-blue-600 text-white text-sm px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
+            x-text="running ? '导入中...' : '开始导入'"></button>
+        </div>
+
+        <div x-show="error" class="mt-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded px-4 py-2" x-text="error"></div>
+
+        <template x-if="result">
+          <div class="mt-6 bg-white rounded-lg border p-6 max-w-2xl">
+            <h3 class="text-sm font-medium mb-3">导入结果</h3>
+            <div class="flex gap-6 mb-4 text-sm">
+              <span>✓ 创建: <strong x-text="result.created" class="text-green-600"></strong></span>
+              <span>↑ 更新: <strong x-text="result.updated" class="text-blue-600"></strong></span>
+              <span>– 跳过: <strong x-text="result.skipped" class="text-gray-400"></strong></span>
+              <span>✗ 错误: <strong x-text="result.errors" class="text-red-600"></strong></span>
+            </div>
+            <div class="divide-y border rounded-md overflow-hidden">
+              <template x-for="r in result.results" :key="r.service_name">
+                <div class="flex items-center gap-3 px-3 py-2 text-sm">
+                  <span :class="{
+                    'text-green-600': r.action === 'created',
+                    'text-blue-600': r.action === 'updated',
+                    'text-gray-400': r.action === 'skipped',
+                    'text-red-600': r.action === 'error',
+                  }" x-text="r.action"></span>
+                  <span x-text="r.service_name"></span>
+                  <span x-show="r.detail" class="text-xs text-gray-400" x-text="r.detail"></span>
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <!-- ── Login ──────────────────────────────────────────────────────── -->
+    <template x-if="route.view === 'login'">
+      <div class="flex items-center justify-center h-full" x-data="loginPage()">
+        <div class="bg-white rounded-lg border p-8 w-80">
+          <h1 class="text-lg font-semibold mb-4">Admin 登录</h1>
+          <div x-show="error" class="mb-3 text-sm text-red-600" x-text="error"></div>
+          <input type="password" x-model="token" placeholder="Admin Token"
+            @keydown.enter="submit()"
+            class="w-full border rounded-md px-3 py-2 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <button @click="submit()" class="w-full bg-blue-600 text-white text-sm py-2 rounded-md hover:bg-blue-700">
+            登录
+          </button>
+        </div>
+      </div>
+    </template>
+
+  </main>
+</div>
+
+</body>
+</html>
