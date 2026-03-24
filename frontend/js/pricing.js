@@ -127,7 +127,7 @@ export function calculateLocalPrice(metersGroups, type, term, quantity, hoursPer
  * @param {Object} meterQuantities - { meterName: number }
  * @returns {{ monthlyCost: number, upfrontCost: number|null, paygCost: number|null, meters: Array }}
  */
-export function calculatePerMeterPrice(metersGroups, type, term, meterQuantities) {
+export function calculatePerMeterPrice(metersGroups, type, term, meterQuantities, meterFreeOffsets = {}) {
   // Filter groups by type
   let matched = metersGroups.filter(g => g.type === type);
 
@@ -140,7 +140,9 @@ export function calculatePerMeterPrice(metersGroups, type, term, meterQuantities
   let total = 0;
 
   for (const group of matched) {
-    const usage = meterQuantities[group.meter] || 0;
+    const rawUsage = meterQuantities[group.meter] || 0;
+    const freeOffset = meterFreeOffsets[group.meter] || 0;
+    const usage = Math.max(0, rawUsage - freeOffset);
     let cost;
 
     if (type === 'Reservation') {
@@ -174,8 +176,9 @@ export function calculatePerMeterPrice(metersGroups, type, term, meterQuantities
     if (consumptionGroups.length > 0) {
       let paygTotal = 0;
       for (const group of consumptionGroups) {
-        const usage = meterQuantities[group.meter] || 0;
-        paygTotal += calculateTieredCost(group.tiers, usage);
+        const rawUsage = meterQuantities[group.meter] || 0;
+        const freeOffset = meterFreeOffsets[group.meter] || 0;
+        paygTotal += calculateTieredCost(group.tiers, Math.max(0, rawUsage - freeOffset));
       }
       paygCost = paygTotal;
     }
@@ -194,7 +197,7 @@ export function calculatePerMeterPrice(metersGroups, type, term, meterQuantities
  * @returns {Array<{type: string, term: string|null, label: string, discountPercent: number|null}>}
  */
 export function getAvailableSavingsOptions(metersGroups, quantity = 1, hoursPerMonth = 730, opts = {}) {
-  const { meterQuantities, quantityModel } = opts;
+  const { meterQuantities, quantityModel, meterFreeOffsets = {} } = opts;
 
   // Collect unique (type, term) combinations
   const seen = new Set();
@@ -212,7 +215,7 @@ export function getAvailableSavingsOptions(metersGroups, quantity = 1, hoursPerM
     if (type !== 'Consumption') {
       let result;
       if (quantityModel === 'per_meter' && meterQuantities) {
-        result = calculatePerMeterPrice(metersGroups, type, term, meterQuantities);
+        result = calculatePerMeterPrice(metersGroups, type, term, meterQuantities, meterFreeOffsets);
       } else {
         result = calculateLocalPrice(metersGroups, type, term, quantity, hoursPerMonth);
       }

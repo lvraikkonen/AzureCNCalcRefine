@@ -2,11 +2,26 @@
   "service_name": "Azure Firewall",
   "quantity_model": "per_meter",
   "quantity_label": "Usage",
-  "dimension_labels": { "skuName": "Tier" },
+  "dimension_labels": { "skuName": "配置" },
   "hidden_dimensions": ["productName"],
-  "static_subs": [],
-  "hidden_subs": [],
+  "sku_groups": {
+    "VNet - Basic": ["Basic"],
+    "VNet - Standard": ["Standard"],
+    "VNet - Premium": ["Premium"],
+    "安全虚拟中心 - Basic": ["Basic Secured Virtual Hub"],
+    "安全虚拟中心 - Standard": ["Standard Secure Virtual Hub"],
+    "安全虚拟中心 - Premium": ["Premium Secured Virtual Hub"]
+  },
+  "hidden_meters": ["Capacity Unit"],
+  "meter_labels": {
+    "Deployment": "Deployment",
+    "Data Processed": "Data Processed"
+  },
+  "meter_order": ["Deployment", "Data Processed"],
   "defaults": {
-    "selections": { "armRegionName": "eastus" }
+    "selections": {
+      "armRegionName": "eastus",
+      "skuName": "VNet - Standard"
+    }
   }
 }

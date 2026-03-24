@@ -11,6 +11,17 @@
     "Standard": ["Standard", "Hybrid Connections", "WCF Relay"],
     "Premium": ["Premium"]
   },
+  "meter_labels": {
+    "Base Unit": "Base Unit",
+    "Messaging Operations": "Messaging Operations",
+    "Brokered Connection": "Brokered Connection",
+    "Messaging Unit": "Messaging Unit",
+    "Data Transfer": "Data Transfer",
+    "Listener Unit": "Listener Unit",
+    "WCF Relay Message": "Relay Message",
+    "WCF Relay": "Relay"
+  },
+  "meter_order": ["Base Unit", "Messaging Unit", "Messaging Operations", "Brokered Connection", "Listener Unit", "Data Transfer", "Relay"],
   "defaults": {
     "selections": { "armRegionName": "eastus" }
   }

@@ -45,6 +45,29 @@ from sqlalchemy import select, update
 router = APIRouter(prefix="/api/v1/admin", tags=["admin"])
 
 _CONFIG_DIR = Path(__file__).resolve().parent.parent / "config" / "service_configs"
+_CATALOG_PATH = Path(__file__).resolve().parent.parent / "config" / "product_catalog.json"
+
+
+def _export_config_json(slug: str, config: dict) -> None:
+    """Publish 后将 config 同步写入 JSON 文件（版本控制备份 + 无 DB 降级用）。"""
+    try:
+        _CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+        path = _CONFIG_DIR / f"{slug}.json"
+        path.write_text(json.dumps(config, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    except Exception:
+        pass  # JSON export is best-effort; don't fail the publish
+
+
+def _export_catalog_json() -> None:
+    """Catalog 变更后将当前缓存同步写入 product_catalog.json。"""
+    from app.services.catalog_cache import get_cached_catalog
+    catalog = get_cached_catalog()
+    if catalog is None:
+        return
+    try:
+        _CATALOG_PATH.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    except Exception:
+        pass  # best-effort
 
 
 # ---------------------------------------------------------------------------
@@ -147,6 +170,8 @@ async def publish_config(
         obj = await config_repo.publish_config(session, service_name, body.changed_by)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+    config_repo.set_cached_config(service_name, obj.config)
+    _export_config_json(obj.slug, obj.config)
     return obj
 
 
@@ -344,8 +369,9 @@ async def import_from_json_files(
 
 
 async def _refresh_catalog_cache(session: AsyncSession) -> None:
-    """Reload the catalog from DB into the in-memory cache."""
+    """Reload the catalog from DB into the in-memory cache, then export to JSON."""
     try:
         await load_catalog_to_cache(session)
+        _export_catalog_json()
     except Exception:
         invalidate_catalog_cache()  # Force next request to use JSON fallback

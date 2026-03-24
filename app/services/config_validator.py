@@ -114,6 +114,14 @@ def validate_config(config: dict) -> tuple[list[str], list[str]]:
     if excluded is not None and not isinstance(excluded, list):
         errors.append("excluded_products must be a list")
 
+    # --- hidden_meters ---
+    hidden_meters = config.get("hidden_meters")
+    if hidden_meters is not None:
+        if not isinstance(hidden_meters, list):
+            errors.append("hidden_meters must be a list")
+        elif not all(isinstance(m, str) for m in hidden_meters):
+            errors.append("hidden_meters must contain only strings")
+
     # --- warnings for missing recommended fields ---
     if not config.get("quantity_model"):
         warnings.append("quantity_model is not set; defaults to 'instances_x_hours' at runtime")

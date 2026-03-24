@@ -6,6 +6,13 @@
   "hidden_dimensions": ["productName"],
   "static_subs": [],
   "hidden_subs": [],
+  "meter_labels": {
+    "Throughput Unit": "Throughput Unit",
+    "Event Operations": "Event Operations",
+    "MQTT Operations": "MQTT Operations",
+    "Operations": "Operations"
+  },
+  "meter_order": ["Throughput Unit", "Event Operations", "MQTT Operations", "Operations"],
   "defaults": {
     "selections": { "armRegionName": "eastus" }
   }

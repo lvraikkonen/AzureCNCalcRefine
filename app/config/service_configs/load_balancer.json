@@ -1,0 +1,20 @@
+{
+  "service_name": "Load Balancer",
+  "quantity_model": "per_meter",
+  "quantity_label": "Usage",
+  "dimension_labels": { "skuName": "Tier" },
+  "hidden_dimensions": ["productName"],
+  "meter_labels": {
+    "Data Processed": "Data Processed",
+    "Included LB Rules and Outbound Rules": "Included LB Rules",
+    "Overage LB Rules and Outbound Rules": "Overage LB Rules",
+    "Chain": "Chain"
+  },
+  "meter_order": ["Data Processed", "Included LB Rules", "Overage LB Rules", "Chain"],
+  "defaults": {
+    "selections": {
+      "armRegionName": "Global",
+      "skuName": "Standard"
+    }
+  }
+}

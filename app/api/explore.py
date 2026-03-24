@@ -82,6 +82,19 @@ def _load_sku_groups(service_name: str) -> dict[str, list[str]] | None:
     return None
 
 
+def _load_hidden_meters(service_name: str) -> list[str]:
+    """Load hidden_meters list from service config.
+
+    hidden_meters contains substrings; any meter whose meterName contains
+    one of these substrings will be excluded from the meters response.
+    E.g. ["Capacity Unit"] hides all meters with "Capacity Unit" in their name.
+    """
+    config = _load_service_config(service_name)
+    if config and "hidden_meters" in config:
+        return config["hidden_meters"]
+    return []
+
+
 def _resolve_sku_group(sku_groups: dict[str, list[str]], selected_sku: str) -> list[str]:
     """Expand a virtual tier name to real skuName values."""
     return sku_groups.get(selected_sku, [selected_sku])
@@ -138,6 +151,9 @@ async def get_service_config(service_name: str):
         "hidden_subs": hidden_subs,
         "dimension_labels": config.get("dimension_labels", {}),
         "hidden_dimensions": config.get("hidden_dimensions", []),
+        "meter_free_quota": config.get("meter_free_quota", {}),
+        "meter_labels": config.get("meter_labels", {}),
+        "meter_order": config.get("meter_order", []),
     }
 
 
@@ -225,16 +241,17 @@ async def explore_cascade(req: CascadeRequest):
 
     每次用户变更选择后，前端重新调用此接口获取更新后的选项。
     """
-    # Build API-level filters — pass selected dimensions to avoid 10k-row truncation
+    # Build API-level filters — pass region+product to limit rows, but NOT skuName.
+    # Passing skuName here would pre-filter the dataset so that the cascade algorithm
+    # could only ever return the already-selected sku as an option for the skuName
+    # dimension (defeating the purpose of cascade).  The in-memory cascade loop below
+    # handles skuName filtering correctly without this API-level restriction.
     api_name = _resolve_api_service_name(req.service_name)
     sku_groups = _load_sku_groups(req.service_name)
-    # When sku_groups is defined, don't pass virtual tier to API (it's not a real skuName)
-    api_sku = None if sku_groups else req.selections.get("skuName")
     api_filters = build_api_filters(
         api_name,
         region=req.selections.get("armRegionName"),
         product=req.selections.get("productName"),
-        sku=api_sku,
     )
     items = await fetch_global_prices(api_filters)
     total_rows = len(items)
@@ -371,6 +388,14 @@ async def explore_meters(req: MetersRequest):
         k: v for k, v in meter_groups.items()
         if not (k[3] in ("1 Hour", "1/Hour") and (k[0], k[1], k[2]) in monthly_keys)
     }
+
+    # Filter hidden_meters: remove meters whose name contains any hidden substring
+    hidden_meters = _load_hidden_meters(req.service_name)
+    if hidden_meters:
+        meter_groups = {
+            k: v for k, v in meter_groups.items()
+            if not any(h in k[0] for h in hidden_meters)
+        }
 
     groups = []
     for (meter, typ, term, _unit), rows in sorted(meter_groups.items()):

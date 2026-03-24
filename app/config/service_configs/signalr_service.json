@@ -1,0 +1,21 @@
+{
+  "service_name": "Azure SignalR Service",
+  "api_service_name": "SignalR",
+  "quantity_model": "per_meter",
+  "quantity_label": "Usage",
+  "dimension_labels": { "skuName": "Tier" },
+  "hidden_dimensions": ["productName"],
+  "hidden_meters": ["Free"],
+  "meter_free_quota": {
+    "Standard Message": { "ref_meter": "Standard Unit", "free_per_unit": 1 },
+    "Premium Message": { "ref_meter": "Premium Unit", "free_per_unit": 1 }
+  },
+  "meter_labels": { "Unit": "Units", "Message": "Messages" },
+  "meter_order": ["Unit", "Message"],
+  "defaults": {
+    "selections": {
+      "armRegionName": "eastus",
+      "skuName": "Standard"
+    }
+  }
+}

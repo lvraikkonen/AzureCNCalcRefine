@@ -1,0 +1,36 @@
+{
+  "defaults": {
+    "selections": {
+      "skuName": "Standard",
+      "armRegionName": "eastus"
+    },
+    "hours_per_month": 730
+  },
+  "meter_order": [
+    "Unit",
+    "Message"
+  ],
+  "meter_labels": {
+    "Unit": "Units",
+    "Message": "Messages"
+  },
+  "service_name": "Azure SignalR Service",
+  "hidden_meters": [
+    "Free"
+  ],
+  "quantity_label": "Usage",
+  "quantity_model": "per_meter",
+  "api_service_name": "SignalR",
+  "dimension_labels": {},
+  "meter_free_quota": {
+    "Premium Message": {
+      "ref_meter": "Premium Unit",
+      "free_per_unit": 1
+    },
+    "Standard Message": {
+      "ref_meter": "Standard Unit",
+      "free_per_unit": 1
+    }
+  },
+  "hidden_dimensions": []
+}

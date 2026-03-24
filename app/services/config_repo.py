@@ -132,18 +132,6 @@ async def create_config(
         updated_by=changed_by,
     )
     session.add(obj)
-    await session.flush()  # get id
-    # Write initial history entry
-    session.add(
-        ServiceConfigHistory(
-            service_config_id=obj.id,
-            version=1,
-            config=config,
-            status="draft",
-            changed_by=changed_by,
-            change_summary="Initial creation",
-        )
-    )
     await session.commit()
     await session.refresh(obj)
     return obj

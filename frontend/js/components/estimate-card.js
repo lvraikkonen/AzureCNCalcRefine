@@ -103,6 +103,9 @@ export class EstimateCard {
         hidden_subs: configData.hidden_subs || [],
         dimension_labels: configData.dimension_labels || {},
         hidden_dimensions: configData.hidden_dimensions || [],
+        meter_free_quota: configData.meter_free_quota || {},
+        meter_labels: configData.meter_labels || {},
+        meter_order: configData.meter_order || [],
       };
       if (configData.defaults) {
         const cfg = configData.defaults;
@@ -304,11 +307,14 @@ export class EstimateCard {
       return `<option value="${this.escHtml(o)}"${sel}>${this.escHtml(o)}</option>`;
     }).join('');
 
+    // Only show placeholder when no value is selected
+    const placeholder = selected ? '' : '<option value="">— Select —</option>';
+
     return `
       <div class="form-group">
         <label class="form-label">${label}</label>
         <select class="form-select" data-field="${name}" ${disabled ? 'disabled' : ''}>
-          <option value="">— Select —</option>
+          ${placeholder}
           ${opts}
         </select>
       </div>
@@ -327,11 +333,13 @@ export class EstimateCard {
       opts += '</optgroup>';
     }
 
+    const placeholder = selected ? '' : '<option value="">— Select —</option>';
+
     return `
       <div class="form-group">
         <label class="form-label">Region</label>
         <select class="form-select" data-field="armRegionName">
-          <option value="">— Select —</option>
+          ${placeholder}
           ${opts}
         </select>
       </div>
@@ -344,7 +352,7 @@ export class EstimateCard {
     if (item.metersCache) {
       options = getAvailableSavingsOptions(
         item.metersCache, item.quantity || 1, item.hoursPerMonth || 730,
-        { meterQuantities: item.meterQuantities, quantityModel: this.quantityModel },
+        { meterQuantities: item.meterQuantities, quantityModel: this.quantityModel, meterFreeOffsets: this.computeMeterFreeOffsets(item) },
       );
     } else if (item.cascadeData) {
       const data = item.cascadeData;
@@ -375,6 +383,9 @@ export class EstimateCard {
     const payg = options.filter(o => o.type === 'Consumption');
     const sp = options.filter(o => o.type === 'SavingsPlanConsumption');
     const ri = options.filter(o => o.type === 'Reservation');
+
+    // No savings options available — hide the entire section (PAYG is implicit)
+    if (sp.length === 0 && ri.length === 0) return '';
 
     let html = '<div class="savings-section">';
 
@@ -507,24 +518,48 @@ export class EstimateCard {
     const disabled = item.loading ? ' disabled' : '';
     const meterQty = item.meterQuantities || {};
     const hourlyDetails = item.meterHourlyDetails || {};
+    const dailyDetails = item.meterDailyDetails || {};
 
     let html = '<div class="per-meter-quantity">';
 
+    // Sort meters by meter_order config (substring match)
+    const meterOrder = item.serviceConfig?.meter_order || [];
+    if (meterOrder.length > 0) {
+      meterInfos.sort((a, b) => {
+        const ai = meterOrder.findIndex(p => a.name.includes(p));
+        const bi = meterOrder.findIndex(p => b.name.includes(p));
+        return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+      });
+    }
+
+    const freeOffsets = this.computeMeterFreeOffsets(item);
+    const meterLabels = item.serviceConfig?.meter_labels || {};
+
     for (const m of meterInfos) {
       const isHourly = m.unit === '1 Hour' || m.unit === '1/Hour';
+      const isDaily = m.unit === '1 Day' || m.unit === '1/Day';
       const isMonthly = m.unit === '1/Month';
       const unitPrice = m.tiers?.[0]?.unit_price ?? 0;
-      // Compute this meter's cost for display
+      // Compute this meter's cost for display (applying free offset if any)
       const usage = meterQty[m.name] ?? 0;
-      const meterCost = this.computeSingleMeterCost(m.tiers, usage);
+      const freeAmount = freeOffsets[m.name] || 0;
+      const effectiveUsage = Math.max(0, usage - freeAmount);
+      const meterCost = this.computeSingleMeterCost(m.tiers, effectiveUsage);
+
+      const displayName = this.getMeterDisplayName(m.name, meterLabels);
 
       html += `<div class="per-meter-section">`;
-      html += `<div class="per-meter-header">${this.escHtml(m.name)}</div>`;
+      html += `<div class="per-meter-header">${this.escHtml(displayName)}</div>`;
 
-      // Free tier hint
-      const freeTierInfo = this.getFreeTierInfo(m.tiers, m.unit);
-      if (freeTierInfo) {
-        html += `<div class="per-meter-free-hint"><span class="info-icon">ⓘ</span> ${this.escHtml(freeTierInfo)}</div>`;
+      // Free tier hint: cross-meter free allocation takes priority over API-based free tier
+      if (freeAmount > 0) {
+        const freeUnitLabel = m.unit === '1M' ? ' Million' : m.unit === '10K' ? ' × 10K' : '';
+        html += `<div class="per-meter-free-hint"><span class="free-amount">${freeAmount.toLocaleString()}${freeUnitLabel}</span><span class="free-label"> Free ${this.escHtml(displayName)}</span></div>`;
+      } else {
+        const freeTierInfo = this.getFreeTierInfo(m.tiers, m.unit);
+        if (freeTierInfo) {
+          html += `<div class="per-meter-free-hint"><span class="info-icon">ⓘ</span> ${this.escHtml(freeTierInfo)}</div>`;
+        }
       }
 
       html += '<div class="per-meter-input-row">';
@@ -548,6 +583,26 @@ export class EstimateCard {
           <div class="per-meter-field">
             <span class="per-meter-price">${fmt.format(unitPrice)}</span>
             <span class="per-meter-field-label">Per ${this.escHtml(this.getUnitLabel(m.name))} Hour</span>
+          </div>`;
+      } else if (isDaily) {
+        // Daily meter: units × days × price = cost
+        const details = dailyDetails[m.name] || { units: 0, days: 31 };
+        html += `
+          <div class="per-meter-field">
+            <input type="number" class="form-input per-meter-daily-units" data-meter="${this.escHtml(m.name)}"
+                   value="${details.units}" min="0" step="1"${disabled}>
+            <span class="per-meter-field-label">${this.escHtml(this.getUnitLabel(m.name))}</span>
+          </div>
+          <span class="per-meter-op">×</span>
+          <div class="per-meter-field">
+            <input type="number" class="form-input per-meter-daily-days" data-meter="${this.escHtml(m.name)}"
+                   value="${details.days}" min="0" step="1"${disabled}>
+            <span class="per-meter-field-label">Days</span>
+          </div>
+          <span class="per-meter-op">×</span>
+          <div class="per-meter-field">
+            <span class="per-meter-price">${fmt.format(unitPrice)}</span>
+            <span class="per-meter-field-label">Per day</span>
           </div>`;
       } else if (isMonthly) {
         // Monthly fixed-fee meter: units × price/mo = cost
@@ -599,6 +654,39 @@ export class EstimateCard {
     return html;
   }
 
+  /**
+   * Return the display label for a meter name using endsWith matching (longest key wins).
+   * e.g. "Standard Unit" with labels {"Unit": "Units"} → "Units"
+   */
+  getMeterDisplayName(meterName, labels) {
+    let bestKey = '', bestLabel = meterName;
+    for (const [suffix, label] of Object.entries(labels)) {
+      if (meterName.endsWith(suffix) && suffix.length > bestKey.length) {
+        bestKey = suffix;
+        bestLabel = label;
+      }
+    }
+    return bestLabel;
+  }
+
+  /**
+   * Compute free offsets for meters that have a cross-meter free allocation.
+   * e.g. SignalR: Standard Message free = Standard Unit units × days × 1M
+   */
+  computeMeterFreeOffsets(item) {
+    const config = item.serviceConfig?.meter_free_quota;
+    if (!config) return {};
+    const offsets = {};
+    for (const [meterName, def] of Object.entries(config)) {
+      if (def.fixed != null) {
+        offsets[meterName] = def.fixed;
+      } else if (def.ref_meter) {
+        offsets[meterName] = (item.meterQuantities?.[def.ref_meter] || 0) * (def.free_per_unit || 0);
+      }
+    }
+    return offsets;
+  }
+
   /** Compute cost for a single meter given its tiers and usage. */
   computeSingleMeterCost(tiers, usage) {
     if (!tiers || tiers.length === 0 || usage <= 0) return 0;
@@ -645,7 +733,9 @@ export class EstimateCard {
     const sorted = [...tiers].sort((a, b) => a.tier_min_units - b.tier_min_units);
     if (sorted[0].tier_min_units === 0 && sorted[0].unit_price === 0) {
       const freeAmount = sorted[1].tier_min_units;
-      const unitLabel = (unit === '1 Hour' || unit === '1/Hour') ? 'hours' : unit;
+      const unitLabel = (unit === '1 Hour' || unit === '1/Hour') ? 'hours'
+                      : (unit === '1 Day' || unit === '1/Day') ? 'days'
+                      : unit;
       return `The first ${freeAmount.toLocaleString()} ${unitLabel} per month are included.`;
     }
     return null;
@@ -859,6 +949,9 @@ export class EstimateCard {
     this.el.querySelectorAll('.per-meter-hourly-units, .per-meter-hourly-hours').forEach(inp => {
       inp.addEventListener('input', (e) => this.onPerMeterHourlyChange(e));
     });
+    this.el.querySelectorAll('.per-meter-daily-units, .per-meter-daily-days').forEach(inp => {
+      inp.addEventListener('input', (e) => this.onPerMeterDailyChange(e));
+    });
 
     // Per-meter volume unit selector (GB/TB)
     this.el.querySelectorAll('.per-meter-volume-unit').forEach(sel => {
@@ -1051,6 +1144,33 @@ export class EstimateCard {
     debounce(`qty-${this.itemId}`, () => this.recalculateLocal(), 300);
   }
 
+  onPerMeterDailyChange(e) {
+    const meterName = e.target.dataset.meter;
+    const value = parseFloat(e.target.value) || 0;
+    const item = this.item;
+    if (!item) return;
+
+    if (!item.meterDailyDetails) item.meterDailyDetails = {};
+    if (!item.meterDailyDetails[meterName]) {
+      item.meterDailyDetails[meterName] = { units: 0, days: 31 };
+    }
+
+    const isUnits = e.target.classList.contains('per-meter-daily-units');
+    if (isUnits) {
+      item.meterDailyDetails[meterName].units = value;
+    } else {
+      item.meterDailyDetails[meterName].days = value;
+    }
+
+    // Resolve final usage: units × days
+    const details = item.meterDailyDetails[meterName];
+    if (!item.meterQuantities) item.meterQuantities = {};
+    item.meterQuantities[meterName] = details.units * details.days;
+    updateItem(this.itemId, item);
+
+    debounce(`qty-${this.itemId}`, () => this.recalculateLocal(), 300);
+  }
+
   // ── API calls ─────────────────────────────────────────
 
   async triggerCascade() {
@@ -1191,6 +1311,7 @@ export class EstimateCard {
       result = calculatePerMeterPrice(
         item.metersCache, type, term,
         item.meterQuantities || {},
+        this.computeMeterFreeOffsets(item),
       );
     } else {
       result = calculateLocalPrice(
@@ -1213,7 +1334,7 @@ export class EstimateCard {
     let focusedMeter = null;
     if (focused?.dataset?.meter) {
       focusedMeter = focused.dataset.meter;
-      for (const cls of ['per-meter-input', 'per-meter-hourly-units', 'per-meter-hourly-hours', 'per-meter-volume-unit']) {
+      for (const cls of ['per-meter-input', 'per-meter-hourly-units', 'per-meter-hourly-hours', 'per-meter-daily-units', 'per-meter-daily-days', 'per-meter-volume-unit']) {
         if (focused.classList.contains(cls)) { focusClass = cls; break; }
       }
     }
