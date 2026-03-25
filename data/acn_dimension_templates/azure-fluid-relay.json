@@ -1,0 +1,43 @@
+{
+  "slug": "azure-fluid-relay",
+  "display_name": "Azure Fluid Relay",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "Fluid Relay",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "操作输入",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "100万次/月"
+        },
+        {
+          "name": "操作输出",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "100万次/月"
+        },
+        {
+          "name": "客户端连接分钟数",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "100万个客户端链接分钟数"
+        },
+        {
+          "name": "存储",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB/月"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

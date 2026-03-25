@@ -7,42 +7,42 @@
       "services": [
         {
           "service_name": "Virtual Machines",
-          "description": "Provision Windows and Linux virtual machines in seconds",
+          "description": "快速预配 Windows 和 Linux 虚拟机",
           "icon": "virtual-machines",
           "popular": true,
-          "display_name_cn": null,
+          "display_name_cn": "虚拟机",
           "region_constraints": null
         },
         {
           "service_name": "App Service",
-          "description": "Quickly create powerful cloud apps for web and mobile",
+          "description": "快速创建适用于 Web 和移动设备的强大云应用",
           "icon": "app-service",
           "popular": true,
-          "display_name_cn": null,
+          "display_name_cn": "应用服务",
           "region_constraints": null
         },
         {
           "service_name": "Azure Functions",
-          "description": "Execute event-driven serverless code functions",
+          "description": "使用事件驱动的无服务器代码函数处理事件",
           "icon": "azure-functions",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "Azure Functions",
           "region_constraints": null
         },
         {
           "service_name": "Azure Kubernetes Service (AKS)",
-          "description": "Deploy and scale containers on managed Kubernetes",
+          "description": "在托管的 Kubernetes 上部署和缩放容器",
           "icon": "aks",
           "popular": true,
-          "display_name_cn": null,
+          "display_name_cn": "Azure Kubernetes 服务 (AKS)",
           "region_constraints": null
         },
         {
           "service_name": "Container Instances",
-          "description": "Run containers without managing servers",
+          "description": "无需管理服务器即可运行容器",
           "icon": "container-instances",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "容器实例",
           "region_constraints": null
         }
       ]
@@ -54,42 +54,42 @@
       "services": [
         {
           "service_name": "Azure Firewall",
-          "description": "my description for Azure Firewall",
+          "description": "云原生网络防火墙安全服务",
           "icon": "azure-firewall",
           "popular": true,
-          "display_name_cn": null,
+          "display_name_cn": "Azure 防火墙",
           "region_constraints": null
         },
         {
           "service_name": "Load Balancer",
-          "description": "my config LB",
+          "description": "为应用程序提供高可用性和网络性能",
           "icon": "load-balancer",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "负载均衡器",
           "region_constraints": null
         },
         {
           "service_name": "Virtual Network",
-          "description": "Provision private networks with optional VPN connectivity",
+          "description": "预配专用网络，可选择连接到 VPN",
           "icon": "virtual-network",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "虚拟网络",
           "region_constraints": null
         },
         {
           "service_name": "VPN Gateway",
-          "description": "Establish secure, cross-premises connectivity",
+          "description": "建立安全的跨区域连接",
           "icon": "vpn-gateway",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "VPN 网关",
           "region_constraints": null
         },
         {
           "service_name": "Application Gateway",
-          "description": "Build secure, scalable web front ends",
+          "description": "生成安全、可缩放且高度可用的 Web 前端",
           "icon": "application-gateway",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "应用程序网关",
           "region_constraints": null
         }
       ]
@@ -101,18 +101,21 @@
       "services": [
         {
           "service_name": "Storage Accounts",
-          "description": "Durable, highly available, and massively scalable cloud storage",
+          "description": "持久、高可用且可大规模缩放的云存储",
           "icon": "storage-accounts",
           "popular": true,
-          "display_name_cn": null,
-          "region_constraints": null
+          "display_name_cn": "存储帐户",
+          "region_constraints": [
+            "chinaeast2",
+            "chinanorth2"
+          ]
         },
         {
           "service_name": "Managed Disks",
-          "description": "High-performance, durable block storage for Azure VMs",
+          "description": "适用于 Azure VM 的高性能、高持久性块存储",
           "icon": "managed-disks",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "托管磁盘",
           "region_constraints": null
         }
       ]
@@ -124,43 +127,48 @@
       "services": [
         {
           "service_name": "SQL Database",
-          "description": "Build apps that scale with managed SQL database in the cloud",
+          "description": "在云中使用托管的 SQL 数据库生成应用",
           "icon": "sql-database",
           "popular": true,
-          "display_name_cn": null,
+          "display_name_cn": "SQL 数据库",
           "region_constraints": null
         },
         {
           "service_name": "Azure Cache for Redis",
-          "description": "ftcsdgvyldsabfhugjnkml",
+          "description": "为应用提供高吞吐量、低延迟的数据缓存",
           "icon": "cache-redis",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "Azure Redis 缓存",
           "region_constraints": null
         },
         {
           "service_name": "Azure Cosmos DB",
-          "description": "Build or modernize scalable, high-performance apps",
+          "description": "生成或现代化可缩放的高性能应用",
           "icon": "cosmos-db",
           "popular": true,
-          "display_name_cn": null,
+          "display_name_cn": "Azure Cosmos DB",
           "region_constraints": null
         },
         {
           "service_name": "Azure Database for MySQL",
-          "description": "Fully managed, scalable MySQL database",
+          "description": "完全托管、可缩放的 MySQL 数据库",
           "icon": "mysql",
           "popular": false,
-          "display_name_cn": null,
-          "region_constraints": null
+          "display_name_cn": "Azure Database for MySQL",
+          "region_constraints": [
+            "chinaeast3"
+          ]
         },
         {
           "service_name": "Azure Database for PostgreSQL",
-          "description": "Fully managed, intelligent PostgreSQL database",
+          "description": "完全托管的智能 PostgreSQL 数据库",
           "icon": "postgresql",
           "popular": false,
-          "display_name_cn": null,
-          "region_constraints": null
+          "display_name_cn": "Azure Database for PostgreSQL",
+          "region_constraints": [
+            "chinaeast3",
+            "chinanorth3"
+          ]
         }
       ]
     },
@@ -171,10 +179,10 @@
       "services": [
         {
           "service_name": "Cognitive Services",
-          "description": "Add smart API capabilities for contextual interactions",
+          "description": "为上下文交互添加智能 API 功能",
           "icon": "cognitive-services",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "认知服务",
           "region_constraints": null
         }
       ]
@@ -189,15 +197,15 @@
           "description": "轻松将实时 Web 功能添加到应用程序",
           "icon": "signalr",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "Azure SignalR 服务",
           "region_constraints": null
         },
         {
           "service_name": "Azure CDN",
-          "description": "Fast, reliable content delivery network with global reach",
+          "description": "全球覆盖的快速可靠内容分发网络",
           "icon": "cdn",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "Azure CDN",
           "region_constraints": null
         }
       ]
@@ -209,26 +217,26 @@
       "services": [
         {
           "service_name": "API Management",
-          "description": "Publish APIs securely and at scale",
+          "description": "安全、大规模地发布 API",
           "icon": "api-management",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "API 管理",
           "region_constraints": null
         },
         {
           "service_name": "Event Grid",
-          "description": "Reliable event delivery at massive scale",
+          "description": "大规模的可靠事件交付",
           "icon": "event-grid",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "事件网格",
           "region_constraints": null
         },
         {
           "service_name": "Service Bus",
-          "description": "Reliable cloud messaging as a service",
+          "description": "可靠的云消息传送即服务",
           "icon": "service-bus",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "服务总线",
           "region_constraints": null
         }
       ]
@@ -240,10 +248,10 @@
       "services": [
         {
           "service_name": "Key Vault",
-          "description": "Safeguard cryptographic keys and other secrets",
+          "description": "保护加密密钥和其他机密",
           "icon": "key-vault",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "密钥保管库",
           "region_constraints": null
         }
       ]
@@ -255,19 +263,21 @@
       "services": [
         {
           "service_name": "Azure DevOps",
-          "description": "Services for teams to share code, track work, and ship software",
+          "description": "团队共享代码、跟踪工作和交付软件的服务",
           "icon": "devops",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "Azure DevOps",
           "region_constraints": null
         },
         {
           "service_name": "Managed Grafana",
-          "description": "werfghnbvcfyujk",
+          "description": "Azure 原生的 Grafana 即服务",
           "icon": "grafana",
           "popular": false,
-          "display_name_cn": null,
-          "region_constraints": null
+          "display_name_cn": "Azure 托管 Grafana",
+          "region_constraints": [
+            "chinanorth3"
+          ]
         }
       ]
     },
@@ -278,18 +288,18 @@
       "services": [
         {
           "service_name": "HDInsight",
-          "description": "Provision Hadoop, Spark, and other open-source clusters",
+          "description": "预配 Hadoop、Spark 和其他开源群集",
           "icon": "hdinsight",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "HDInsight",
           "region_constraints": null
         },
         {
           "service_name": "Power BI Embedded",
-          "description": "Embed fully interactive data visualizations in your applications",
+          "description": "在应用程序中嵌入完全交互式的数据可视化",
           "icon": "power-bi-embedded",
           "popular": false,
-          "display_name_cn": null,
+          "display_name_cn": "Power BI Embedded",
           "region_constraints": null
         }
       ]

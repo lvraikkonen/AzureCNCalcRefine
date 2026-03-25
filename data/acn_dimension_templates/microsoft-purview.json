@@ -1,0 +1,76 @@
+{
+  "slug": "microsoft-purview",
+  "display_name": "Microsoft Purview",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "数据映射填充",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "对于 Power BI Online",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "vCore/小时"
+        },
+        {
+          "name": "对于本地 SQL Server",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "vCore/小时"
+        },
+        {
+          "name": "对于其他数据源",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "vCore/小时"
+        }
+      ]
+    },
+    {
+      "name": "数据映射扩充",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "高级资源集",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "vCore/小时"
+        },
+        {
+          "name": "Insight生成",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "vCore/小时"
+        }
+      ]
+    },
+    {
+      "name": "数据映射消耗",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "容量单位：1MBA数据映射元数据存储",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "容量单位/小时"
+        }
+      ]
+    },
+    {
+      "name": "Data Estate Insights",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "Insights 消耗",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "slug": "cognitive-services-app-configuration",
+  "display_name": "Azure AI 服务 - 语音服务",
+  "types_semantic": "tier",
+  "types": [
+    {
+      "name": "免费",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "语音转文本",
+          "price_period": "hourly",
+          "sizes_count": 1
+        },
+        {
+          "name": "文本转语音 - 神经网络版-中国东部2",
+          "price_period": "hourly",
+          "sizes_count": 1
+        },
+        {
+          "name": "语音翻译",
+          "price_period": "hourly",
+          "sizes_count": 1
+        },
+        {
+          "name": "语音转文本-自定义-中国东部2",
+          "price_period": "hourly",
+          "sizes_count": 1
+        }
+      ]
+    },
+    {
+      "name": "标准",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "语音转文本 - 实时",
+          "price_period": "hourly",
+          "sizes_count": 1
+        },
+        {
+          "name": "语音转文本 - 快速",
+          "price_period": "hourly",
+          "sizes_count": 1
+        },
+        {
+          "name": "文本转语音 - 神经网络版",
+          "price_period": "monthly",
+          "sizes_count": 1
+        },
+        {
+          "name": "语音翻译",
+          "price_period": "hourly",
+          "sizes_count": 1
+        },
+        {
+          "name": "语音转文本-自定义-中国东部2和中国北部2-音频",
+          "price_period": "hourly",
+          "sizes_count": 1
+        },
+        {
+          "name": "语音转文本-自定义-中国东部2和中国北部2-终结点托管服务",
+          "price_period": "hourly",
+          "sizes_count": 1
+        },
+        {
+          "name": "语音转文本-增强的加载项功能",
+          "price_period": "hourly",
+          "sizes_count": 1
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "dimension_labels": {
+      "skuName": "Tier"
+    }
+  }
+}

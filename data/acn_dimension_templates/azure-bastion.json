@@ -1,0 +1,86 @@
+{
+  "slug": "azure-bastion",
+  "display_name": "Azure Bastion",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "Azure Bastion",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "Azure Bastion",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "小时"
+        },
+        {
+          "name": "Azure Bastion 标准版",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "小时"
+        },
+        {
+          "name": "其他标准小时",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "小时"
+        },
+        {
+          "name": "Azure Bastion 高级版（预览）",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "小时"
+        },
+        {
+          "name": "其他高级实例（预览）",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "小时"
+        }
+      ]
+    },
+    {
+      "name": "出站数据传输-区域2-中国北部2",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "前 5 GB/月 - 免费",
+          "price_period": "hourly",
+          "sizes_count": 1
+        },
+        {
+          "name": "5 GB - 10 TB/月",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "后 40 TB(10 TB - 50 TB）/月",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "后 100 TB(50 TB - 150 TB）/月",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "后 350 TB(150 TB - 500 TB）/月",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "超过 500 TB/月 - 联系我们",
+          "price_period": "hourly",
+          "sizes_count": 1
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

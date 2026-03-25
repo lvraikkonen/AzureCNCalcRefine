@@ -1,0 +1,142 @@
+{
+  "slug": "storage-manager-disk-gpv1-standard-region3",
+  "display_name": "存储 - 标准托管磁盘 - 常规用途 v1",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "S4",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "S6",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "S10",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "S15",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "S20",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "S30",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "S40",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "S50",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "S60",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "S70",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "S80",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

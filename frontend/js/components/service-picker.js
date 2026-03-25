@@ -49,7 +49,7 @@ function renderCards(services) {
     <div class="product-card">
       <div class="product-card-header">
         <span class="product-card-icon">${getServiceIcon(svc.icon)}</span>
-        <span class="product-card-name">${svc.service_name}</span>
+        <span class="product-card-name">${svc.display_name_cn || svc.service_name}</span>
       </div>
       <p class="product-card-desc">${svc.description}</p>
       <button class="btn btn-outline btn-add-estimate" data-service="${svc.service_name}">
@@ -97,11 +97,24 @@ function onFamilyClick(e) {
   renderCards(getServicesForFamily(activeFamily));
 }
 
+function findServiceInfo(serviceName) {
+  if (!catalog) return null;
+  for (const f of catalog.families) {
+    const svc = f.services.find(s => s.service_name === serviceName);
+    if (svc) return svc;
+  }
+  return null;
+}
+
 function onAddClick(e) {
   const btn = e.target.closest('.btn-add-estimate');
   if (!btn) return;
   const serviceName = btn.dataset.service;
-  createItem(serviceName);
+  const svcInfo = findServiceInfo(serviceName);
+  const item = createItem(serviceName);
+  if (svcInfo?.display_name_cn) {
+    item.displayNameCn = svcInfo.display_name_cn;
+  }
 
   // Scroll to estimate panel
   const panel = document.getElementById('estimate-panel');

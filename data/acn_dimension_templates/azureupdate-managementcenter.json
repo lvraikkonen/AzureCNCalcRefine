@@ -1,0 +1,25 @@
+{
+  "slug": "azureupdate-managementcenter",
+  "display_name": "Azure更新管理器",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "Azure更新管理器",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "已启用 Arc",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "每月/每服务器"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "slug": "logic-apps-Consumption-Plan-North3",
+  "display_name": "逻辑应用 - Consumption Plan",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "default",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "Actions",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "次"
+        },
+        {
+          "name": "Standard Connector",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "次"
+        },
+        {
+          "name": "Enterprise Connector",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "次"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

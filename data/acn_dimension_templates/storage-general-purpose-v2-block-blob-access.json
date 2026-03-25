@@ -1,0 +1,196 @@
+{
+  "slug": "storage-general-purpose-v2-block-blob-access",
+  "display_name": "存储 - 块 Blob - 常规用途 v2 - “热”和“冷”访问层 - 操作和数据传输价格",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "LRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "写操作 (按10,000计) (冷)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "写操作 (按10,000计) (热)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "放置 Blob/块、列出并创建容器操作（按 10,000 计）(冷)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "放置 Blob/块、列出并创建容器操作（按 10,000 计）(热)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取操作（按 10,000 计）(冷)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取操作（按 10,000 计）(热)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "存档优先读取（按 10,000 计）(Archive)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "region_constraints": [
+            "chinaeast2",
+            "chinanorth2"
+          ],
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作（按 10,000 计）(冷)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作（按 10,000 计）(热)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 (冷)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "存档优先检索 (Archive)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "region_constraints": [
+            "chinaeast2",
+            "chinanorth2"
+          ],
+          "price_unit": "个"
+        },
+        {
+          "name": "已处理的时间点还原数据",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "region_constraints": [
+            "chinaeast2",
+            "chinanorth2"
+          ],
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "GRS 和 RA-GRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "写操作 (按10,000计)(冷)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "写操作 (按10,000计)(热)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "放置 Blob/块、列出并创建容器操作（按 10,000 计）(冷)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "放置 Blob/块、列出并创建容器操作（按 10,000 计）(热)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取操作（按 10,000 计）(冷)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取操作（按 10,000 计）(热)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "存档优先级读取（按 10,000 )计(Archive)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "region_constraints": [
+            "chinaeast2",
+            "chinanorth2"
+          ],
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作（按 10,000 计）(冷)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作（按 10,000 计）(热)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 (冷)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "存档优先级检索（按 GB 计）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "region_constraints": [
+            "chinaeast2",
+            "chinanorth2"
+          ],
+          "price_unit": "个"
+        },
+        {
+          "name": "存档优先级检索（按 GB 计）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "已处理的时间点还原数据",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "region_constraints": [
+            "chinaeast2",
+            "chinanorth2"
+          ],
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

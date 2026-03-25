@@ -1,0 +1,46 @@
+{
+  "slug": "azure-Databricks-data-computer3",
+  "display_name": "Azure Databricks - SQL 计算 - 计算优化",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "Fsv2 系列 - 高级",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 6,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "F 系列 - 高级",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "NCsv3 系列 - 高级",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "NC6s v3",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

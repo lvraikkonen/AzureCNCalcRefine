@@ -1,0 +1,19 @@
+{
+  "service_name": "Azure DDos 保护 - IP保护",
+  "_acn_slug": "azure-ddos-ipprotection",
+  "_acn_display_name": "Azure DDos 保护 - IP保护",
+  "quantity_model": "per_meter",
+  "quantity_label": "Usage",
+  "hidden_dimensions": [
+    "productName"
+  ],
+  "meter_order": [
+    "公共 IP 资源每月费用"
+  ],
+  "defaults": {
+    "selections": {
+      "armRegionName": "eastus"
+    },
+    "hours_per_month": 730
+  }
+}

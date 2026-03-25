@@ -1,0 +1,79 @@
+{
+  "slug": "service-bus",
+  "display_name": "服务总线",
+  "types_semantic": "tier",
+  "types": [
+    {
+      "name": "基本",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "消息操作",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "标准",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "消息操作 - 基本费用",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "消息操作",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "中转连接",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "混合连接",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "中继小时数",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "消息数",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "高级",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "消息传送操作",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "dimension_labels": {
+      "skuName": "Tier"
+    }
+  }
+}

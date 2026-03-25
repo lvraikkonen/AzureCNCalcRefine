@@ -1,0 +1,61 @@
+{
+  "slug": "security-center",
+  "display_name": "Microsoft Defender for Storage",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "标准",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "面向服务器的 Microsoft Defender 计划",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "/服务器/小时"
+        },
+        {
+          "name": "Microsoft Defender for Containers",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "/vCore/小时"
+        },
+        {
+          "name": "连接 Azure 的数据库上的Microsoft Defender for SQL",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "/实例/小时"
+        },
+        {
+          "name": "适用于应用服务的 Microsoft Defender",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "/实例/小时"
+        },
+        {
+          "name": "适用于DNS的 Microsoft Defender",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "/M Queries"
+        },
+        {
+          "name": "适用于资源管理器的 Microsoft Defender",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "/M API调用"
+        },
+        {
+          "name": "Microsoft Defender for Storage",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "/每存储帐户/每一百万次事务"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

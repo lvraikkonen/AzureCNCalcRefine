@@ -1,0 +1,103 @@
+{
+  "slug": "sql-database-elastic-dtu",
+  "display_name": "SQL 数据库 - 弹性数据库 - DTU",
+  "types_semantic": "tier",
+  "types": [
+    {
+      "name": "基本",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 8,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "标准",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "小于等于 400",
+          "price_period": "monthly",
+          "sizes_count": 5,
+          "price_unit": "个"
+        },
+        {
+          "name": "大于 800",
+          "price_period": "monthly",
+          "sizes_count": 6,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "高级",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "小于等于 1500",
+          "price_period": "monthly",
+          "sizes_count": 5,
+          "price_unit": "个"
+        },
+        {
+          "name": "大于 1500",
+          "price_period": "monthly",
+          "sizes_count": 5,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "额外存储",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "标准",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "高级",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "长期保留存储",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "长期保留存储 - RA-GRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "长期保留存储 - ZRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "长期保留存储 - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "dimension_labels": {
+      "skuName": "Tier"
+    }
+  }
+}

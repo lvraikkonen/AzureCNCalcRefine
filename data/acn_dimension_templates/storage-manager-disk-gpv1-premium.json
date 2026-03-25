@@ -1,0 +1,178 @@
+{
+  "slug": "storage-manager-disk-gpv1-premium",
+  "display_name": "存储 - 高级托管磁盘 - 常规用途 v1",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "P1",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "P2",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "P3",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "P4",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "P6",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "P10",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "P15",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "P20",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "P30",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "P40",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "P50",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "P60",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "P70",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "P80",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

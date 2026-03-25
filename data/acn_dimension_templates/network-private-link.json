@@ -1,0 +1,37 @@
+{
+  "slug": "network-private-link",
+  "display_name": "Azure 专用链接",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "default",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "专用终结点",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "小时"
+        },
+        {
+          "name": "处理的入站数据",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        },
+        {
+          "name": "处理的出站数据",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

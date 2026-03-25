@@ -1,0 +1,94 @@
+{
+  "slug": "app-service-window",
+  "display_name": "应用服务 - Windows",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "高级PV2",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "独立服务计划",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "独立v2服务计划",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "基本服务计划",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "标准服务计划",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "免费和共享",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "SSL连接",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

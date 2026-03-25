@@ -1,0 +1,21 @@
+{
+  "service_name": "Managed Grafana",
+  "_acn_slug": "managed-grafana",
+  "_acn_display_name": "Managed Grafana",
+  "quantity_model": "per_meter",
+  "quantity_label": "Usage",
+  "hidden_dimensions": [
+    "productName"
+  ],
+  "meter_order": [
+    "操作输入",
+    "活跃用户",
+    "区域冗余"
+  ],
+  "defaults": {
+    "selections": {
+      "armRegionName": "eastus"
+    },
+    "hours_per_month": 730
+  }
+}

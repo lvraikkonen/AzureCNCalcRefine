@@ -1,0 +1,1499 @@
+{
+  "app-service": {
+    "display_name_raw": "应用程序配置 - 中国东部2",
+    "display_name_clean": "应用程序配置 - 中国东部2",
+    "region_constraints": null
+  },
+  "app-service-linux": {
+    "display_name_raw": "应用服务 - Linux",
+    "display_name_clean": "应用服务 - Linux",
+    "region_constraints": null
+  },
+  "app-service-window": {
+    "display_name_raw": "应用服务 - Windows",
+    "display_name_clean": "应用服务 - Windows",
+    "region_constraints": null
+  },
+  "app-service-custom-domain": {
+    "display_name_raw": "应用服务 - 自定义域",
+    "display_name_clean": "应用服务 - 自定义域",
+    "region_constraints": null
+  },
+  "app-service-ssl": {
+    "display_name_raw": "应用服务 - SSL 连接",
+    "display_name_clean": "应用服务 - SSL 连接",
+    "region_constraints": null
+  },
+  "virtual-machines-windows": {
+    "display_name_raw": "虚拟机 - Windows",
+    "display_name_clean": "虚拟机 - Windows",
+    "region_constraints": null
+  },
+  "virtual-machines-linux": {
+    "display_name_raw": "虚拟机 - Linux",
+    "display_name_clean": "虚拟机 - Linux",
+    "region_constraints": null
+  },
+  "sql-server-standard": {
+    "display_name_raw": "虚拟机 - SQL Server For Windows",
+    "display_name_clean": "虚拟机 - SQL Server For Windows",
+    "region_constraints": null
+  },
+  "virtual-machines-sql-server-ubuntu-linux": {
+    "display_name_raw": "虚拟机 - SQL Server Ubuntu Linux",
+    "display_name_clean": "虚拟机 - SQL Server Ubuntu Linux",
+    "region_constraints": null
+  },
+  "virtual-machines-ml-server": {
+    "display_name_raw": "虚拟机 - Machine Learning Server",
+    "display_name_clean": "虚拟机 - Machine Learning Server",
+    "region_constraints": null
+  },
+  "virtual-machines-suse-linux-enterprise-basic": {
+    "display_name_raw": "虚拟机 - Suse Linux Enterprise Basic",
+    "display_name_clean": "虚拟机 - Suse Linux Enterprise Basic",
+    "region_constraints": null
+  },
+  "virtual-machines-suse-linux-enterprise-server-for-sap-priority": {
+    "display_name_raw": "虚拟机 - Suse Linux Enterprise Server For Sap Priority",
+    "display_name_clean": "虚拟机 - Suse Linux Enterprise Server For Sap Priority",
+    "region_constraints": null
+  },
+  "cloud-services": {
+    "display_name_raw": "云服务",
+    "display_name_clean": "云服务",
+    "region_constraints": null
+  },
+  "storage-general-purpose-hierarchy-cool-block-blob-early-storage": {
+    "display_name_raw": "存储 - 块 Blob - 常规用途v2分层命名空间 - “热”，“冷”和“存档”访问层 - 数据存储价格 - 存档仅适用于中国东部2和中国北部2",
+    "display_name_clean": "存储 - 块 Blob - 常规用途v2分层命名空间 - “热”，“冷”和“存档”访问层 - 数据存储价格 - 存档仅适用于中国东部2和中国北部2",
+    "region_constraints": null
+  },
+  "storage-general-purpose-hierarchy-cool-block-blob-early-trans": {
+    "display_name_raw": "存储 - 块 Blob - 常规用途v2分层命名空间 - “热”，“冷”和“存档”访问层 - 事务价格 - 存档仅适用于中国东部2和中国北部2",
+    "display_name_clean": "存储 - 块 Blob - 常规用途v2分层命名空间 - “热”，“冷”和“存档”访问层 - 事务价格 - 存档仅适用于中国东部2和中国北部2",
+    "region_constraints": null
+  },
+  "storage-general-purpose-hierarchy-cool-block-blob-early-mentus": {
+    "display_name_raw": "存储 - 块 Blob - 常规用途v2分层命名空间 - “热”，“冷”和“存档”访问层 - 其他操作和元数据存储计量 - 存档仅适用于中国东部2和中国北部2",
+    "display_name_clean": "存储 - 块 Blob - 常规用途v2分层命名空间 - “热”，“冷”和“存档”访问层 - 其他操作和元数据存储计量 - 存档仅适用于中国东部2和中国北部2",
+    "region_constraints": null
+  },
+  "storage-general-purpose-gpv2-cool-block-blob-early-delete2": {
+    "display_name_raw": "存储 - 块 Blob - 常规用途 v2 - “冷”和“存档”提前删除 - 仅适用于中国东部2和中国北部2",
+    "display_name_clean": "存储 - 块 Blob - 常规用途 v2 - “冷”和“存档”提前删除",
+    "region_constraints": [
+      "chinaeast2",
+      "chinanorth2"
+    ]
+  },
+  "storage-general-purpose-gpv2-cool-block-blob-early-delete": {
+    "display_name_raw": "存储 - 块 Blob - 常规用途 v2 - “冷”和“存档”提前删除 - 仅适用于中国东部和中国北部",
+    "display_name_clean": "存储 - 块 Blob - 常规用途 v2 - “冷”和“存档”提前删除",
+    "region_constraints": [
+      "chinaeast",
+      "chinanorth"
+    ]
+  },
+  "storage-general-purpose-v2-cold-hot-block-blob": {
+    "display_name_raw": "存储 - 块 Blob - 常规用途v2 - “热”和“冷”访问层 - 数据存储价格 - 仅适用于中国东部2和中国北部2",
+    "display_name_clean": "存储 - 块 Blob - 常规用途v2 - “热”和“冷”访问层 - 数据存储价格",
+    "region_constraints": [
+      "chinaeast2",
+      "chinanorth2"
+    ]
+  },
+  "storage-general-purpose-v2-cold-hot-block-blob-region1": {
+    "display_name_raw": "存储 - 块 Blob - 常规用途v2 - “热”和“冷”访问层 - 数据存储价格 - 仅适用于中国东部1和中国北部1",
+    "display_name_clean": "存储 - 块 Blob - 常规用途v2 - “热”和“冷”访问层 - 数据存储价格",
+    "region_constraints": [
+      "chinaeast",
+      "chinanorth"
+    ]
+  },
+  "storage-general-purpose-v2-block-blob-access": {
+    "display_name_raw": "存储 - 块 Blob - 常规用途 v2 - “热”和“冷”访问层 - 操作和数据传输价格",
+    "display_name_clean": "存储 - 块 Blob - 常规用途 v2 - “热”和“冷”访问层 - 操作和数据传输价格",
+    "region_constraints": null
+  },
+  "storage-general-purpose-v2-block-blob-other2": {
+    "display_name_raw": "存储 - Blob 存储 - 常规用途 v2 - 其他功能",
+    "display_name_clean": "存储 - Blob 存储 - 常规用途 v2 - 其他功能",
+    "region_constraints": null
+  },
+  "storage-general-purpose-v2-block-blob-other-Encryption-scope": {
+    "display_name_raw": "存储 - Blob 存储 - 常规用途 v2 - 其他功能 - 加密范围 - 仅适用于中国东部2和中国北部2",
+    "display_name_clean": "存储 - Blob 存储 - 常规用途 v2 - 其他功能 - 加密范围",
+    "region_constraints": [
+      "chinaeast2",
+      "chinanorth2"
+    ]
+  },
+  "storage-cold-hot-block-blob-indexv2": {
+    "display_name_raw": "存储 - 常规用途 v2 - Blob 索引价格  - 仅适用于中国东部2和中国北部2",
+    "display_name_clean": "存储 - 常规用途 v2 - Blob 索引价格",
+    "region_constraints": [
+      "chinaeast2",
+      "chinanorth2"
+    ]
+  },
+  "storage-cold-hot-block-blob": {
+    "display_name_raw": "存储 - Blob 存储 - “热”和“冷”访问层 - 数据存储价格 - 仅适用于中国东部2和中国北部2",
+    "display_name_clean": "存储 - Blob 存储 - “热”和“冷”访问层 - 数据存储价格",
+    "region_constraints": [
+      "chinaeast2",
+      "chinanorth2"
+    ]
+  },
+  "storage-cold-hot-block-blob-index": {
+    "display_name_raw": "存储 - Blob 存储 - Blob 索引价格  - 仅适用于中国东部2和中国北部2",
+    "display_name_clean": "存储 - Blob 存储 - Blob 索引价格",
+    "region_constraints": [
+      "chinaeast2",
+      "chinanorth2"
+    ]
+  },
+  "storage-cold-hot-block-blob-region1": {
+    "display_name_raw": "存储 - Blob 存储 - “热”和“冷”访问层 - 数据存储价格",
+    "display_name_clean": "存储 - Blob 存储 - “热”和“冷”访问层 - 数据存储价格",
+    "region_constraints": null
+  },
+  "storage-cold-hot-block-blob-access": {
+    "display_name_raw": "存储 - Blob 存储 - “热”和“冷”访问层 - 操作和数据传输价格",
+    "display_name_clean": "存储 - Blob 存储 - “热”和“冷”访问层 - 操作和数据传输价格",
+    "region_constraints": null
+  },
+  "storage-general-purpose-blob-block-blob-other2": {
+    "display_name_raw": "存储 - Blob 存储 - 其他功能-仅适用于北2，北3，东2",
+    "display_name_clean": "存储 - Blob 存储 - 其他功能",
+    "region_constraints": null
+  },
+  "storage-general-purpose-blob-block-blob-other": {
+    "display_name_raw": "存储 - Blob 存储 - 其他功能-仅适用于北1，东1",
+    "display_name_clean": "存储 - Blob 存储 - 其他功能",
+    "region_constraints": null
+  },
+  "storage-general-purpose-block-blob": {
+    "display_name_raw": "存储 - 块 blob - 常规用途 v1 - 数据存储价格",
+    "display_name_clean": "存储 - 块 blob - 常规用途 v1 - 数据存储价格",
+    "region_constraints": null
+  },
+  "storage-general-purpose-block-blob-access": {
+    "display_name_raw": "存储 - 块 Blob - 常规用途 v1 - 操作和数据传输价格",
+    "display_name_clean": "存储 - 块 Blob - 常规用途 v1 - 操作和数据传输价格",
+    "region_constraints": null
+  },
+  "storage-general-purpose-file": {
+    "display_name_raw": "存储 - 文件 - 现用现付",
+    "display_name_clean": "存储 - 文件 - 现用现付",
+    "region_constraints": null
+  },
+  "storage-general-purpose-file-Provisioned-v1-ZRS": {
+    "display_name_raw": "存储 - 文件 - Provisioned V1 - 仅适用于中国北部3",
+    "display_name_clean": "存储 - 文件 - Provisioned V1",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "storage-general-purpose-file-Provisioned-v1": {
+    "display_name_raw": "存储 - 文件 - Provisioned V1 - 仅适用于中国东部3，中国东部2，中国北部2",
+    "display_name_clean": "存储 - 文件 - Provisioned V1",
+    "region_constraints": [
+      "chinaeast2",
+      "chinaeast3",
+      "chinanorth2"
+    ]
+  },
+  "storage-general-purpose-file-Provisioned-v2": {
+    "display_name_raw": "存储 - 文件 - Provisioned V2 - 仅适用于中国东部3，中国东部2，中国北部2",
+    "display_name_clean": "存储 - 文件 - Provisioned V2",
+    "region_constraints": [
+      "chinaeast2",
+      "chinaeast3",
+      "chinanorth2"
+    ]
+  },
+  "storage-general-purpose-file-Provisioned-v2-ZRS": {
+    "display_name_raw": "存储 - 文件 - Provisioned V2 - 仅适用于中国北部3",
+    "display_name_clean": "存储 - 文件 - Provisioned V2",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "storage-general-purpose-file-access": {
+    "display_name_raw": "存储 - 文件 - 事务和数据传输价格 ",
+    "display_name_clean": "存储 - 文件 - 事务和数据传输价格",
+    "region_constraints": null
+  },
+  "storage-general-sync-file-access": {
+    "display_name_raw": "存储 - 文件 - 文件同步价格",
+    "display_name_clean": "存储 - 文件 - 文件同步价格",
+    "region_constraints": null
+  },
+  "premium-storage": {
+    "display_name_raw": "存储 - 高级存储",
+    "display_name_clean": "存储 - 高级存储",
+    "region_constraints": null
+  },
+  "storage-manager-disk-gpv1-premium": {
+    "display_name_raw": "存储 - 高级托管磁盘 - 常规用途 v1 - 仅适用于中国东部2、中国北部2、中国北部3和中国东部3",
+    "display_name_clean": "存储 - 高级托管磁盘 - 常规用途 v1",
+    "region_constraints": [
+      "chinaeast2",
+      "chinaeast3",
+      "chinanorth2",
+      "chinanorth3"
+    ]
+  },
+  "storage-manager-disk-mount-gpv1-premium": {
+    "display_name_raw": "存储 - 高级托管磁盘 - 常规用途 v1 - 装载共享磁盘 - 仅适用于中国东部2、中国北部2、中国东部3和中国北部3",
+    "display_name_clean": "存储 - 高级托管磁盘 - 常规用途 v1 - 装载共享磁盘",
+    "region_constraints": [
+      "chinaeast2",
+      "chinaeast3",
+      "chinanorth2",
+      "chinanorth3"
+    ]
+  },
+  "storage-manager-disk-gpv1-premium-region1": {
+    "display_name_raw": "存储 - 高级托管磁盘 - 常规用途 v1",
+    "display_name_clean": "存储 - 高级托管磁盘 - 常规用途 v1",
+    "region_constraints": null
+  },
+  "storage-page-blobs-gpv1-premium-snapshots": {
+    "display_name_raw": "存储 - 高级页 Blob - 常规用途 v1 - 快照",
+    "display_name_clean": "存储 - 高级页 Blob - 常规用途 v1 - 快照",
+    "region_constraints": null
+  },
+  "storage-ssd-manager-disk-gpv1-standard": {
+    "display_name_raw": "存储 - 标准 SSD 托管磁盘 - 常规用途 v1 - 仅适用于中国东部2、中国北部2、中国北部3和中国东部3",
+    "display_name_clean": "存储 - 标准 SSD 托管磁盘 - 常规用途 v1",
+    "region_constraints": [
+      "chinaeast2",
+      "chinaeast3",
+      "chinanorth2",
+      "chinanorth3"
+    ]
+  },
+  "storage-ssd-manager-disk-gpv1-standard-eastRegion-northRegion": {
+    "display_name_raw": "存储 - 标准 SSD 托管磁盘 - 共享磁盘 - 常规用途v1 - 仅适用于中国东部1和中国北部1",
+    "display_name_clean": "存储 - 标准 SSD 托管磁盘 - 共享磁盘 - 常规用途v1",
+    "region_constraints": [
+      "chinaeast",
+      "chinanorth"
+    ]
+  },
+  "storage-ssd-manager-disk-gpv1-mount-standard": {
+    "display_name_raw": "存储 - 标准 SSD 托管磁盘 - 常规用途 v1 - 装载磁盘 - 仅适用于中国东部2和中国北部2",
+    "display_name_clean": "存储 - 标准 SSD 托管磁盘 - 常规用途 v1 - 装载磁盘",
+    "region_constraints": [
+      "chinaeast2",
+      "chinanorth2"
+    ]
+  },
+  "storage-ssd-manager-disk-gpv1-standard-region1": {
+    "display_name_raw": "存储 - 标准 SSD 托管磁盘 - 常规用途 v1 - 仅适用于中国东部1和中国北部1",
+    "display_name_clean": "存储 - 标准 SSD 托管磁盘 - 常规用途 v1",
+    "region_constraints": [
+      "chinaeast",
+      "chinanorth"
+    ]
+  },
+  "storage-ssd-manager-disk-gpv1-standard-access": {
+    "display_name_raw": "存储 - 标准 SSD 托管磁盘 - 常规用途 v1 - 操作和数据传输价格",
+    "display_name_clean": "存储 - 标准 SSD 托管磁盘 - 常规用途 v1 - 操作和数据传输价格",
+    "region_constraints": null
+  },
+  "storage-manager-disk-gpv1-standard": {
+    "display_name_raw": "存储 - 标准托管磁盘 - 常规用途 v1 ",
+    "display_name_clean": "存储 - 标准托管磁盘 - 常规用途 v1",
+    "region_constraints": null
+  },
+  "storage-manager-disk-gpv1-standard-region3": {
+    "display_name_raw": "存储 - 标准托管磁盘 - 常规用途 v1 - 仅适用于中国东部3",
+    "display_name_clean": "存储 - 标准托管磁盘 - 常规用途 v1",
+    "region_constraints": [
+      "chinaeast3"
+    ]
+  },
+  "storage-manager-disk-gpv1-standard-access": {
+    "display_name_raw": "存储 - 标准托管磁盘 - 常规用途 v1 - 操作和数据传输价格",
+    "display_name_clean": "存储 - 标准托管磁盘 - 常规用途 v1 - 操作和数据传输价格",
+    "region_constraints": null
+  },
+  "storage-page-blobs-gpv2-premium-snapshots": {
+    "display_name_raw": "存储 - 高级页 Blob - 常规用途 v2 - 快照",
+    "display_name_clean": "存储 - 高级页 Blob - 常规用途 v2 - 快照",
+    "region_constraints": null
+  },
+  "storage-page-blobs-gpv2-ummanager-disk-premium": {
+    "display_name_raw": "存储 - 高级页 Blob - 常规用途 v2 - 仅适用于中国东部2、中国北部2、中国东部和中国北部",
+    "display_name_clean": "存储 - 高级页 Blob - 常规用途 v2",
+    "region_constraints": [
+      "chinaeast",
+      "chinaeast2",
+      "chinanorth",
+      "chinanorth2"
+    ]
+  },
+  "storage-page-blobs-gpv2-ummanager-disk-premium-north3": {
+    "display_name_raw": "存储 - 高级页 Blob - 常规用途 v2 - 仅适用于中国东部3",
+    "display_name_clean": "存储 - 高级页 Blob - 常规用途 v2",
+    "region_constraints": [
+      "chinaeast3"
+    ]
+  },
+  "storage-page-blobs-gpv2-standard": {
+    "display_name_raw": "存储 - 标准页 Blob - 常规用途 v2 - 数据存储价格 - 仅适用于中国东部3、中国东部2、中国北部2、中国东部和中国北部",
+    "display_name_clean": "存储 - 标准页 Blob - 常规用途 v2 - 数据存储价格",
+    "region_constraints": [
+      "chinaeast",
+      "chinaeast2",
+      "chinaeast3",
+      "chinanorth",
+      "chinanorth2"
+    ]
+  },
+  "storage-page-blobs-gpv2-standard-N3": {
+    "display_name_raw": "存储 - 标准页 Blob - 常规用途 v2 - 数据存储价格 - 仅适用于中国北部3",
+    "display_name_clean": "存储 - 标准页 Blob - 常规用途 v2 - 数据存储价格",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "storage-page-blobs-gpv2-unmanager-disk-standard-access": {
+    "display_name_raw": "存储 - 用作非托管磁盘的页 Blob - 常规用途 v2 - 操作价格 - 仅适用于中国北部3、中国东部2、中国北部2、中国东部和中国北部",
+    "display_name_clean": "存储 - 用作非托管磁盘的页 Blob - 常规用途 v2 - 操作价格",
+    "region_constraints": [
+      "chinaeast",
+      "chinaeast2",
+      "chinanorth",
+      "chinanorth2",
+      "chinanorth3"
+    ]
+  },
+  "storage-page-blobs-gpv2-page-blobs-access": {
+    "display_name_raw": "存储 - 页 Blob（非磁盘） - 常规用途 v2 - 操作价格 - 仅适用于中国北部3、中国东部2、中国北部2、中国东部和中国北部",
+    "display_name_clean": "存储 - 页 Blob（非磁盘） - 常规用途 v2 - 操作价格",
+    "region_constraints": [
+      "chinaeast",
+      "chinaeast2",
+      "chinanorth",
+      "chinanorth2",
+      "chinanorth3"
+    ]
+  },
+  "storage-page-blobs-gpv2-page-blobs-access-east3": {
+    "display_name_raw": "存储 - 页 Blob（非磁盘） - 常规用途 v2 - 操作价格 - 仅适用于中国东部3",
+    "display_name_clean": "存储 - 页 Blob（非磁盘） - 常规用途 v2 - 操作价格",
+    "region_constraints": [
+      "chinaeast3"
+    ]
+  },
+  "storage-page-blobs-gpv1-ummanager-disk-premium": {
+    "display_name_raw": "存储 - 高级页 Blob - 常规用途 v1 - 仅适用于中国北部2、中国东部和中国北部",
+    "display_name_clean": "存储 - 高级页 Blob - 常规用途 v1",
+    "region_constraints": [
+      "chinaeast",
+      "chinanorth",
+      "chinanorth2"
+    ]
+  },
+  "storage-page-blobs-gpv1-ummanager-disk-premium-north3": {
+    "display_name_raw": "存储 - 高级页 Blob - 常规用途 v1 - 仅适用于中国东部3，中国东部2，中国北部3",
+    "display_name_clean": "存储 - 高级页 Blob - 常规用途 v1",
+    "region_constraints": [
+      "chinaeast2",
+      "chinaeast3",
+      "chinanorth3"
+    ]
+  },
+  "storage-page-blobs-gpv1-ummanager-disk-standard": {
+    "display_name_raw": "存储 - 标准页 Blob - 常规用途 v1 - 仅适用于中国东部2、中国北部2、中国东部和中国北部",
+    "display_name_clean": "存储 - 标准页 Blob - 常规用途 v1",
+    "region_constraints": [
+      "chinaeast",
+      "chinaeast2",
+      "chinanorth",
+      "chinanorth2"
+    ]
+  },
+  "storage-page-blobs-gpv1-ummanager-disk-standard-north3": {
+    "display_name_raw": "存储 - 标准页 Blob - 常规用途 v1 - 仅适用于中国北部3",
+    "display_name_clean": "存储 - 标准页 Blob - 常规用途 v1",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "storage-page-blobs-gpv1-ummanager-disk-standard-east3": {
+    "display_name_raw": "存储 - 标准页 Blob - 常规用途 v1 - 仅适用于中国东部3",
+    "display_name_clean": "存储 - 标准页 Blob - 常规用途 v1",
+    "region_constraints": [
+      "chinaeast3"
+    ]
+  },
+  "storage-page-blobs-gpv1-unmanager-disk-standard-access": {
+    "display_name_raw": "存储 - 用作非托管磁盘的页 Blob - 常规用途 v1 - 操作价格 - 仅适用于中国东部2、中国北部2、中国东部和中国北部",
+    "display_name_clean": "存储 - 用作非托管磁盘的页 Blob - 常规用途 v1 - 操作价格",
+    "region_constraints": [
+      "chinaeast",
+      "chinaeast2",
+      "chinanorth",
+      "chinanorth2"
+    ]
+  },
+  "storage-page-blobs-gpv1-unmanager-disk-standard-access-north3": {
+    "display_name_raw": "存储 - 用作非托管磁盘的页 Blob - 常规用途 v1 - 操作价格 - 仅适用于中国北部3",
+    "display_name_clean": "存储 - 用作非托管磁盘的页 Blob - 常规用途 v1 - 操作价格",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "storage-page-blobs-gpv1-unmanager-disk-standard-access-east3": {
+    "display_name_raw": "存储 - 用作非托管磁盘的页 Blob - 常规用途 v1 - 操作价格 - 仅适用于中国东部3",
+    "display_name_clean": "存储 - 用作非托管磁盘的页 Blob - 常规用途 v1 - 操作价格",
+    "region_constraints": [
+      "chinaeast3"
+    ]
+  },
+  "storage-page-blobs-gpv1-ummanager-disk-blob": {
+    "display_name_raw": "存储 - 标准页 Blob - 常规用途 v1 - 操作和数据传输价格 - 操作价格 - 仅适用于中国东部2、中国北部2、中国东部和中国北部",
+    "display_name_clean": "存储 - 标准页 Blob - 常规用途 v1 - 操作和数据传输价格 - 操作价格",
+    "region_constraints": [
+      "chinaeast",
+      "chinaeast2",
+      "chinanorth",
+      "chinanorth2"
+    ]
+  },
+  "storage-page-blobs-gpv1-ummanager-disk-blob-north3": {
+    "display_name_raw": "存储 - 标准页 Blob - 常规用途 v1 - 操作和数据传输价格 - 仅适用于中国北部3",
+    "display_name_clean": "存储 - 标准页 Blob - 常规用途 v1 - 操作和数据传输价格",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "storage-page-blobs-gpv1-ummanager-disk-blob-east3": {
+    "display_name_raw": "存储 - 标准页 Blob - 常规用途 v1 - 操作和数据传输价格 - 仅适用于中国东部3",
+    "display_name_clean": "存储 - 标准页 Blob - 常规用途 v1 - 操作和数据传输价格",
+    "region_constraints": [
+      "chinaeast3"
+    ]
+  },
+  "storage-general-purpose-page-blob-disk": {
+    "display_name_raw": "存储 - 常规用途存储账户 - 页 Blob 和磁盘",
+    "display_name_clean": "存储 - 常规用途存储账户 - 页 Blob 和磁盘",
+    "region_constraints": null
+  },
+  "storage-general-purpose-page-blob-access": {
+    "display_name_raw": "存储 - 常规用途存储账户 - 页 Blob - 操作和数据传输价格",
+    "display_name_clean": "存储 - 常规用途存储账户 - 页 Blob - 操作和数据传输价格",
+    "region_constraints": null
+  },
+  "storage-general-purpose-table-access-east3": {
+    "display_name_raw": "存储 - 常规用途存储账户 - 表 - 操作和数据传输价格 - 仅适用于中国东部3",
+    "display_name_clean": "存储 - 常规用途存储账户 - 表 - 操作和数据传输价格",
+    "region_constraints": [
+      "chinaeast3"
+    ]
+  },
+  "storage-general-purpose-table-north3": {
+    "display_name_raw": "存储 - 常规用途存储账户 - 表 - 数据存储价格 - 仅适用于中国北部3和中国东部3",
+    "display_name_clean": "存储 - 常规用途存储账户 - 表 - 数据存储价格",
+    "region_constraints": [
+      "chinaeast3",
+      "chinanorth3"
+    ]
+  },
+  "storage-general-purpose-table-access-north3": {
+    "display_name_raw": "存储 - 常规用途存储账户 - 表 - 操作和数据传输价格 - 仅适用于中国北部3",
+    "display_name_clean": "存储 - 常规用途存储账户 - 表 - 操作和数据传输价格",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "storage-general-purpose-table": {
+    "display_name_raw": "存储 - 常规用途存储账户 - 表 - 数据存储价格",
+    "display_name_clean": "存储 - 常规用途存储账户 - 表 - 数据存储价格",
+    "region_constraints": null
+  },
+  "storage-general-purpose-table-access": {
+    "display_name_raw": "存储 - 常规用途存储账户 - 表 - 操作和数据传输价格",
+    "display_name_clean": "存储 - 常规用途存储账户 - 表 - 操作和数据传输价格",
+    "region_constraints": null
+  },
+  "storage-queues-gpv2-east3": {
+    "display_name_raw": "存储 - 队列 - 常规用途 v2 - 数据存储价格 - 仅适用于中国东部3",
+    "display_name_clean": "存储 - 队列 - 常规用途 v2 - 数据存储价格",
+    "region_constraints": [
+      "chinaeast3"
+    ]
+  },
+  "storage-queues-gpv2-access": {
+    "display_name_raw": "存储 - 队列 - 常规用途 v2 - 操作和数据传输价格 - 仅适用于中国东部3",
+    "display_name_clean": "存储 - 队列 - 常规用途 v2 - 操作和数据传输价格",
+    "region_constraints": [
+      "chinaeast3"
+    ]
+  },
+  "storage-queues-gpv1": {
+    "display_name_raw": "存储 - 队列 - 常规用途 v1 - 数据存储价格",
+    "display_name_clean": "存储 - 队列 - 常规用途 v1 - 数据存储价格",
+    "region_constraints": null
+  },
+  "storage-queues-gpv1-access": {
+    "display_name_raw": "存储 - 队列 - 常规用途 v1 - 操作和数据传输价格",
+    "display_name_clean": "存储 - 队列 - 常规用途 v1 - 操作和数据传输价格",
+    "region_constraints": null
+  },
+  "storage-queues-gpv2-access-east3": {
+    "display_name_raw": "存储 - 队列 - 常规用途 v2 - 操作和数据传输价格",
+    "display_name_clean": "存储 - 队列 - 常规用途 v2 - 操作和数据传输价格",
+    "region_constraints": null
+  },
+  "storage-queues-gpv1-east3": {
+    "display_name_raw": "存储 - 队列 - 常规用途 v1 - 数据存储价格 - 仅适用于中国东部3",
+    "display_name_clean": "存储 - 队列 - 常规用途 v1 - 数据存储价格",
+    "region_constraints": [
+      "chinaeast3"
+    ]
+  },
+  "storage-queues-gpv1-access-east3": {
+    "display_name_raw": "存储 - 队列 - 常规用途 v1 - 操作和数据传输价格 - 仅适用于中国东部3",
+    "display_name_clean": "存储 - 队列 - 常规用途 v1 - 操作和数据传输价格",
+    "region_constraints": [
+      "chinaeast3"
+    ]
+  },
+  "storage-queues-gpv2-north3": {
+    "display_name_raw": "存储 - 队列 - 常规用途 v2 - 数据存储价格 - 仅适用于中国北部3",
+    "display_name_clean": "存储 - 队列 - 常规用途 v2 - 数据存储价格",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "storage-queues-gpv2-access-north3": {
+    "display_name_raw": "存储 - 队列 - 常规用途 v2 - 操作和数据传输价格 - 仅适用于中国北部3",
+    "display_name_clean": "存储 - 队列 - 常规用途 v2 - 操作和数据传输价格",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "storage-queues-gpv1-north3": {
+    "display_name_raw": "存储 - 队列 - 常规用途 v1 - 数据存储价格 - 仅适用于中国北部3",
+    "display_name_clean": "存储 - 队列 - 常规用途 v1 - 数据存储价格",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "storage-queues-gpv1-access-north3": {
+    "display_name_raw": "存储 - 队列 - 常规用途 v1 - 操作和数据传输价格 - 仅适用于中国北部3",
+    "display_name_clean": "存储 - 队列 - 常规用途 v1 - 操作和数据传输价格",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "storage-import-export": {
+    "display_name_raw": "存储 - 导入与导出",
+    "display_name_clean": "存储 - 导入与导出",
+    "region_constraints": null
+  },
+  "storage-databox-disk": {
+    "display_name_raw": "存储 - Azure Data Box Disk ",
+    "display_name_clean": "存储 - Azure Data Box Disk",
+    "region_constraints": null
+  },
+  "storage-data-lake-data-storage": {
+    "display_name_raw": "存储 - Data Lake 数据存储",
+    "display_name_clean": "存储 - Data Lake 数据存储",
+    "region_constraints": null
+  },
+  "storage-data-lake-transaction": {
+    "display_name_raw": "存储 - Data Lake 事务",
+    "display_name_clean": "存储 - Data Lake 事务",
+    "region_constraints": null
+  },
+  "storage-data-lake-operations": {
+    "display_name_raw": "存储 - Data Lake 其他操作和元数据存储计量",
+    "display_name_clean": "存储 - Data Lake 其他操作和元数据存储计量",
+    "region_constraints": null
+  },
+  "storage-data-lake-archive": {
+    "display_name_raw": "存储 - Data Lake 存档提前删除",
+    "display_name_clean": "存储 - Data Lake 存档提前删除",
+    "region_constraints": null
+  },
+  "sql-database-managed-instance-gen5": {
+    "display_name_raw": "SQL 数据库 - 托管实例 - vCore - Gen 5",
+    "display_name_clean": "SQL 数据库 - 托管实例 - vCore - Gen 5",
+    "region_constraints": null
+  },
+  "sql-database-elastic-vcore": {
+    "display_name_raw": "SQL 数据库 - 弹性数据库 - vCore - Gen 4",
+    "display_name_clean": "SQL 数据库 - 弹性数据库 - vCore - Gen 4",
+    "region_constraints": null
+  },
+  "sql-database-elastic-vcore-gen5": {
+    "display_name_raw": "SQL 数据库 - 弹性数据库 - vCore - Gen 5",
+    "display_name_clean": "SQL 数据库 - 弹性数据库 - vCore - Gen 5",
+    "region_constraints": null
+  },
+  "sql-database-elastic-dtu": {
+    "display_name_raw": "SQL 数据库 - 弹性数据库 - DTU",
+    "display_name_clean": "SQL 数据库 - 弹性数据库 - DTU",
+    "region_constraints": null
+  },
+  "sql-database-single-vcore": {
+    "display_name_raw": "SQL 数据库 - 单个数据库 - vCore - Gen 4",
+    "display_name_clean": "SQL 数据库 - 单个数据库 - vCore - Gen 4",
+    "region_constraints": null
+  },
+  "sql-database-hyperscale-preview": {
+    "display_name_raw": "SQL 数据库 - 单个数据库 -超大规模 (预览版)-仅适用于中国北部3",
+    "display_name_clean": "SQL 数据库 - 单个数据库 -超大规模 (预览版)",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "sql-database-single-vcore-hyperscale-preview": {
+    "display_name_raw": "SQL 数据库 - 单个数据库 - 本地冗余数据库 - 超大规模（预览版）-仅适用于中国北部 3",
+    "display_name_clean": "SQL 数据库 - 单个数据库 - 本地冗余数据库 - 超大规模（预览版）",
+    "region_constraints": [
+      "chinanorth"
+    ]
+  },
+  "sql-database-single-vcore-gen5": {
+    "display_name_raw": "SQL 数据库 - 单个数据库 - vCore - Gen 5",
+    "display_name_clean": "SQL 数据库 - 单个数据库 - vCore - Gen 5",
+    "region_constraints": null
+  },
+  "sql-database-single-dtu": {
+    "display_name_raw": "SQL 数据库 - 单个数据库 - DTU",
+    "display_name_clean": "SQL 数据库 - 单个数据库 - DTU",
+    "region_constraints": null
+  },
+  "sql-database-atp": {
+    "display_name_raw": "SQL 数据库 - 高级威胁防护 - ADS",
+    "display_name_clean": "SQL 数据库 - 高级威胁防护 - ADS",
+    "region_constraints": null
+  },
+  "sql-database-sql-elastic-jobs": {
+    "display_name_raw": "SQL 数据库 - 弹性作业",
+    "display_name_clean": "SQL 数据库 - 弹性作业",
+    "region_constraints": null
+  },
+  "sql-database-sql-edge": {
+    "display_name_raw": "Azure SQL Edge",
+    "display_name_clean": "Azure SQL Edge",
+    "region_constraints": null
+  },
+  "database-web-and-business": {
+    "display_name_raw": "SQL 数据库 - Web 和企业版",
+    "display_name_clean": "SQL 数据库 - Web 和企业版",
+    "region_constraints": null
+  },
+  "mobile-service": {
+    "display_name_raw": "移动服务",
+    "display_name_clean": "移动服务",
+    "region_constraints": null
+  },
+  "event-hubs": {
+    "display_name_raw": "事件中心",
+    "display_name_clean": "事件中心",
+    "region_constraints": null
+  },
+  "automation": {
+    "display_name_raw": "自动化",
+    "display_name_clean": "自动化",
+    "region_constraints": null
+  },
+  "power-bi-embedded": {
+    "display_name_raw": "Power BI Embedded",
+    "display_name_clean": "Power BI Embedded",
+    "region_constraints": null
+  },
+  "power-bi-workspace-collections": {
+    "display_name_raw": "Power BI 工作区集合",
+    "display_name_clean": "Power BI 工作区集合",
+    "region_constraints": null
+  },
+  "site-recovery": {
+    "display_name_raw": "站点恢复",
+    "display_name_clean": "站点恢复",
+    "region_constraints": null
+  },
+  "mysql-database-on-azure": {
+    "display_name_raw": "MySQL Database on Azure",
+    "display_name_clean": "MySQL Database on Azure",
+    "region_constraints": null
+  },
+  "azure-database-for-mysql": {
+    "display_name_raw": "Azure Database for MySQL - 灵活服务器 - 常规用途 - Ddsv5系列 - 仅支持中国东部3",
+    "display_name_clean": "Azure Database for MySQL - 灵活服务器 - 常规用途 - Ddsv5系列",
+    "region_constraints": [
+      "chinaeast3"
+    ]
+  },
+  "azure-database-for-mysql-Flexible Server": {
+    "display_name_raw": "Azure Database for MySQL - 灵活服务器 - 仅支持中国东部2和中国北部2",
+    "display_name_clean": "Azure Database for MySQL - 灵活服务器",
+    "region_constraints": [
+      "chinaeast2",
+      "chinanorth2"
+    ]
+  },
+  "azure-database-for-mysql-Flexible Server-ForChinaNorth3": {
+    "display_name_raw": "Azure Database for MySQL - 灵活服务器 - 仅支持中国北部3和中国东部3",
+    "display_name_clean": "Azure Database for MySQL - 灵活服务器",
+    "region_constraints": [
+      "chinaeast3",
+      "chinanorth3"
+    ]
+  },
+  "azure-database-for-mysql-Flexible Server_ExtendedSupport_E3": {
+    "display_name_raw": "Azure Database for MySQL - 扩展支持 - 仅支持中国东部3",
+    "display_name_clean": "Azure Database for MySQL - 扩展支持",
+    "region_constraints": [
+      "chinaeast3"
+    ]
+  },
+  "azure-database-for-mysql-Flexible Server_ExtendedSupport": {
+    "display_name_raw": "Azure Database for MySQL - 扩展支持 - 仅支持中国北部3，中国北部2和中国东部2",
+    "display_name_clean": "Azure Database for MySQL - 扩展支持",
+    "region_constraints": [
+      "chinaeast2",
+      "chinanorth2",
+      "chinanorth3"
+    ]
+  },
+  "azure-database-for-postgresql-Flexible Server": {
+    "display_name_raw": "Azure Database for PostgreSQL - 灵活服务器 - 仅适用于中国东部3和中国北部3",
+    "display_name_clean": "Azure Database for PostgreSQL - 灵活服务器",
+    "region_constraints": [
+      "chinaeast3",
+      "chinanorth3"
+    ]
+  },
+  "stream-analytics": {
+    "display_name_raw": "流分析",
+    "display_name_clean": "流分析",
+    "region_constraints": null
+  },
+  "redis-cache": {
+    "display_name_raw": "Redis 缓存 - 用于 Redis 的 Azure 缓存",
+    "display_name_clean": "Redis 缓存 - 用于 Redis 的 Azure 缓存",
+    "region_constraints": null
+  },
+  "notification-hub": {
+    "display_name_raw": "通知中心",
+    "display_name_clean": "通知中心",
+    "region_constraints": null
+  },
+  "hdinsight": {
+    "display_name_raw": "HDInsight",
+    "display_name_clean": "HDInsight",
+    "region_constraints": null
+  },
+  "cdn": {
+    "display_name_raw": "CDN",
+    "display_name_clean": "CDN",
+    "region_constraints": null
+  },
+  "schedule": {
+    "display_name_raw": "计划程序",
+    "display_name_clean": "计划程序",
+    "region_constraints": null
+  },
+  "backup": {
+    "display_name_raw": "备份 - Azure VM 及本地服务器备份",
+    "display_name_clean": "备份 - Azure VM 及本地服务器备份",
+    "region_constraints": null
+  },
+  "backup-backup-storage": {
+    "display_name_raw": "备份存储空间 - 仅适用于中国北部1，中国东部1",
+    "display_name_clean": "备份存储空间",
+    "region_constraints": [
+      "chinaeast",
+      "chinanorth"
+    ]
+  },
+  "backup-backup-storage-East2-North2": {
+    "display_name_raw": "备份存储空间 - 仅适用于中国北部2，中国东部2",
+    "display_name_clean": "备份存储空间",
+    "region_constraints": [
+      "chinaeast2",
+      "chinanorth2"
+    ]
+  },
+  "backup-backup-storage-north3": {
+    "display_name_raw": "备份存储空间 - 仅适用于中国北部3， 中国东部3",
+    "display_name_clean": "备份存储空间",
+    "region_constraints": [
+      "chinaeast3",
+      "chinanorth3"
+    ]
+  },
+  "backup-sqlserver": {
+    "display_name_raw": "备份 - Azure VM 上的 SQL Server 备份",
+    "display_name_clean": "备份 - Azure VM 上的 SQL Server 备份",
+    "region_constraints": null
+  },
+  "backup-vm-hana": {
+    "display_name_raw": "备份 -  Azure VM 上的 SAP HANA",
+    "display_name_clean": "备份 -  Azure VM 上的 SAP HANA",
+    "region_constraints": null
+  },
+  "backup-azure-kubernetes-service": {
+    "display_name_raw": "Azure Kubernetes 服务的备份（预览版）",
+    "display_name_clean": "Azure Kubernetes 服务的备份（预览版）",
+    "region_constraints": null
+  },
+  "service-bus": {
+    "display_name_raw": "服务总线",
+    "display_name_clean": "服务总线",
+    "region_constraints": null
+  },
+  "vpn-gateway-availability-zones": {
+    "display_name_raw": "VPN 网关 - 可用性区域 - 仅适用于中国北部3",
+    "display_name_clean": "VPN 网关 - 可用性区域",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "azure-bastion": {
+    "display_name_raw": "Azure Bastion",
+    "display_name_clean": "Azure Bastion",
+    "region_constraints": null
+  },
+  "vpn-gateway-data-transfer": {
+    "display_name_raw": "VPN 网关 - 出站虚拟网络间数据传输",
+    "display_name_clean": "VPN 网关 - 出站虚拟网络间数据传输",
+    "region_constraints": null
+  },
+  "ip-address": {
+    "display_name_raw": "公共 IP 地址",
+    "display_name_clean": "公共 IP 地址",
+    "region_constraints": null
+  },
+  "traffic-manager": {
+    "display_name_raw": "流量管理器",
+    "display_name_clean": "流量管理器",
+    "region_constraints": null
+  },
+  "data-transfer": {
+    "display_name_raw": "数据传输 - 传出数据中心",
+    "display_name_clean": "数据传输 - 传出数据中心",
+    "region_constraints": null
+  },
+  "virtual-network": {
+    "display_name_raw": "虚拟网络",
+    "display_name_clean": "虚拟网络",
+    "region_constraints": null
+  },
+  "azure-nat-gateway": {
+    "display_name_raw": "Azure NAT 网关",
+    "display_name_clean": "Azure NAT 网关",
+    "region_constraints": null
+  },
+  "application-gateway-basic": {
+    "display_name_raw": "应用程序网关 - 基本",
+    "display_name_clean": "应用程序网关 - 基本",
+    "region_constraints": null
+  },
+  "application-gateway-waf": {
+    "display_name_raw": "应用程序网关 - Web 应用程序防火墙 (WAF) ",
+    "display_name_clean": "应用程序网关 - Web 应用程序防火墙 (WAF)",
+    "region_constraints": null
+  },
+  "application-gateway-data-process": {
+    "display_name_raw": "应用程序网关 - 数据处理",
+    "display_name_clean": "应用程序网关 - 数据处理",
+    "region_constraints": null
+  },
+  "application-gateway-standard": {
+    "display_name_raw": "应用程序网关 - 基本版",
+    "display_name_clean": "应用程序网关 - 基本版",
+    "region_constraints": null
+  },
+  "application-gateway-standard-v2": {
+    "display_name_raw": "应用程序网关 - 标准版 V2",
+    "display_name_clean": "应用程序网关 - 标准版 V2",
+    "region_constraints": null
+  },
+  "application-gateway-waf-v2": {
+    "display_name_raw": "应用程序网关 - Web 应用程序防火墙 (WAF) V2",
+    "display_name_clean": "应用程序网关 - Web 应用程序防火墙 (WAF) V2",
+    "region_constraints": null
+  },
+  "expressroute-unlimited": {
+    "display_name_raw": "ExpressRoute 线路",
+    "display_name_clean": "ExpressRoute 线路",
+    "region_constraints": null
+  },
+  "expressroute-measurement": {
+    "display_name_raw": "ExpressRoute 网关",
+    "display_name_clean": "ExpressRoute 网关",
+    "region_constraints": null
+  },
+  "expressroute-availability": {
+    "display_name_raw": "ExpressRoute 可用性区域",
+    "display_name_clean": "ExpressRoute 可用性区域",
+    "region_constraints": null
+  },
+  "expressroute-data": {
+    "display_name_raw": "ExpressRoute - 计量数据计划 - 传出数据流量费率",
+    "display_name_clean": "ExpressRoute - 计量数据计划 - 传出数据流量费率",
+    "region_constraints": null
+  },
+  "expressroute-direct": {
+    "display_name_raw": "ExpressRoute - ExpressRoute Direct",
+    "display_name_clean": "ExpressRoute - ExpressRoute Direct",
+    "region_constraints": null
+  },
+  "expressroute-out-data": {
+    "display_name_raw": "ExpressRoute - 出站数据传输定价",
+    "display_name_clean": "ExpressRoute - 出站数据传输定价",
+    "region_constraints": null
+  },
+  "support": {
+    "display_name_raw": "支持",
+    "display_name_clean": "支持",
+    "region_constraints": null
+  },
+  "key-vault-vaults": {
+    "display_name_raw": "密钥保管库 - 保管库",
+    "display_name_clean": "密钥保管库 - 保管库",
+    "region_constraints": null
+  },
+  "key-vault": {
+    "display_name_raw": "密钥保管库 - 托管的 HSM 池",
+    "display_name_clean": "密钥保管库 - 托管的 HSM 池",
+    "region_constraints": null
+  },
+  "key-vault-protected-software": {
+    "display_name_raw": "密钥保管库 - 受软件保护的密钥",
+    "display_name_clean": "密钥保管库 - 受软件保护的密钥",
+    "region_constraints": null
+  },
+  "key-vault-HSM-protected-key": {
+    "display_name_raw": "密钥保管库 - 受 HSM 保护的密钥",
+    "display_name_clean": "密钥保管库 - 受 HSM 保护的密钥",
+    "region_constraints": null
+  },
+  "key-vault-key-rotation": {
+    "display_name_raw": "密钥保管库 - 密钥轮换",
+    "display_name_clean": "密钥保管库 - 密钥轮换",
+    "region_constraints": null
+  },
+  "sql-data-warehouse": {
+    "display_name_raw": "Azure Synapse Analytics",
+    "display_name_clean": "Azure Synapse Analytics",
+    "region_constraints": null
+  },
+  "azure-iot-hub": {
+    "display_name_raw": "Azure IoT 中心",
+    "display_name_clean": "Azure IoT 中心",
+    "region_constraints": null
+  },
+  "azure-iot-hub-dps": {
+    "display_name_raw": "Azure IoT 中心设备预配服务",
+    "display_name_clean": "Azure IoT 中心设备预配服务",
+    "region_constraints": null
+  },
+  "cosmos-db_ru": {
+    "display_name_raw": "Azure Cosmos DB - 预配吞吐量",
+    "display_name_clean": "Azure Cosmos DB - 预配吞吐量",
+    "region_constraints": null
+  },
+  "cosmos-storage": {
+    "display_name_raw": "Azure Cosmos DB - 存储",
+    "display_name_clean": "Azure Cosmos DB - 存储",
+    "region_constraints": null
+  },
+  "cosmos-db_add-on-provisioning": {
+    "display_name_raw": "Azure Cosmos DB - 附加预配：每分钟请求单位",
+    "display_name_clean": "Azure Cosmos DB - 附加预配：每分钟请求单位",
+    "region_constraints": null
+  },
+  "sql-server-stretch-database": {
+    "display_name_raw": "SQL Server Stretch Database",
+    "display_name_clean": "SQL Server Stretch Database",
+    "region_constraints": null
+  },
+  "cognitive-services-computer-vision": {
+    "display_name_raw": "Azure AI 服务 - 计算机影像",
+    "display_name_clean": "Azure AI 服务 - 计算机影像",
+    "region_constraints": null
+  },
+  "cognitive-services-imageAnalysis": {
+    "display_name_raw": "Azure AI 服务 - 映像分析",
+    "display_name_clean": "Azure AI 服务 - 映像分析",
+    "region_constraints": null
+  },
+  "cognitive-services-spatialAnalysis": {
+    "display_name_raw": "Azure AI 服务 - 空间分析",
+    "display_name_clean": "Azure AI 服务 - 空间分析",
+    "region_constraints": null
+  },
+  "cognitive-services-content-moderator": {
+    "display_name_raw": "Azure AI 服务 - 内容审查",
+    "display_name_clean": "Azure AI 服务 - 内容审查",
+    "region_constraints": null
+  },
+  "cognitive-services-text-analytics": {
+    "display_name_raw": "Azure AI 服务 - 文本分析",
+    "display_name_clean": "Azure AI 服务 - 文本分析",
+    "region_constraints": null
+  },
+  "cognitive-services-translator-text-api": {
+    "display_name_raw": "Azure AI 服务 - 文本翻译",
+    "display_name_clean": "Azure AI 服务 - 文本翻译",
+    "region_constraints": null
+  },
+  "cognitive-services-luis-api": {
+    "display_name_raw": "Azure AI 服务 - 语言理解",
+    "display_name_clean": "Azure AI 服务 - 语言理解",
+    "region_constraints": null
+  },
+  "analysis-services-date": {
+    "display_name_raw": "Azure 分析服务 - 基本级别",
+    "display_name_clean": "Azure 分析服务 - 基本级别",
+    "region_constraints": null
+  },
+  "analysis-services-ssl": {
+    "display_name_raw": "Azure 分析服务 - 标准级别",
+    "display_name_clean": "Azure 分析服务 - 标准级别",
+    "region_constraints": null
+  },
+  "analysis-services-scale-out": {
+    "display_name_raw": "Azure 分析服务 - 标准级别 - 横向扩展",
+    "display_name_clean": "Azure 分析服务 - 标准级别 - 横向扩展",
+    "region_constraints": null
+  },
+  "api-management": {
+    "display_name_raw": "API 管理",
+    "display_name_clean": "API 管理",
+    "region_constraints": null
+  },
+  "analysis-services-Anomaly-Detector": {
+    "display_name_raw": "Azure AI 服务 - AI 异常检测器",
+    "display_name_clean": "Azure AI 服务 - AI 异常检测器",
+    "region_constraints": null
+  },
+  "analysis-services-form-recognizer": {
+    "display_name_raw": "Azure AI 服务 - Azure AI 文档智能",
+    "display_name_clean": "Azure AI 服务 - Azure AI 文档智能",
+    "region_constraints": null
+  },
+  "api-management-gateway": {
+    "display_name_raw": "API 管理 - Gateway",
+    "display_name_clean": "API 管理 - Gateway",
+    "region_constraints": null
+  },
+  "network-watcher": {
+    "display_name_raw": "网络观察程序",
+    "display_name_clean": "网络观察程序",
+    "region_constraints": null
+  },
+  "azure-monitor": {
+    "display_name_raw": "Azure 监控器",
+    "display_name_clean": "Azure 监控器",
+    "region_constraints": null
+  },
+  "azure-robotservice": {
+    "display_name_raw": "Azure 机器人服务",
+    "display_name_clean": "Azure 机器人服务",
+    "region_constraints": null
+  },
+  "batch": {
+    "display_name_raw": "批处理 - 低优先级",
+    "display_name_clean": "批处理 - 低优先级",
+    "region_constraints": null
+  },
+  "logic-apps": {
+    "display_name_raw": "逻辑应用",
+    "display_name_clean": "逻辑应用",
+    "region_constraints": null
+  },
+  "logic-apps-Standard": {
+    "display_name_raw": "逻辑应用 - Standard Plan - 仅适用于中国东部2和中国北部2",
+    "display_name_clean": "逻辑应用 - Standard Plan",
+    "region_constraints": [
+      "chinaeast2",
+      "chinanorth2"
+    ]
+  },
+  "logic-apps-Standard-North3": {
+    "display_name_raw": "逻辑应用 - Standard Plan - 仅适用于中国北部3",
+    "display_name_clean": "逻辑应用 - Standard Plan",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "logic-apps-Consumption-Plan-North3": {
+    "display_name_raw": "逻辑应用 - Consumption Plan - 仅适用于中国北部3",
+    "display_name_clean": "逻辑应用 - Consumption Plan",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "logic-apps-data-retention": {
+    "display_name_raw": "逻辑应用 - 数据保留",
+    "display_name_clean": "逻辑应用 - 数据保留",
+    "region_constraints": null
+  },
+  "logic-apps-integration-account": {
+    "display_name_raw": "逻辑应用 - 集成帐户",
+    "display_name_clean": "逻辑应用 - 集成帐户",
+    "region_constraints": null
+  },
+  "load-balancer": {
+    "display_name_raw": "负载均衡器",
+    "display_name_clean": "负载均衡器",
+    "region_constraints": null
+  },
+  "dns": {
+    "display_name_raw": "DNS",
+    "display_name_clean": "DNS",
+    "region_constraints": null
+  },
+  "container-registry": {
+    "display_name_raw": "容器注册表",
+    "display_name_clean": "容器注册表",
+    "region_constraints": null
+  },
+  "container-registry-additional-storage-container-build": {
+    "display_name_raw": "容器注册表 - 附加存储 - 容器内部版本价格",
+    "display_name_clean": "容器注册表 - 附加存储 - 容器内部版本价格",
+    "region_constraints": null
+  },
+  "container-apps": {
+    "display_name_raw": "容器app价格",
+    "display_name_clean": "容器app价格",
+    "region_constraints": null
+  },
+  "time-series-insights": {
+    "display_name_raw": "Azure 时序见解价格",
+    "display_name_clean": "Azure 时序见解价格",
+    "region_constraints": null
+  },
+  "active-directory-b2c": {
+    "display_name_raw": "Azure Active Directory B2C",
+    "display_name_clean": "Azure Active Directory B2C",
+    "region_constraints": null
+  },
+  "active-directory-domain": {
+    "display_name_raw": "Microsoft Entra 域服务",
+    "display_name_clean": "Microsoft Entra 域服务",
+    "region_constraints": null
+  },
+  "security-center": {
+    "display_name_raw": "Microsoft Defender for Storage",
+    "display_name_clean": "Microsoft Defender for Storage",
+    "region_constraints": null
+  },
+  "data-factory": {
+    "display_name_raw": "数据工厂",
+    "display_name_clean": "数据工厂",
+    "region_constraints": null
+  },
+  "data-explorer": {
+    "display_name_raw": "Azure 数据资源管理器",
+    "display_name_clean": "Azure 数据资源管理器",
+    "region_constraints": null
+  },
+  "azure-function-premium-plan-east3-and-north3": {
+    "display_name_raw": "Azure Functions - 高级计划 - 仅适用于中国东部3和中国北部3",
+    "display_name_clean": "Azure Functions - 高级计划",
+    "region_constraints": [
+      "chinaeast3",
+      "chinanorth3"
+    ]
+  },
+  "azure-function-premium-plan": {
+    "display_name_raw": "Azure Functions - 高级计划 - 仅适用于中国东部2和中国北部2",
+    "display_name_clean": "Azure Functions - 高级计划",
+    "region_constraints": [
+      "chinaeast2",
+      "chinanorth2"
+    ]
+  },
+  "Azure-Virtual-Desktop": {
+    "display_name_raw": "Azure Virtual Desktop - 虚拟桌面- 仅适用于中国东部2和中国北部2",
+    "display_name_clean": "Azure Virtual Desktop - 虚拟桌面",
+    "region_constraints": [
+      "chinaeast2",
+      "chinanorth2"
+    ]
+  },
+  "azure-functions": {
+    "display_name_raw": "Azure Functions",
+    "display_name_clean": "Azure Functions",
+    "region_constraints": null
+  },
+  "Azure Spring Cloud": {
+    "display_name_raw": "Azure Spring Apps - 仅适用于中国东部2，中国北部2，中国北部3",
+    "display_name_clean": "Azure Spring Apps",
+    "region_constraints": [
+      "chinaeast2",
+      "chinanorth2",
+      "chinanorth3"
+    ]
+  },
+  "azure-kubernetes-service": {
+    "display_name_raw": "Azure Kubernetes 服务",
+    "display_name_clean": "Azure Kubernetes 服务",
+    "region_constraints": null
+  },
+  "event-grid": {
+    "display_name_raw": "Azure 事件网格",
+    "display_name_clean": "Azure 事件网格",
+    "region_constraints": null
+  },
+  "database-migration": {
+    "display_name_raw": "Azure 数据库迁移服务",
+    "display_name_clean": "Azure 数据库迁移服务",
+    "region_constraints": null
+  },
+  "information-protection": {
+    "display_name_raw": "Azure 信息保护",
+    "display_name_clean": "Azure 信息保护",
+    "region_constraints": null
+  },
+  "azure-firewall": {
+    "display_name_raw": "Azure 防火墙",
+    "display_name_clean": "Azure 防火墙",
+    "region_constraints": null
+  },
+  "virtual-wan": {
+    "display_name_raw": "虚拟 WAN",
+    "display_name_clean": "虚拟 WAN",
+    "region_constraints": null
+  },
+  "active-directory": {
+    "display_name_raw": "Microsoft Entra ID",
+    "display_name_clean": "Microsoft Entra ID",
+    "region_constraints": null
+  },
+  "signalr-service": {
+    "display_name_raw": "Azure Signalr 服务",
+    "display_name_clean": "Azure Signalr 服务",
+    "region_constraints": null
+  },
+  "container-instances": {
+    "display_name_raw": "容器实例",
+    "display_name_clean": "容器实例",
+    "region_constraints": null
+  },
+  "search": {
+    "display_name_raw": "Azure AI 搜索 - 仅支持中国东部2和中国北部2",
+    "display_name_clean": "Azure AI 搜索",
+    "region_constraints": [
+      "chinaeast2",
+      "chinanorth2"
+    ]
+  },
+  "machinelearning": {
+    "display_name_raw": "Azure 机器学习",
+    "display_name_clean": "Azure 机器学习",
+    "region_constraints": null
+  },
+  "machinelearning-fee": {
+    "display_name_raw": "Azure 机器学习 - 附加费",
+    "display_name_clean": "Azure 机器学习 - 附加费",
+    "region_constraints": null
+  },
+  "cognitive-services-app-configuration": {
+    "display_name_raw": "Azure AI 服务 - 语音服务",
+    "display_name_clean": "Azure AI 服务 - 语音服务",
+    "region_constraints": null
+  },
+  "azure-Databricks-all": {
+    "display_name_raw": "Azure Databricks - 现用现付 - DBU 价格",
+    "display_name_clean": "Azure Databricks - 现用现付 - DBU 价格",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-Analytics": {
+    "display_name_raw": "Azure Databricks - 通用计算 - 常规用途",
+    "display_name_clean": "Azure Databricks - 通用计算 - 常规用途",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-memory": {
+    "display_name_raw": "Azure Databricks - 通用计算 - 内存优化",
+    "display_name_clean": "Azure Databricks - 通用计算 - 内存优化",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-computer": {
+    "display_name_raw": "Azure Databricks - 通用计算 - 计算优化",
+    "display_name_clean": "Azure Databricks - 通用计算 - 计算优化",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-Analytics1": {
+    "display_name_raw": "Azure Databricks - 作业计算 - 常规用途",
+    "display_name_clean": "Azure Databricks - 作业计算 - 常规用途",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-memory1": {
+    "display_name_raw": "Azure Databricks - 作业计算 - 内存优化",
+    "display_name_clean": "Azure Databricks - 作业计算 - 内存优化",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-computer1": {
+    "display_name_raw": "Azure Databricks - 作业计算 - 计算优化",
+    "display_name_clean": "Azure Databricks - 作业计算 - 计算优化",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-Analytics2": {
+    "display_name_raw": "Azure Databricks - 作业轻量计算 - 常规用途",
+    "display_name_clean": "Azure Databricks - 作业轻量计算 - 常规用途",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-memory2": {
+    "display_name_raw": "Azure Databricks - 作业轻量计算 - 内存优化",
+    "display_name_clean": "Azure Databricks - 作业轻量计算 - 内存优化",
+    "region_constraints": null
+  },
+  "network-private-link": {
+    "display_name_raw": "Azure 专用链接",
+    "display_name_clean": "Azure 专用链接",
+    "region_constraints": null
+  },
+  "network-Firewall-Manager": {
+    "display_name_raw": "Azure 防火墙管理器",
+    "display_name_clean": "Azure 防火墙管理器",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-computer3": {
+    "display_name_raw": "Azure Databricks - SQL 计算 - 计算优化",
+    "display_name_clean": "Azure Databricks - SQL 计算 - 计算优化",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-Analytics3": {
+    "display_name_raw": "Azure Databricks - SQL 计算 - 常规用途",
+    "display_name_clean": "Azure Databricks - SQL 计算 - 常规用途",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-memory3": {
+    "display_name_raw": "Azure Databricks - SQL 计算 - 内存优化",
+    "display_name_clean": "Azure Databricks - SQL 计算 - 内存优化",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-computer2": {
+    "display_name_raw": "Azure Databricks - 作业轻量计算 - 计算优化",
+    "display_name_clean": "Azure Databricks - 作业轻量计算 - 计算优化",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-SQLProComputing": {
+    "display_name_raw": "Azure Databricks - SQL Pro计算",
+    "display_name_clean": "Azure Databricks - SQL Pro计算",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-Analytics5": {
+    "display_name_raw": "Azure Databricks - 启动Photon的通用计算 - 常规用途",
+    "display_name_clean": "Azure Databricks - 启动Photon的通用计算 - 常规用途",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-memory5": {
+    "display_name_raw": "Azure Databricks - 启动Photon的通用计算 - 内存优化",
+    "display_name_clean": "Azure Databricks - 启动Photon的通用计算 - 内存优化",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-computer5": {
+    "display_name_raw": "Azure Databricks - 启动Photon的通用计算 - 计算优化",
+    "display_name_clean": "Azure Databricks - 启动Photon的通用计算 - 计算优化",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-Analytics6": {
+    "display_name_raw": "Azure Databricks - 启动Photon的作业计算 - 常规用途",
+    "display_name_clean": "Azure Databricks - 启动Photon的作业计算 - 常规用途",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-memory6": {
+    "display_name_raw": "Azure Databricks - 作业计算 - 启动Photon的作业计算",
+    "display_name_clean": "Azure Databricks - 作业计算 - 启动Photon的作业计算",
+    "region_constraints": null
+  },
+  "azure-Databricks-data-computer6": {
+    "display_name_raw": "Azure Databricks - 作业计算 - 启动Photon的作业计算",
+    "display_name_clean": "Azure Databricks - 作业计算 - 启动Photon的作业计算",
+    "region_constraints": null
+  },
+  "azure-static-hci": {
+    "display_name_raw": "Azure Local",
+    "display_name_clean": "Azure Local",
+    "region_constraints": null
+  },
+  "azure-static-hub": {
+    "display_name_raw": "Azure Stack Hub",
+    "display_name_clean": "Azure Stack Hub",
+    "region_constraints": null
+  },
+  "azure-web-pubsub": {
+    "display_name_raw": "Azure Web PubSub",
+    "display_name_clean": "Azure Web PubSub",
+    "region_constraints": null
+  },
+  "microsoft-purview": {
+    "display_name_raw": "Microsoft Purview-仅适用于中国北部3",
+    "display_name_clean": "Microsoft Purview",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "azure-router-server": {
+    "display_name_raw": "Azure 路由服务器",
+    "display_name_clean": "Azure 路由服务器",
+    "region_constraints": null
+  },
+  "azure-hpc-cache": {
+    "display_name_raw": "Azure HPC Cache - 仅适用于中国北部3",
+    "display_name_clean": "Azure HPC Cache",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "azure-fluid-relay": {
+    "display_name_raw": "Azure Fluid Relay - 仅适用于中国北部3",
+    "display_name_clean": "Azure Fluid Relay",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "managed-grafana": {
+    "display_name_raw": "Managed Grafana - 仅适用于中国北部3",
+    "display_name_clean": "Managed Grafana",
+    "region_constraints": [
+      "chinanorth3"
+    ]
+  },
+  "azureupdate-managementcenter": {
+    "display_name_raw": "Azure更新管理器",
+    "display_name_clean": "Azure更新管理器",
+    "region_constraints": null
+  },
+  "azure-arc": {
+    "display_name_raw": "Azure Arc",
+    "display_name_clean": "Azure Arc",
+    "region_constraints": null
+  },
+  "azure-ddos-protection": {
+    "display_name_raw": "Azure DDos 保护 - 网络保护",
+    "display_name_clean": "Azure DDos 保护 - 网络保护",
+    "region_constraints": null
+  },
+  "azure-ddos-ipprotection": {
+    "display_name_raw": "Azure DDos 保护 - IP保护",
+    "display_name_clean": "Azure DDos 保护 - IP保护",
+    "region_constraints": null
+  },
+  "virtual-network-manager": {
+    "display_name_raw": "Azure 虚拟网络管理器 - 托管虚拟网络",
+    "display_name_clean": "Azure 虚拟网络管理器 - 托管虚拟网络",
+    "region_constraints": null
+  },
+  "azure-front-door": {
+    "display_name_raw": "Azure Front Door",
+    "display_name_clean": "Azure Front Door",
+    "region_constraints": null
+  }
+}

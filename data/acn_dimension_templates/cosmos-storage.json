@@ -1,0 +1,73 @@
+{
+  "slug": "cosmos-storage",
+  "display_name": "Azure Cosmos DB - 存储",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "Azure Cosmos DB - 存储",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "使用的存储 - 事务存储（行导向）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "1 GB"
+        },
+        {
+          "name": "使用的存储 - 分析存储（列导向）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "1 GB"
+        },
+        {
+          "name": "备份存储空间 - 存储的定期备份数据（>2 个副本) - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "每GB"
+        },
+        {
+          "name": "备份存储空间 - 存储的定期备份数据（>2 个副本) - ZRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "每GB"
+        },
+        {
+          "name": "备份存储空间 - 存储的定期备份数据（>2 个副本) - RA-GRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "每GB"
+        },
+        {
+          "name": "备份存储空间 - 连续备份预览版数据",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "每GB"
+        },
+        {
+          "name": "备份存储空间 - 时间点还原预览版",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "每GB"
+        },
+        {
+          "name": "分析存储事务 - 写入操作 - 分析存储",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "10,000"
+        },
+        {
+          "name": "分析存储事务 - 读取操作 - 分析存储",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "10,000"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

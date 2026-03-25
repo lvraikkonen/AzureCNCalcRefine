@@ -1,0 +1,25 @@
+{
+  "slug": "virtual-network-manager",
+  "display_name": "Azure 虚拟网络管理器 - 托管虚拟网络",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "托管虚拟网络",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "每个托管虚拟网络",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "/小时"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

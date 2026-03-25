@@ -1,0 +1,46 @@
+{
+  "slug": "storage-page-blobs-gpv1-ummanager-disk-standard",
+  "display_name": "存储 - 标准页 Blob - 常规用途 v1",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "LRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "标准页 Blob",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "GRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "标准页 Blob",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "RA-GRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "标准页 Blob",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

@@ -4,6 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
+This project is an Azure Pricing Calculator. Primary languages: Python (backend/scripts), JavaScript (frontend), with JSON config files. Always validate implementation against actual Azure API data and production UI behavior, not assumptions.
+
 Azure.cn Pricing Calculator — a backend-focused reimplementation of the Azure international Pricing Calculator for the Azure China (azure.cn) site. Delivers pricing APIs and a minimal demo frontend.
 
 **Tech stack**: Python + FastAPI + PostgreSQL + SQLAlchemy + Alembic
@@ -102,3 +104,7 @@ Single-page demo (`frontend/`) using vanilla HTML/JS/CSS, served as FastAPI stat
 | `components/estimate-card.js` | Estimate card component: cascading dropdowns, savings radio buttons, duration unit switcher, meter breakdown, price summary |
 | `components/nav-area.js` | Navigation: product catalog sidebar, search, "Add to estimate" |
 | `components/summary-bar.js` | Sticky bottom bar with total cost |
+
+## Azure API Guidelines
+
+When working with Azure API data, use the actual API responses rather than guessing field names, unit types, or dimension structures. Meter quantities may use different units (e.g., freeOffset vs meterQuantities) - always verify unit alignment.

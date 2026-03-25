@@ -1,0 +1,97 @@
+{
+  "slug": "azure-functions",
+  "display_name": "Azure Functions",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "资源消耗",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "128MB 执行持续时间 1 秒/月资源消耗",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "256MB 执行持续时间 1 秒/月资源消耗",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "384MB 执行持续时间 1 秒/月资源消耗",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "512MB 执行持续时间 1 秒/月资源消耗",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "640MB 执行持续时间 1 秒/月资源消耗",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "768MB 执行持续时间 1 秒/月资源消耗",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "896MB 执行持续时间 1 秒/月资源消耗",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "1024MB - 执行持续时间 1 秒/月资源消耗",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "1152MB 执行持续时间 1 秒/月资源消耗",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "1280MB 执行持续时间 1 秒/月资源消耗",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "1408MB 执行持续时间 1 秒/月资源消耗",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "1536MB 执行持续时间 1 秒/月资源消耗",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "执行次数计费计算",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

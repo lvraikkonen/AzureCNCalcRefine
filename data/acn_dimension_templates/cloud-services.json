@@ -1,0 +1,117 @@
+{
+  "slug": "cloud-services",
+  "display_name": "云服务",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "default",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "A 系列",
+          "price_period": "hourly",
+          "sizes_count": 8,
+          "price_unit": "个"
+        },
+        {
+          "name": "Av2 系列",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "region_constraints": [
+            "chinaeast2",
+            "chinanorth2"
+          ],
+          "price_unit": "台"
+        },
+        {
+          "name": "Av2 系列",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "region_constraints": [
+            "chinaeast2",
+            "chinanorth"
+          ],
+          "price_unit": "台"
+        },
+        {
+          "name": "Av2 系列",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "台"
+        },
+        {
+          "name": "Av2 系列",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "台"
+        },
+        {
+          "name": "D系列",
+          "price_period": "hourly",
+          "sizes_count": 8,
+          "price_unit": "个"
+        },
+        {
+          "name": "Dv3 系列",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "台"
+        },
+        {
+          "name": "Dv3系列",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "台"
+        },
+        {
+          "name": "Dv3 系列",
+          "price_period": "hourly",
+          "sizes_count": 6,
+          "price_unit": "台"
+        },
+        {
+          "name": "",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "price_unit": "台"
+        },
+        {
+          "name": "Dv2 系列",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "price_unit": "台"
+        },
+        {
+          "name": "Ev3 系列",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "台"
+        },
+        {
+          "name": "Ev3系列",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "台"
+        },
+        {
+          "name": "Fv2系列",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "台"
+        },
+        {
+          "name": "Fv2 系列",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "台"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

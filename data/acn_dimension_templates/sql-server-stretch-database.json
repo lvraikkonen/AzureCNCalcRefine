@@ -1,0 +1,34 @@
+{
+  "slug": "sql-server-stretch-database",
+  "display_name": "SQL Server Stretch Database",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "小于等于 600",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "DSU",
+          "price_period": "hourly",
+          "sizes_count": 6,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "大于等于 1000",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "DSU",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

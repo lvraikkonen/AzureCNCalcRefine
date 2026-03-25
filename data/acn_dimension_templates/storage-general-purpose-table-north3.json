@@ -1,0 +1,82 @@
+{
+  "slug": "storage-general-purpose-table-north3",
+  "display_name": "存储 - 常规用途存储账户 - 表 - 数据存储价格",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "LRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "表",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "GRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "表",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "GZRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "表",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "RA-GRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "表",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "RA-GZRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "表",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "ZRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "表",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

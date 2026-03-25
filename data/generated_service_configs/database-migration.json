@@ -1,0 +1,24 @@
+{
+  "service_name": "Azure 数据库迁移服务",
+  "_acn_slug": "database-migration",
+  "_acn_display_name": "Azure 数据库迁移服务",
+  "quantity_model": "instances_x_hours",
+  "quantity_label": "Instances",
+  "dimension_labels": {
+    "skuName": "Tier"
+  },
+  "sku_groups": {
+    "标准": [
+      "Standard"
+    ],
+    "高级": [
+      "Premium"
+    ]
+  },
+  "defaults": {
+    "selections": {
+      "armRegionName": "eastus"
+    },
+    "hours_per_month": 730
+  }
+}

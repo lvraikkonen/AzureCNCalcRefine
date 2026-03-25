@@ -1,0 +1,40 @@
+{
+  "slug": "azure-hpc-cache",
+  "display_name": "Azure HPC Cache",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "读写缓存",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "缓存磁盘",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "GB/小时"
+        },
+        {
+          "name": "吞吐量",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "月"
+        }
+      ]
+    },
+    {
+      "name": "只读缓存",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "吞吐量",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "月"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

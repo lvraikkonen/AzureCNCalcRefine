@@ -1,0 +1,67 @@
+{
+  "slug": "event-hubs",
+  "display_name": "事件中心",
+  "types_semantic": "tier",
+  "types": [
+    {
+      "name": "基本",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "入口事件",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "吞吐量",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "标准",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "入口事件",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "吞吐量",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "捕获",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "专用",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "延长保持",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "月"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "dimension_labels": {
+      "skuName": "Tier"
+    }
+  }
+}

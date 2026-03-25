@@ -1,0 +1,40 @@
+{
+  "slug": "api-management-gateway",
+  "display_name": "API 管理 - Gateway",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "Workspace gateway premium",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "价格",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "每月"
+        },
+        {
+          "name": "Workspaces",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "每月(5 workspaces)"
+        }
+      ]
+    },
+    {
+      "name": "自托管网关",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "价格",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "/月/部署"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

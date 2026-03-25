@@ -1,0 +1,31 @@
+{
+  "slug": "site-recovery",
+  "display_name": "站点恢复",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "default",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "Azure 站点恢复到客户拥有站点",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "Azure 站点恢复到 Azure",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

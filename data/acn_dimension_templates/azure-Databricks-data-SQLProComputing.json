@@ -1,0 +1,58 @@
+{
+  "slug": "azure-Databricks-data-SQLProComputing",
+  "display_name": "Azure Databricks - SQL Pro计算",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "DBU - 标准层",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "DBU – 高级层",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "总 DBU 价格",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 9,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "总 VM 价格",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 9,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "instances_x_hours"
+  }
+}

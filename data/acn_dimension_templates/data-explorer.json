@@ -1,0 +1,79 @@
+{
+  "slug": "data-explorer",
+  "display_name": "Azure 数据资源管理器",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "Azure 数据资源管理器",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "组件 - Azure 数据资源管理器加价",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "计算机实例 - Linux 虚拟机价格 - Dv2 系列",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "price_unit": "台"
+        },
+        {
+          "name": "计算机实例 - Azure 数据资源管理器价格 - Dv2 系列",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "台"
+        },
+        {
+          "name": "计算机实例 - 即付即用总价 - Dv2 系列",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "台"
+        },
+        {
+          "name": "计算机实例 -  Linux 虚拟机价格 - DSv2 系列",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "台"
+        },
+        {
+          "name": "计算机实例 -  Azure 数据资源管理器价格 - DSv2 系列",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "台"
+        },
+        {
+          "name": "计算机实例 - 即付即用总价 - DSv2 系列",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "台"
+        },
+        {
+          "name": "计算机实例 -  Linux 虚拟机价格 - Esv4  系列",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "台"
+        },
+        {
+          "name": "计算机实例 - Azure 数据资源管理器价格 - Esv4  系列",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "台"
+        },
+        {
+          "name": "计算机实例 - 即付即用总价 - Esv4  系列",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "台"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "slug": "expressroute-out-data",
+  "display_name": "ExpressRoute - 出站数据传输定价",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "区域1",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "区域1",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        },
+        {
+          "name": "区域2",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

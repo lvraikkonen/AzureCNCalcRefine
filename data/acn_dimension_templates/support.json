@@ -1,0 +1,12 @@
+{
+  "slug": "support",
+  "display_name": "支持",
+  "types_semantic": "default",
+  "types": [],
+  "suggested_config": {
+    "quantity_model": "instances_x_hours",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

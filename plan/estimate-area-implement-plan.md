@@ -192,10 +192,14 @@ Task 1 (两阶段模型)  ← 基础，必须最先做
   ├── Task 5 (底部价格)       ← 需要本地计算结果
   ├── Task 6 (默认值)         ← 需要 meters 流程
   ├── Task 7 (汇总栏)         ← 需要 upfront in state
-  └── Task 8 (关联服务)       ← 需要 Task 1 + 6，可单独迭代
+  ├── Task 8 (关联服务)       ← 需要 Task 1 + 6，可单独迭代
+  └── Task 9 (Pattern B)      ← 需要本地计算模型
+        └── Task 9a (meter 增强) ← meter_labels/order/free_quota
+        └── Task 11 (meter 过滤) ← 按 tier 控制显示
+Task 12 (Config Admin)         ← 独立，管理配置 CRUD + JSON 双写
 ```
 
-**建议实现顺序**: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
+**建议实现顺序**: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 9 → 9a → 10 → 12 → 8/11
 
 ---
 
@@ -273,9 +277,11 @@ MVP (当前):
 | 6 | 从配置文件加载默认值 — 预填卡片 | M | ✔️ | — | 已完成 |
 | 7 | 底部汇总栏增强 — upfront + monthly | S | ✔️ | — | 已完成 |
 | 8 | 附加关联服务 — Disks/Storage/Bandwidth 子面板 | L | ⬜ | — | 依赖 Task 1+6，可独立迭代 |
-| 9 | Pattern B 产品支持 — per-meter 数量模型 + 维度标签/隐藏 | L | ✔️ | — | Azure Firewall、Event Grid 已接入 |
+| 9 | Pattern B 产品支持 — per-meter 数量模型 + 维度标签/隐藏 | L | ✔️ | — | Firewall、Event Grid、SignalR、Load Balancer、Service Bus 已接入 |
+| 9a | Per-meter 增强 — meter_labels + meter_order + meter_free_quota + hidden_meters + daily meter | M | ✔️ | — | 自定义 displayName、排序、跨 meter 免费额度、隐藏 meter（后端子串过滤）、日计费单元 |
 | 10 | 5 Year Reservation 支持 | S | ✔️ | — | SAVINGS_OPTIONS + termToMonths() 动态化 |
 | 11 | Per-SKU meter 过滤/分组 — 按 tier 控制显示哪些 meter | M | ⬜ | — | 依赖 Task 9。Event Grid: Standard Operations 仅属于 Basic tier，Standard tier 不应显示 |
+| 12 | 产品配置管理系统 (Config Admin) — DB + Admin UI + JSON 双写 | L | ✔️ | — | CRUD API + 版本历史 + publish/draft + JSON 文件自动导出 |
 
 ### 讨论记录
 
@@ -283,6 +289,8 @@ MVP (当前):
 
 - [2026-03-13] — Task 1 两阶段模型确认采纳。MVP 直连 Azure API 延迟高，本地计算价值更大。前端改造设计为数据源无关，未来生产阶段切换到 ETL + Airflow DAG + PostgreSQL 时前端可完全复用。新增「架构演进备注」章节记录 MVP→生产的边界。
 - [2026-03-16] — Task 9 Pattern B 产品支持完成。新增 `per_meter` 数量模型，支持每个 meter 独立输入用量（含 hourly meter 的 units×hours 分解）。新增 `dimension_labels`（自定义维度标签）和 `hidden_dimensions`（隐藏单值维度）配置。Azure Firewall 和 Event Grid 已通过纯配置接入。同时修复 5 Year Reservation 支持（Task 10），将 `termToMonths()` 和 savings 标签逻辑动态化。
+- [2026-03-24] — Task 12 产品配置管理系统 (Config Admin) 完成。后端新增 `admin.py` CRUD API（draft/publish 工作流 + 版本历史），publish 时自动将配置双写到 JSON 文件（版本控制备份 + 无 DB 降级）。catalog 变更同步导出 `product_catalog.json`。
+- [2026-03-24] — Task 9a Per-meter 增强完成。新增 `meter_labels`（自定义 meter 显示名，endsWith 匹配）、`meter_order`（自定义 meter 排序）、`meter_free_quota`（跨 meter 免费额度，支持 fixed 和 ref_meter 两种模式）。新增 daily meter 支持（`1 Day`/`1/Day` 单位，units×days 分解输入）。pricing.js 的 `calculatePerMeterPrice` 和 `getAvailableSavingsOptions` 增加 `meterFreeOffsets` 参数。SignalR Service、Load Balancer、Service Bus 通过纯配置接入。选中值后隐藏 placeholder（UX 优化）。无 savings 选项时隐藏 savings section。
 
 ---
 

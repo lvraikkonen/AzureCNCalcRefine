@@ -1,0 +1,364 @@
+{
+  "slug": "virtual-machines-sql-server-ubuntu-linux",
+  "display_name": "虚拟机 - SQL Server Ubuntu Linux",
+  "types_semantic": "tier",
+  "types": [
+    {
+      "name": "Web 版",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "A 系列 - 基本",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "region_constraints": [
+            "chinaeast",
+            "chinaeast2",
+            "chinanorth",
+            "chinanorth2"
+          ],
+          "price_unit": "台"
+        },
+        {
+          "name": "A 系列 - 标准",
+          "price_period": "hourly",
+          "sizes_count": 8,
+          "region_constraints": [
+            "chinaeast",
+            "chinaeast2",
+            "chinanorth",
+            "chinanorth2"
+          ],
+          "price_unit": "台"
+        },
+        {
+          "name": "Av2 系列",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "台"
+        },
+        {
+          "name": "",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "台"
+        },
+        {
+          "name": "D 系列",
+          "price_period": "hourly",
+          "sizes_count": 8,
+          "price_unit": "台"
+        },
+        {
+          "name": "D1-5 v2系列 /Ds1-5 v2系列",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "price_unit": "台"
+        },
+        {
+          "name": "Fs v2 系列",
+          "price_period": "hourly",
+          "sizes_count": 8,
+          "price_unit": "台"
+        },
+        {
+          "name": "F 系列 / Fs 系列",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "region_constraints": [
+            "chinaeast2",
+            "chinanorth2"
+          ],
+          "price_unit": "台"
+        },
+        {
+          "name": "F 系列 / Fs 系列",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "price_unit": "台"
+        },
+        {
+          "name": "Dv2 系列 / Dsv2 系列",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "price_unit": "台"
+        },
+        {
+          "name": "m 系列",
+          "price_period": "hourly",
+          "sizes_count": 10,
+          "region_constraints": [
+            "chinaeast2",
+            "chinaeast3",
+            "chinanorth2"
+          ],
+          "price_unit": "台"
+        },
+        {
+          "name": "支持受约束的 vCPU - 中国东部2",
+          "price_period": "hourly",
+          "sizes_count": 36,
+          "price_unit": "台"
+        },
+        {
+          "name": "支持受约束的 vCPU - 中国北部2",
+          "price_period": "hourly",
+          "sizes_count": 20,
+          "price_unit": "台"
+        },
+        {
+          "name": "支持受约束的 vCPU - 中国东部",
+          "price_period": "hourly",
+          "sizes_count": 18,
+          "price_unit": "台"
+        },
+        {
+          "name": "支持受约束的 vCPU - 中国北部",
+          "price_period": "hourly",
+          "sizes_count": 17,
+          "price_unit": "台"
+        }
+      ]
+    },
+    {
+      "name": "标准版",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "A 系列 - 基本",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "region_constraints": [
+            "chinaeast",
+            "chinaeast2",
+            "chinanorth",
+            "chinanorth2"
+          ],
+          "price_unit": "台"
+        },
+        {
+          "name": "A 系列 - 标准",
+          "price_period": "hourly",
+          "sizes_count": 8,
+          "region_constraints": [
+            "chinaeast",
+            "chinaeast2",
+            "chinanorth",
+            "chinanorth2"
+          ],
+          "price_unit": "台"
+        },
+        {
+          "name": "Av2 系列",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "台"
+        },
+        {
+          "name": "",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "台"
+        },
+        {
+          "name": "D 系列",
+          "price_period": "hourly",
+          "sizes_count": 8,
+          "price_unit": "台"
+        },
+        {
+          "name": "Dv2 系列 /Dsv2 系列",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "price_unit": "台"
+        },
+        {
+          "name": "Fs v2 系列",
+          "price_period": "hourly",
+          "sizes_count": 8,
+          "price_unit": "台"
+        },
+        {
+          "name": "F 系列 / Fs 系列",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "region_constraints": [
+            "chinaeast2",
+            "chinanorth2"
+          ],
+          "price_unit": "台"
+        },
+        {
+          "name": "F 系列 / Fs 系列",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "price_unit": "台"
+        },
+        {
+          "name": "Dv2 系列 / Dsv2 系列",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "price_unit": "台"
+        },
+        {
+          "name": "m 系列",
+          "price_period": "hourly",
+          "sizes_count": 10,
+          "region_constraints": [
+            "chinaeast2",
+            "chinaeast3",
+            "chinanorth2"
+          ],
+          "price_unit": "台"
+        },
+        {
+          "name": "支持受约束的 vCPU - 中国东部2",
+          "price_period": "hourly",
+          "sizes_count": 36,
+          "price_unit": "台"
+        },
+        {
+          "name": "支持受约束的 vCPU - 中国北部2",
+          "price_period": "hourly",
+          "sizes_count": 20,
+          "price_unit": "台"
+        },
+        {
+          "name": "支持受约束的 vCPU - 中国东部",
+          "price_period": "hourly",
+          "sizes_count": 18,
+          "price_unit": "台"
+        },
+        {
+          "name": "支持受约束的 vCPU - 中国北部",
+          "price_period": "hourly",
+          "sizes_count": 17,
+          "price_unit": "台"
+        }
+      ]
+    },
+    {
+      "name": "企业版",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "A 系列 - 基本",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "region_constraints": [
+            "chinaeast",
+            "chinaeast2",
+            "chinanorth",
+            "chinanorth2"
+          ],
+          "price_unit": "台"
+        },
+        {
+          "name": "A 系列 - 标准",
+          "price_period": "hourly",
+          "sizes_count": 8,
+          "region_constraints": [
+            "chinaeast",
+            "chinaeast2",
+            "chinanorth",
+            "chinanorth2"
+          ],
+          "price_unit": "台"
+        },
+        {
+          "name": "Av2 系列",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "台"
+        },
+        {
+          "name": "",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "台"
+        },
+        {
+          "name": "D 系列",
+          "price_period": "hourly",
+          "sizes_count": 8,
+          "price_unit": "台"
+        },
+        {
+          "name": "Dv2 系列/Dsv2 系列",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "price_unit": "台"
+        },
+        {
+          "name": "Fs v2 系列",
+          "price_period": "hourly",
+          "sizes_count": 8,
+          "price_unit": "台"
+        },
+        {
+          "name": "F 系列 / Fs 系列",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "region_constraints": [
+            "chinaeast2",
+            "chinanorth2"
+          ],
+          "price_unit": "台"
+        },
+        {
+          "name": "F 系列 / Fs 系列",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "price_unit": "台"
+        },
+        {
+          "name": "Dv2 系列 / Dv2 系列",
+          "price_period": "hourly",
+          "sizes_count": 5,
+          "price_unit": "台"
+        },
+        {
+          "name": "m 系列",
+          "price_period": "hourly",
+          "sizes_count": 10,
+          "region_constraints": [
+            "chinaeast2",
+            "chinaeast3",
+            "chinanorth2"
+          ],
+          "price_unit": "台"
+        },
+        {
+          "name": "支持受约束的 vCPU - 中国东部2",
+          "price_period": "hourly",
+          "sizes_count": 36,
+          "price_unit": "台"
+        },
+        {
+          "name": "支持受约束的 vCPU - 中国北部2",
+          "price_period": "hourly",
+          "sizes_count": 20,
+          "price_unit": "台"
+        },
+        {
+          "name": "支持受约束的 vCPU - 中国东部",
+          "price_period": "hourly",
+          "sizes_count": 18,
+          "price_unit": "台"
+        },
+        {
+          "name": "支持受约束的 vCPU - 中国北部",
+          "price_period": "hourly",
+          "sizes_count": 17,
+          "price_unit": "台"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "dimension_labels": {
+      "skuName": "Tier"
+    }
+  }
+}

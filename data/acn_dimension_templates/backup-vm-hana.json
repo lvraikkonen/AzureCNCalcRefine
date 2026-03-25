@@ -1,0 +1,34 @@
+{
+  "slug": "backup-vm-hana",
+  "display_name": "备份 -  Azure VM 上的 SAP HANA",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "0 至 500 GB （含500 GB ） 数据的实例",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "大于 500 GB 数据的实例",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

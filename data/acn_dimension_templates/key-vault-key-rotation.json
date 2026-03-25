@@ -1,0 +1,25 @@
+{
+  "slug": "key-vault-key-rotation",
+  "display_name": "密钥保管库 - 密钥轮换",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "自动密钥轮换",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 2,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

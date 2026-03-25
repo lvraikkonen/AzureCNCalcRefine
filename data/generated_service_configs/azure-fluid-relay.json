@@ -1,0 +1,22 @@
+{
+  "service_name": "Azure Fluid Relay",
+  "_acn_slug": "azure-fluid-relay",
+  "_acn_display_name": "Azure Fluid Relay",
+  "quantity_model": "per_meter",
+  "quantity_label": "Usage",
+  "hidden_dimensions": [
+    "productName"
+  ],
+  "meter_order": [
+    "操作输入",
+    "操作输出",
+    "客户端连接分钟数",
+    "存储"
+  ],
+  "defaults": {
+    "selections": {
+      "armRegionName": "eastus"
+    },
+    "hours_per_month": 730
+  }
+}

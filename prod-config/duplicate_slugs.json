@@ -1,0 +1,23 @@
+{
+  "app-service": {
+    "occurrences": 2,
+    "lines": [
+      4,
+      154
+    ]
+  },
+  "storage-queues-gpv2-east3": {
+    "occurrences": 2,
+    "lines": [
+      40026,
+      40420
+    ]
+  },
+  "api-management": {
+    "occurrences": 2,
+    "lines": [
+      58543,
+      58744
+    ]
+  }
+}

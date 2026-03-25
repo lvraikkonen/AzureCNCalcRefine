@@ -1,0 +1,25 @@
+{
+  "slug": "storage-general-purpose-blob-block-blob-other",
+  "display_name": "存储 - Blob 存储 - 其他功能",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "default",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "Blob更改（每10,000个更改）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

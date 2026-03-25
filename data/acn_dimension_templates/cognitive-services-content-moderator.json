@@ -1,0 +1,35 @@
+{
+  "slug": "cognitive-services-content-moderator",
+  "display_name": "Azure AI 服务 - 内容审查",
+  "types_semantic": "tier",
+  "types": [
+    {
+      "name": "免费",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 1
+        }
+      ]
+    },
+    {
+      "name": "标准",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 1
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "instances_x_hours",
+    "dimension_labels": {
+      "skuName": "Tier"
+    }
+  }
+}

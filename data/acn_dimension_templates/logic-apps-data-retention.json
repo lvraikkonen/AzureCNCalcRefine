@@ -1,0 +1,25 @@
+{
+  "slug": "logic-apps-data-retention",
+  "display_name": "逻辑应用 - 数据保留",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "数据保留",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

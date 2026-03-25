@@ -1,0 +1,80 @@
+{
+  "slug": "cognitive-services-translator-text-api",
+  "display_name": "Azure AI 服务 - 文本翻译",
+  "types_semantic": "tier",
+  "types": [
+    {
+      "name": "免费",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 1
+        }
+      ]
+    },
+    {
+      "name": "S1",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 1
+        }
+      ]
+    },
+    {
+      "name": "S2",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "2.5 亿个字符",
+          "price_period": "hourly",
+          "sizes_count": 1
+        }
+      ]
+    },
+    {
+      "name": "S3",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "10 亿个字符",
+          "price_period": "hourly",
+          "sizes_count": 1
+        }
+      ]
+    },
+    {
+      "name": "S4",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "100 亿个字符",
+          "price_period": "hourly",
+          "sizes_count": 1
+        }
+      ]
+    },
+    {
+      "name": "D3",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "dimension_labels": {
+      "skuName": "Tier"
+    }
+  }
+}

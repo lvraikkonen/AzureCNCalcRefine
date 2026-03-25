@@ -1,0 +1,25 @@
+{
+  "slug": "azure-arc",
+  "display_name": "Azure Arc",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "Azure Arc",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "已启用Azure Arc 的 Kubernates",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "vCPU/小时"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

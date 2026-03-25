@@ -1,0 +1,25 @@
+{
+  "slug": "sql-database-sql-elastic-jobs",
+  "display_name": "SQL 数据库 - 弹性作业",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "服务层",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "服务层",
+          "price_period": "monthly",
+          "sizes_count": 4,
+          "price_unit": "小时"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

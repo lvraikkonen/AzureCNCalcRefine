@@ -1,0 +1,58 @@
+{
+  "slug": "dns",
+  "display_name": "DNS",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "专用解析程序",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "专用解析程序入站终结点",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "专用解析程序出站终结点",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "专用解析程序规则集",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "公共和专用区域",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "头 25 个托管的 DNS 区域",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "每月每区域"
+        },
+        {
+          "name": "额外托管的 DNS 区域（超过 25 个）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "每月每区域"
+        },
+        {
+          "name": "头亿条 DNS 查询/月",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "每百万"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

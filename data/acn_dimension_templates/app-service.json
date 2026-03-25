@@ -1,0 +1,42 @@
+{
+  "slug": "app-service",
+  "display_name": "应用程序配置 - 中国东部2",
+  "types_semantic": "tier",
+  "types": [
+    {
+      "name": "免费",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "免费",
+          "price_period": "hourly",
+          "sizes_count": 1
+        }
+      ]
+    },
+    {
+      "name": "标准",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "标准",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "超额费用",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "dimension_labels": {
+      "skuName": "Tier"
+    }
+  }
+}

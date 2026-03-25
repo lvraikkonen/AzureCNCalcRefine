@@ -1,0 +1,54 @@
+{
+  "slug": "cognitive-services-text-analytics",
+  "display_name": "Azure AI 服务 - 文本分析",
+  "types_semantic": "tier",
+  "types": [
+    {
+      "name": "免费",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 1
+        }
+      ]
+    },
+    {
+      "name": "标准",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "情绪分析 0-500,000 个文本记录",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "关键短语提取 0.5M-2.5M 的文本记录",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "语言检测 2.5M-10.0M 的文本记录",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "实体提取 10M 以上的文本记录",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "dimension_labels": {
+      "skuName": "Tier"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "slug": "azure-static-hci",
+  "display_name": "Azure Local",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "Azure Local",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "Azure Local",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "物理核心"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

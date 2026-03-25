@@ -1,0 +1,259 @@
+{
+  "slug": "storage-general-purpose-hierarchy-cool-block-blob-early-mentus",
+  "display_name": "存储 - 块 Blob - 常规用途v2分层命名空间 - “热”，“冷”和“存档”访问层 - 其他操作和元数据存储计量 - 存档仅适用于中国东部2和中国北部2",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "LRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "迭代读取操作（每 10,000）（热）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作（每 10,000）（冷）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作（每 10,000）（存档）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作（以 100 计）（热）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作（以 100 计）（冷）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作（以 100 计）（存档）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作（按 10,000 计）（热）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作（按 10,000 计）（冷）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作（按 10,000 计）（存档）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 (GB)（热）",
+          "price_period": "hourly",
+          "sizes_count": 1
+        },
+        {
+          "name": "数据检索 (GB) （冷）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "索引(GB) (热)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 (GB) （存档）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "GRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "迭代读取操作（每 10,000）（热）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作（每 10,000）（冷）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作（每 10,000）（存档）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作（以 100 计）（热）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作（以 100 计）（冷）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作（以 100 计）（存档）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作（按 10,000 计）（热）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作（按 10,000 计）（冷）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作（按 10,000 计）（存档）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 (GB)（热）",
+          "price_period": "hourly",
+          "sizes_count": 1
+        },
+        {
+          "name": "数据检索 (GB) （冷）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "索引(GB) (热)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 (GB) （存档）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "RA-GRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "迭代读取操作（每 10,000）（热）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作（每 10,000）（冷）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作（每 10,000）（存档）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作（以 100 计）（热）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作（以 100 计）（冷）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作（以 100 计）（存档）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作（按 10,000 计）（热）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作（按 10,000 计）（冷）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作（按 10,000 计）（存档）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 (GB)（热）",
+          "price_period": "hourly",
+          "sizes_count": 1
+        },
+        {
+          "name": "数据检索 (GB) （冷）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "索引(GB) (热)",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 (GB) （存档）",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

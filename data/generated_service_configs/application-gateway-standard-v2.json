@@ -1,0 +1,13 @@
+{
+  "service_name": "Application Gateway",
+  "_acn_slug": "application-gateway-standard-v2",
+  "_acn_display_name": "应用程序网关 - 标准版 V2",
+  "quantity_model": "per_meter",
+  "quantity_label": "Usage",
+  "defaults": {
+    "selections": {
+      "armRegionName": "eastus"
+    },
+    "hours_per_month": 730
+  }
+}

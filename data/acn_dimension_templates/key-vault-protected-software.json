@@ -1,0 +1,34 @@
+{
+  "slug": "key-vault-protected-software",
+  "display_name": "密钥保管库 - 受软件保护的密钥",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "RSA 2,048 位密钥",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "monthly",
+          "sizes_count": 2,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "高级密钥类型",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 2,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

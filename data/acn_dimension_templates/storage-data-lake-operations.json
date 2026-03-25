@@ -1,0 +1,1138 @@
+{
+  "slug": "storage-data-lake-operations",
+  "display_name": "存储 - Data Lake 其他操作和元数据存储计量",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "LRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "列出并创建容器操作 - 分层命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列出并创建容器操作 - 分层命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列出并创建容器操作 - 平面命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列出并创建容器操作 - 平面命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "元数据存储 - 多层命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 存档 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 高级 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 平面命名空间 - 高级 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 平面命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 平面命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 高级 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 存档 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 高级 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 平面命名空间 - 高级 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 平面命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 平面命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 高级 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 存档 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 高级 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 分层命名空间 - 高级 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 分层命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 分层命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 高级 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "索引 - 分层命名空间 - 高级 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "索引 - 分层命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 存档 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 高级 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 分层命名空间 - 高级 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 分层命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 分层命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 高级 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "索引 - 分层命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "GRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "列出并创建容器操作 - 分层命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列出并创建容器操作 - 分层命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列出并创建容器操作 - 平面命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列出并创建容器操作 - 平面命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "元数据存储 - 多层命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 存档 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 平面命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 平面命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 存档 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 平面命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 平面命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 存档 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 存档 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 分层命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 分层命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "索引 - 分层命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 存档 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 存档 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 分层命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 分层命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "索引 - 分层命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "RA-GRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "列出并创建容器操作 - 分层命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列出并创建容器操作 - 分层命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列出并创建容器操作 - 平面命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列出并创建容器操作 - 平面命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 冷",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "元数据存储 - 多层命名空间 - 热",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 冷 -中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 存档 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 平面命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 平面命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 存档 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 平面命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 平面命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 存档 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 存档 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 分层命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 分层命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "索引 - 分层命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 存档 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 存档 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 分层命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代读取操作 - 分层命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "索引 - 分层命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "ZRS",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "数据检索 - 平面命名空间 - 冷 -中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 平面命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 平面命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 平面命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 冷 -中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 热 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 冷 - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 - 分层命名空间 - 冷 -中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "迭代写入操作 - 分层命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 热 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "除删除（此操作免费）之外的其他操作 - 分层命名空间 - 冷 - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "slug": "cdn",
+  "display_name": "CDN",
+  "types_semantic": "tier",
+  "types": [
+    {
+      "name": "标准版",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "Zone 1",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "Zone 2",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "标准版 Plus",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "Zone 1",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "dimension_labels": {
+      "skuName": "Tier"
+    }
+  }
+}

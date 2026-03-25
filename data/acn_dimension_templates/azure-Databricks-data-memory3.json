@@ -1,0 +1,34 @@
+{
+  "slug": "azure-Databricks-data-memory3",
+  "display_name": "Azure Databricks - SQL 计算 - 内存优化",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "DSv2/Dv2 系列 - 高级",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 3,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "Esv3 系列 - 高级",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 4,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "instances_x_hours"
+  }
+}

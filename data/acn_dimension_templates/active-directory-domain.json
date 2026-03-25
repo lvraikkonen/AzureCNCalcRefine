@@ -1,0 +1,61 @@
+{
+  "slug": "active-directory-domain",
+  "display_name": "Microsoft Entra 域服务",
+  "types_semantic": "tier",
+  "types": [
+    {
+      "name": "标准",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "用户林",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "小时"
+        }
+      ]
+    },
+    {
+      "name": "企业",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "资源林",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "小时"
+        },
+        {
+          "name": "用户林",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "小时"
+        }
+      ]
+    },
+    {
+      "name": "高级",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "资源林",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "小时"
+        },
+        {
+          "name": "用户林",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "小时"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "dimension_labels": {
+      "skuName": "Tier"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "slug": "azure-front-door",
+  "display_name": "Azure Front Door",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "基本费用",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "标准",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "高级",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "从 Edge 到客户端的出站数据传输(标准版和高级版价格相同)",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "所有数据传输",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        }
+      ]
+    },
+    {
+      "name": "从 Edge 到源的出站数据传输(标准版和高级版价格相同)",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "所有数据传输",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        }
+      ]
+    },
+    {
+      "name": "请求定价",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "标准",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "高级",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

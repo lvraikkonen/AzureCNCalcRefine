@@ -1,0 +1,64 @@
+{
+  "slug": "container-apps",
+  "display_name": "容器app价格",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "请求",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "请求",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "专用计划",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "专用计划(小时)",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "/小时"
+        },
+        {
+          "name": "vCPU (小时)",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "/小时"
+        },
+        {
+          "name": "内存(GiB-小时)",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "/小时"
+        }
+      ]
+    },
+    {
+      "name": "资源消耗",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "vCPU",
+          "price_period": "hourly",
+          "sizes_count": 2,
+          "price_unit": "小时"
+        },
+        {
+          "name": "内存",
+          "price_period": "hourly",
+          "sizes_count": 2,
+          "price_unit": "小时"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

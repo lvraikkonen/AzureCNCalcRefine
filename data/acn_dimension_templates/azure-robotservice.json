@@ -1,0 +1,25 @@
+{
+  "slug": "azure-robotservice",
+  "display_name": "Azure 机器人服务",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "Azure 机器人服务",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "S1 - 高级频道",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "1,000 页 "
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

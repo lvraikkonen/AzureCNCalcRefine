@@ -1,0 +1,31 @@
+{
+  "slug": "azure-nat-gateway",
+  "display_name": "Azure NAT 网关",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "虚拟网络 NAT",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "NAT",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据处理",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

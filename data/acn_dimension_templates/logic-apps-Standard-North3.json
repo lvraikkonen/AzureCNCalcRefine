@@ -1,0 +1,31 @@
+{
+  "slug": "logic-apps-Standard-North3",
+  "display_name": "逻辑应用 - Standard Plan",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "default",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "vCPU",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "Memory",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

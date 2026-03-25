@@ -1,0 +1,20 @@
+{
+  "service_name": "站点恢复",
+  "_acn_slug": "site-recovery",
+  "_acn_display_name": "站点恢复",
+  "quantity_model": "per_meter",
+  "quantity_label": "Usage",
+  "hidden_dimensions": [
+    "productName"
+  ],
+  "meter_order": [
+    "Azure 站点恢复到客户拥有站点",
+    "Azure 站点恢复到 Azure"
+  ],
+  "defaults": {
+    "selections": {
+      "armRegionName": "eastus"
+    },
+    "hours_per_month": 730
+  }
+}

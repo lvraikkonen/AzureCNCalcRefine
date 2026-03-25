@@ -1,0 +1,34 @@
+{
+  "slug": "active-directory",
+  "display_name": "Microsoft Entra ID",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "高级 P1",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "高级 P1",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "高级 P2",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "高级 P2",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

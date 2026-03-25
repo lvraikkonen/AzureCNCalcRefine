@@ -1,0 +1,23 @@
+{
+  "service_name": "流量管理器",
+  "_acn_slug": "traffic-manager",
+  "_acn_display_name": "流量管理器",
+  "quantity_model": "per_meter",
+  "quantity_label": "Usage",
+  "hidden_dimensions": [
+    "productName"
+  ],
+  "meter_order": [
+    "DNS 查询",
+    "运行状况检查 -Azure 终结点数",
+    "快速间隔运行状况检查附加项 -Azure 终结点数",
+    "运行状况检查-外部终结点数",
+    "快速间隔运行状况检查附加项-外部终结点数"
+  ],
+  "defaults": {
+    "selections": {
+      "armRegionName": "eastus"
+    },
+    "hours_per_month": 730
+  }
+}

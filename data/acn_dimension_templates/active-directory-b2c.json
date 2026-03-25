@@ -1,0 +1,58 @@
+{
+  "slug": "active-directory-b2c",
+  "display_name": "Azure Active Directory B2C",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "高级版 P1",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "前50,000个MAU",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "后50,000个MAU",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "高级版 P2",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "前50,000个MAU",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "后50,000个MAU",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "单独收费",
+      "features_semantic": "default",
+      "features": [
+        {
+          "name": "default",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

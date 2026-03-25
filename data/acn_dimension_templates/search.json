@@ -1,0 +1,91 @@
+{
+  "slug": "search",
+  "display_name": "Azure AI 搜索",
+  "types_semantic": "tier",
+  "types": [
+    {
+      "name": "基本",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "标准 S1",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "标准 S2",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "标准 S3",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "自定义实体查找认知技能",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "0-500千",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "500千-2500千",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "2500千-10000千",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "大于10000千",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "dimension_labels": {
+      "skuName": "Tier"
+    }
+  }
+}

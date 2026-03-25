@@ -195,7 +195,7 @@ export class EstimateCard {
         <div class="card-title-area">
           <div class="card-title">
             <span class="card-title-icon">${this.serviceIcon}</span>
-            <span class="card-title-text" data-action="edit-name" title="Click to rename">${this.escHtml(item.customName || `${item.serviceName} #${item.id}`)}</span>
+            <span class="card-title-text" data-action="edit-name" title="Click to rename">${this.escHtml(item.customName || `${item.displayNameCn || item.serviceName} #${item.id}`)}</span>
             <button class="card-edit-name-btn" data-action="edit-name" title="Rename">✎</button>
           </div>
           ${headerSummary}
@@ -894,7 +894,8 @@ export class EstimateCard {
     if (!titleText) return;
 
     const item = this.item;
-    const currentName = item.customName || `${item.serviceName} #${item.id}`;
+    const displayName = item.displayNameCn || item.serviceName;
+    const currentName = item.customName || `${displayName} #${item.id}`;
 
     // Replace text span with an input
     const input = document.createElement('input');
@@ -909,7 +910,7 @@ export class EstimateCard {
 
     const commit = () => {
       const val = input.value.trim();
-      const defaultName = `${item.serviceName} #${item.id}`;
+      const defaultName = `${displayName} #${item.id}`;
       item.customName = val && val !== defaultName ? val : null;
       updateItem(this.itemId, item);
       this.render();

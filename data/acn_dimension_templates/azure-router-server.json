@@ -1,0 +1,31 @@
+{
+  "slug": "azure-router-server",
+  "display_name": "Azure 路由服务器",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "Azure 路由服务器",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "Azure 路由服务器",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "/小时"
+        },
+        {
+          "name": "路由基础结构单元",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "/小时"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

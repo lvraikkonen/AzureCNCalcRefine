@@ -1,0 +1,37 @@
+{
+  "slug": "sql-database-single-vcore-hyperscale-preview",
+  "display_name": "SQL 数据库 - 单个数据库 - 本地冗余数据库 - 超大规模（预览版）",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "标准系列(第5代)",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "主要副本定价",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "vCore/小时"
+        },
+        {
+          "name": "高可用性副本和命名副本定价",
+          "price_period": "hourly",
+          "sizes_count": 1,
+          "price_unit": "vCore/小时"
+        },
+        {
+          "name": "存储",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

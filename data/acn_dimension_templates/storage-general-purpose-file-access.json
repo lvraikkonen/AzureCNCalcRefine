@@ -1,0 +1,466 @@
+{
+  "slug": "storage-general-purpose-file-access",
+  "display_name": "存储 - 文件 - 事务和数据传输价格",
+  "types_semantic": "category",
+  "types": [
+    {
+      "name": "事务优化",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "写入事务 (按 10,000 计) - GRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "写入事务 (按 10,000 计) - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "写入事务 (按 10,000 计) - RA-GRS -中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - GRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - GRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - LRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - RA-GRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - GRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - GRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - LRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - RA-GRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "所有其他操作 (按 10,000 计) - GRS - 中国东部2/北部2、中国东部/北部",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "所有其他操作 (按 10,000 计) - LRS - 中国东部2/北部2、中国东部/北部",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "热",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "写入事务 (按 10,000 计) - GRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "写入事务 (按 10,000 计) - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "写入事务 (按 10,000 计) - GRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "写入事务 (按 10,000 计) - LRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "写入事务 (按 10,000 计) - GRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "写入事务 (按 10,000 计) - LRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - GRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - GRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - LRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - GRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - LRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - GRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - GRS -中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - GRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - LRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "所有其他操作 (按 10,000 计) - GRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "所有其他操作 (按 10,000 计) - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "所有其他操作 (按 10,000 计) - GRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "所有其他操作 (按 10,000 计) - LRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "所有其他操作 (按 10,000 计) - GRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "所有其他操作 (按 10,000 计) - LRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    },
+    {
+      "name": "冷",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "写入事务 (按 10,000 计) - GRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "写入事务 (按 10,000 计) - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "写入事务 (按 10,000 计) - GRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "写入事务 (按 10,000 计) - LRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "写入事务 (按 10,000 计) - GRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "写入事务 (按 10,000 计) - LRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - GRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - GRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - LRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - GRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "列表事务 (按 10,000 计) - LRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - GRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - GRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - LRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - GRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "读取事务 (按 10,000 计) - LRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "所有其他操作 (按 10,000 计) - GRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "所有其他操作 (按 10,000 计) - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "所有其他操作 (按 10,000 计) - GRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "所有其他操作 (按 10,000 计) - LRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "所有其他操作 (按 10,000 计) - GRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "所有其他操作 (按 10,000 计) - LRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        },
+        {
+          "name": "数据检索 (每 GiB) - GRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        },
+        {
+          "name": "数据检索 (每 GiB) - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        },
+        {
+          "name": "数据检索 (每 GiB) - GRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        },
+        {
+          "name": "数据检索 (每 GiB) - LRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        },
+        {
+          "name": "数据检索 (每 GiB) - GRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        },
+        {
+          "name": "数据检索 (每 GiB) - LRS - 中国北部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        },
+        {
+          "name": "早期删除 (每 GiB) - GRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        },
+        {
+          "name": "早期删除 (每 GiB) - LRS",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        },
+        {
+          "name": "早期删除 (每 GiB) - GRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        },
+        {
+          "name": "早期删除 (每 GiB) - LRS - 中国东部3",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "GB"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter"
+  }
+}

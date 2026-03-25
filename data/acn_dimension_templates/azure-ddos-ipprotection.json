@@ -1,0 +1,25 @@
+{
+  "slug": "azure-ddos-ipprotection",
+  "display_name": "Azure DDos 保护 - IP保护",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "IP保护",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "公共 IP 资源每月费用",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "/月"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}

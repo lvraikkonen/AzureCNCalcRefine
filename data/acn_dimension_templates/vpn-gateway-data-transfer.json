@@ -1,0 +1,25 @@
+{
+  "slug": "vpn-gateway-data-transfer",
+  "display_name": "VPN 网关 - 出站虚拟网络间数据传输",
+  "types_semantic": "single",
+  "types": [
+    {
+      "name": "default",
+      "features_semantic": "named_meter",
+      "features": [
+        {
+          "name": "发生在两个不同区域之间",
+          "price_period": "monthly",
+          "sizes_count": 1,
+          "price_unit": "个"
+        }
+      ]
+    }
+  ],
+  "suggested_config": {
+    "quantity_model": "per_meter",
+    "hidden_dimensions": [
+      "productName"
+    ]
+  }
+}
