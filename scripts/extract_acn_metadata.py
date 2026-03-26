@@ -84,22 +84,85 @@ def classify_features_semantic(features: list[dict]) -> str:
     return "named_meter"
 
 
-def suggest_quantity_model(types: list[dict]) -> str:
-    """Derive quantity_model from structure."""
+def classify_pricing_pattern(types: list[dict]) -> str:
+    """Classify into 6 pricing patterns based on Types/Features structure.
+
+    Returns one of: "A", "B", "C", "D", "E", "F"
+      A = instances_x_hours  (all features "default" + all hourly)
+      B = per_meter           (named features, uniform PricePeriod)
+      C = compute_plus_storage (mixed hourly compute + monthly storage in same Type)
+      D = resource_dimensions  (PriceUnit contains resource dimension like vCPU/月, GB/月)
+      E = sku_base_plus_meter  (Features has "default" base fee + named add-ons)
+      F = cross_service_composite (cannot detect from single slug — external annotation)
+    """
     all_default_features = True
     all_hourly = True
     has_named_features = False
+    has_default_feature = False
+    has_mixed_period_in_type = False
+    has_resource_dimension_unit = False
+
+    # Pattern D: resource dimensions where user combines multiple resource specs
+    # Must have BOTH compute (vCPU) and memory (GB) dimensions — not just storage in GB
+    resource_dim_keywords = {"vCPU", "GiB/"}
+    resource_dim_features_count = 0
 
     for t in types:
+        periods_in_type = set()
+        has_multi_size_hourly = False
+        has_monthly_feature = False
         for f in t.get("Features", []):
-            if f.get("Name", "").lower() != "default":
+            fname = f.get("Name", "").lower()
+            if fname != "default":
                 has_named_features = True
                 all_default_features = False
-            period = f.get("PricePeriod", "0")
-            if period == "1":  # Monthly
-                all_hourly = False
+            else:
+                has_default_feature = True
 
+            period = f.get("PricePeriod", "0")
+            periods_in_type.add(period)
+            if period == "1":
+                all_hourly = False
+                has_monthly_feature = True
+
+            sizes = f.get("Sizes", [])
+            if period == "0" and len(sizes) > 1:
+                has_multi_size_hourly = True
+
+            # Check PriceUnit for resource dimension keywords (vCPU, GiB)
+            feature_has_resource_dim = False
+            for unit_source in [f] + sizes:
+                pu = str(unit_source.get("PriceUnit", ""))
+                if any(kw in pu for kw in resource_dim_keywords):
+                    feature_has_resource_dim = True
+            if feature_has_resource_dim:
+                resource_dim_features_count += 1
+
+        # Pattern C requires: compute feature (hourly, multiple sizes) + storage (monthly)
+        if len(periods_in_type) > 1 and has_multi_size_hourly and has_monthly_feature:
+            has_mixed_period_in_type = True
+
+    # Classification logic
     if all_default_features and all_hourly:
+        return "A"  # instances_x_hours
+
+    if has_mixed_period_in_type:
+        return "C"  # compute_plus_storage (hourly compute + monthly storage)
+
+    if resource_dim_features_count >= 2 and not has_default_feature:
+        return "D"  # resource_dimensions (vCPU + memory as separate dimensions)
+
+    if has_default_feature and has_named_features:
+        return "E"  # sku_base_plus_meter (default base + named add-ons)
+
+    return "B"  # per_meter (named features, independent meters)
+
+
+# Keep backward-compatible alias
+def suggest_quantity_model(types: list[dict]) -> str:
+    """Derive quantity_model from pricing pattern."""
+    pattern = classify_pricing_pattern(types)
+    if pattern == "A":
         return "instances_x_hours"
     return "per_meter"
 
@@ -108,7 +171,9 @@ def suggest_config(slug: str, types: list[dict], types_semantic: str) -> dict:
     """Generate suggested service_config fields."""
     config = {}
 
-    config["quantity_model"] = suggest_quantity_model(types)
+    pattern = classify_pricing_pattern(types)
+    config["pricing_pattern"] = pattern
+    config["quantity_model"] = "instances_x_hours" if pattern == "A" else "per_meter"
 
     # dimension_labels
     if types_semantic == "tier":

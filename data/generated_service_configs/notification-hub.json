@@ -1,27 +1,37 @@
 {
-  "service_name": "通知中心",
-  "_acn_slug": "notification-hub",
-  "_acn_display_name": "通知中心",
+  "service_name": "Notification Hubs",
   "quantity_model": "per_meter",
   "quantity_label": "Usage",
   "dimension_labels": {
     "skuName": "Tier"
   },
   "sku_groups": {
-    "免费": [
+    "Free": [
       "Free"
     ],
-    "基本": [
+    "Basic": [
       "Basic"
     ],
-    "标准": [
+    "Standard": [
       "Standard"
     ]
   },
   "defaults": {
     "selections": {
-      "armRegionName": "eastus"
+      "armRegionName": "chinaeast2",
+      "skuName": "Free"
     },
     "hours_per_month": 730
+  },
+  "_legacy_reference": {
+    "slug": "notification-hub",
+    "display_name_cn": "通知中心",
+    "structure": [
+      "免费: [default (monthly, unit=个)]",
+      "基本: [default (monthly, unit=个, CNY 4.61~46.16)]",
+      "标准: [default (monthly, unit=个, CNY 11.54~923.41)]"
+    ],
+    "pricing_pattern": "B",
+    "pricing_pattern_name": "per_meter"
   }
 }

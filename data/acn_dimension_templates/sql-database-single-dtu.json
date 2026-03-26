@@ -83,6 +83,7 @@
     }
   ],
   "suggested_config": {
+    "pricing_pattern": "E",
     "quantity_model": "per_meter",
     "dimension_labels": {
       "skuName": "Tier"

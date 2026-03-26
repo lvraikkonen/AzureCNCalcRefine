@@ -28,6 +28,7 @@
     }
   ],
   "suggested_config": {
+    "pricing_pattern": "A",
     "quantity_model": "instances_x_hours"
   }
 }

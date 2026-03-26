@@ -215,6 +215,7 @@
     }
   ],
   "suggested_config": {
+    "pricing_pattern": "C",
     "quantity_model": "per_meter"
   }
 }

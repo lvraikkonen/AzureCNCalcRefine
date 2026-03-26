@@ -119,6 +119,7 @@
     }
   ],
   "suggested_config": {
+    "pricing_pattern": "B",
     "quantity_model": "per_meter"
   }
 }

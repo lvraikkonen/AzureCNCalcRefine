@@ -150,5 +150,41 @@
     "service_name": "Managed Disks",
     "display_name_cn": "托管磁盘",
     "description_cn": "适用于 Azure VM 的高性能、高持久性块存储"
+  },
+
+  "database-migration": {
+    "service_name": "Database Migration Service",
+    "display_name_cn": "数据库迁移服务",
+    "description_cn": "将数据库迁移到 Azure"
+  },
+  "azure-ddos-protection": {
+    "service_name": "Azure DDoS Protection",
+    "display_name_cn": "Azure DDoS 网络保护",
+    "description_cn": "保护 Azure 资源免受 DDoS 攻击"
+  },
+  "azure-ddos-ipprotection": {
+    "service_name": "Azure DDoS IP Protection",
+    "display_name_cn": "Azure DDoS IP 保护",
+    "description_cn": "保护公共 IP 免受 DDoS 攻击"
+  },
+  "azure-fluid-relay": {
+    "service_name": "Azure Fluid Relay",
+    "display_name_cn": "Azure Fluid Relay",
+    "description_cn": "轻松为应用添加实时协作体验"
+  },
+  "site-recovery": {
+    "service_name": "Site Recovery",
+    "display_name_cn": "站点恢复",
+    "description_cn": "业务连续性和灾难恢复即服务"
+  },
+  "notification-hub": {
+    "service_name": "Notification Hubs",
+    "display_name_cn": "通知中心",
+    "description_cn": "大规模发送推送通知"
+  },
+  "container-registry": {
+    "service_name": "Container Registry",
+    "display_name_cn": "容器注册表",
+    "description_cn": "管理和存储容器映像和项目"
   }
 }

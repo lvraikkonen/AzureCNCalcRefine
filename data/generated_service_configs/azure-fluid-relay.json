@@ -1,7 +1,5 @@
 {
   "service_name": "Azure Fluid Relay",
-  "_acn_slug": "azure-fluid-relay",
-  "_acn_display_name": "Azure Fluid Relay",
   "quantity_model": "per_meter",
   "quantity_label": "Usage",
   "hidden_dimensions": [
@@ -15,8 +13,23 @@
   ],
   "defaults": {
     "selections": {
-      "armRegionName": "eastus"
+      "armRegionName": "chinaeast2"
     },
     "hours_per_month": 730
+  },
+  "_legacy_reference": {
+    "slug": "azure-fluid-relay",
+    "display_name_cn": "Azure Fluid Relay",
+    "structure": [
+      "Fluid Relay: [操作输入 (monthly, unit=100万次/月, sizes=[?], CNY 15.26), 操作输出 (monthly, unit=100万次/月, sizes=[?], CNY 5.09), 客户端连接分钟数 (hourly, unit=100万个客户端链接分钟数, sizes=[?], CNY 15.26), 存储 (monthly, unit=GB/月, sizes=[?], CNY 2.04)]"
+    ],
+    "meters_cn": [
+      "操作输入",
+      "操作输出",
+      "客户端连接分钟数",
+      "存储"
+    ],
+    "pricing_pattern": "B",
+    "pricing_pattern_name": "per_meter"
   }
 }

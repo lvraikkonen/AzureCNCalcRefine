@@ -1,87 +1,90 @@
 # ACN DataModel 迁移与产品接入 TODO
 
 **创建日期：** 2026-03-22
-**最后更新：** 2026-03-24
+**最后更新：** 2026-03-26
 
-> **已接入产品（本文档创建前）：** Virtual Machines, App Service, Power BI Embedded（instances_x_hours）；Azure Firewall, Event Grid, Service Bus（per_meter）。这些不在下方 TODO 中列出。
+> **已接入产品（不在下方 TODO 中）：** Virtual Machines, App Service, Power BI Embedded（Pattern A）；Azure Firewall, Event Grid, Service Bus, SignalR, Load Balancer（Pattern B）。
 
 ---
 
-## Phase 0: 迁移工具
+## Phase 0: 提取工具 ✅ 已完成
 
-- [ ] **编写 Node.js 预处理脚本**: 将 `calculatordatamodel.js` + `calculatorconst.js` 合并执行，导出为标准 JSON (`calculatordatamodel.json`)
-- [ ] **编写 Python 提取脚本** (`scripts/extract_acn_datamodel.py`):
-  - [ ] 提取 slug → 中文名映射 (含区域约束清洗) → `acn_product_names.json`
-  - [ ] 提取每产品维度结构 (Types/Features/Sizes 语义分析) → `acn_dimension_templates/`
-  - [ ] 提取已知价格 → `acn_price_validation.json`
-- [ ] **修复数据质量问题**: 记录重复 slug (3个), 命名异常 (2个), PriceTier 编码 bug (7处)
+- [x] Node.js 预处理脚本 (`scripts/convert_acn_datamodel.js`): JS → JSON
+- [x] Python 提取脚本 (`scripts/extract_acn_metadata.py`):
+  - [x] 提取 slug → 中文名映射 + 区域约束 → `acn_product_names.json`
+  - [x] 提取维度结构 + 6 模式分类器 → `acn_dimension_templates/`
+  - [x] 提取 CNY 价格 → `acn_price_validation.json`
+- [x] 数据质量问题已记录（3 重复 slug, 2 命名异常）
+- [x] 中文名应用到 `product_catalog.json` (`scripts/apply_cn_names.py`)
+- [x] 价格对比框架 (`scripts/price_drift_report.py`)
 
-## Phase 1: 第一批产品接入（纯配置，~10 个）
+**2026-03-26 升级：**
+- [x] 分类器从 2 模式（A/B）升级为 6 模式（A-F）
+- [x] 模板生成器 (`scripts/generate_service_configs.py`) 升级：英文 service_name、`_legacy_reference`、Pattern 标注
+- [x] `slug_to_service_name.json` 补充 7 个 Batch 1 缺失映射
 
-### instances_x_hours 产品
-- [ ] `redis-cache` — Tier (基本/标准/高级) → Size 选择 → 固定小时价
-- [ ] `database-migration` — 简单实例选择
+---
 
-### per_meter 简单产品
-- [x] `signalr-service` — 单一 Tier，月费 ✅ 已接入（`signalr_service.json` + `azure_signalr_service.json`，含 meter_labels/order/free_quota）
-- [ ] `azure-ddos-protection` — 月费 + 超额
-- [ ] `azure-ddos-ipprotection` — 每 IP 月费
-- [ ] `managed-grafana` — 3 个独立 meter (实例/用户/冗余)
-- [ ] `azure-fluid-relay` — 4 个独立 meter
-- [ ] `site-recovery` — 2 个 meter (到客户站点/到 Azure)
+## Phase 1: Batch 1 产品接入（9 个，Pattern A + B）
 
-### per_meter 含阶梯产品
-- [ ] `notification-hub` — Tier (免费/基本/标准) + 阶梯
-- [ ] `container-registry` — Tier (基本/标准/高级) + 月费
+> 模板已生成至 `data/generated_service_configs/`，需通过 Admin UI 导入 → 编辑 → API 预览 → 发布。
+> 接入工作流见 `plan/MVP-plan.md` 和 `plan/acn-datamodel-onboarding-plan.md`。
+
+### Pattern A (instances_x_hours)
+- [ ] `redis-cache` — Azure Cache for Redis — Tier(Basic/Standard/Premium) + Size(C0-C6,P1-P5) — **端到端 demo 首选**
+- [ ] `database-migration` — Database Migration Service — Tier(Standard/Premium) + vCore
+
+### Pattern B (per_meter)
+- [ ] `azure-ddos-protection` — Azure DDoS Protection — 2 meter (月费 + 超额)
+- [ ] `azure-ddos-ipprotection` — Azure DDoS IP Protection — 1 meter (每 IP 月费)
+- [ ] `managed-grafana` — Managed Grafana — 3 meter (操作/用户/冗余)，仅 chinanorth3
+- [ ] `azure-fluid-relay` — Azure Fluid Relay — 4 meter (Input/Output/连接/存储)，仅 chinanorth3
+- [ ] `site-recovery` — Site Recovery — 2 meter (到客户站点/到 Azure)
+- [ ] `notification-hub` — Notification Hubs — Tier(Free/Basic/Standard) + 阶梯
+- [ ] `container-registry` — Container Registry — Tier(Basic/Standard/Premium) + 月费
 
 ### 每个产品的接入步骤
-- [ ] 创建 `app/config/service_configs/{slug}.json`
-- [ ] (如需) 确认 `api_service_name` 映射
-- [ ] (如需) 配置 `sku_groups`, `hidden_dimensions`, `dimension_labels`
-- [ ] (如需) 配置 `hidden_meters`（子串匹配，过滤不需要展示的 meter）
-- [ ] (如需) 配置 `meter_labels`（自定义 meter 显示名，endsWith 匹配）
-- [ ] (如需) 配置 `meter_order`（自定义 meter 排序，子串匹配）
-- [ ] (如需) 配置 `meter_free_quota`（跨 meter 免费额度，支持 `fixed` / `ref_meter` 模式）
-- [ ] 通过 Explore API 验证 cascade/meters 数据正确
-- [ ] 与 `acn_price_validation.json` 对比验证 CN 价格
+1. [ ] 确认 Global API 有 CN 区域数据（查 `api_service_name`）
+2. [ ] 通过 Admin UI 导入模板（或手动创建 draft config）
+3. [ ] API 预览 Tab 查看 cascade/meters 数据
+4. [ ] 根据 API 数据调整 `meter_labels`、`meter_order`、`hidden_meters`
+5. [ ] Calculator 预览确认 UI 正确
+6. [ ] 发布 + 回归测试
 
-## Phase 2: 第二批产品接入（per_meter 细化，~5 个）
+---
 
-- [ ] `traffic-manager` — 5 个 meter (DNS 查询含阶梯 + 4 个线性 meter)
-- [ ] `network-watcher` — 4 个 meter (各有不同阶梯结构)
-- [ ] `ip-address` — 3 种部署模型 × 多 Feature，含免费层阶梯
-- [x] `load-balancer` — 3 种类型 × 规则费+数据处理 ✅ 已接入（`load_balancer.json`，含 meter_labels/order）
-- [ ] `application-gateway-standard-v2` — 2 个独立费用组件 (网关+容量单位)
-- [ ] `schedule` — Tier + 用量阶梯
+## Phase 2: Batch 2 产品接入（5 个，Pattern B 细化）
 
-## Phase 3: 第三批产品（需扩展能力）
+- [ ] `traffic-manager` — Traffic Manager — 5 meter (DNS 阶梯 + 4 线性)
+- [ ] `network-watcher` — Network Watcher — 4 meter (各有不同阶梯)
+- [ ] `ip-address` — Public IP Addresses — 3 部署模型 × 多 Feature
+- [ ] `application-gateway-standard-v2` — Application Gateway — 2 费用组件
+- [ ] `schedule` — Scheduler — Tier + 用量阶梯
 
-### 扩展能力开发
-- [ ] **设计 multi-component 模型** — 支持一张 estimate card 内多个独立配置组件
-  - HDInsight 场景: Head Node / Worker Node / ZooKeeper Node 各自选 VM 规格和数量
-  - 方案设计 + service_config 格式扩展 + 前端组件
-- [ ] **设计 linked services** — 支持自动关联产品
-  - IoT Hub + DPS 场景: 添加 IoT Hub 时自动提示/添加 DPS
-  - Container Registry + Additional Storage 场景
-- [ ] **azure-front-door 的 sku_groups 方案** — 标准/高级选择 + 多 Type 的 meter 展示
+---
 
-### 产品接入
-- [ ] `azure-front-door` — per_meter + 标准/高级分层
-- [ ] `hdinsight` — MVP: instances_x_hours; 完整版: multi-component
-- [ ] `azure-iot-hub` + `azure-iot-hub-dps` — 分两张 card (MVP) / linked (完整版)
-- [ ] `container-registry` + `additional-storage-container-build` — 同上
-- [ ] `active-directory-b2c` — 需要专门的定价模型设计
+## Phase 3: 需架构扩展的产品（暂缓）
 
-## Phase 4: 数据源切换与验证
+### Pattern C (compute_plus_storage) — 需新 quantity_model
+- [ ] SQL Database — DTU(`1/Day`) + vCore(`1 Hour`) + Storage(`GB/Month`)
+- [ ] Azure Database for MySQL — Compute + Storage + IOPS + Backup
+- [ ] Azure Database for PostgreSQL — 同 MySQL
+- [ ] Azure Cosmos DB — RU/s + 节点 + 存储
 
-- [ ] **CN CSV → PostgreSQL 数据完整性验证** — 对比 datamodel 中的 260 个产品，哪些在 CSV 中有对应数据
-- [ ] **建立价格验证管道** — datamodel 已知价格 vs CSV 导入价格，生成差异报告
-- [ ] **前端切换到本地 API** — 从 Global Retail Prices API 切换到本地 PostgreSQL 的 Production API
-- [ ] **区域约束落地** — 将 datamodel 中提取的区域可用性信息整合到产品筛选逻辑中
+### Pattern F (cross_service_composite) — 需跨服务查询
+- [ ] HDInsight — 服务费 + VM 费 + 多节点角色
+- [ ] Azure Databricks — DBU + VM 费 + 外部映射表（最复杂）
 
-## 其他待办
+### 其他
+- [ ] `azure-front-door` — Pattern B 复杂变体（Type 内含标准/高级选择）
+- [ ] `azure-iot-hub` + `azure-iot-hub-dps` — 关联产品
+- [ ] `active-directory-b2c` — Pattern E 复杂变体
 
-- [ ] 更新 `product_catalog.json` — 整合 datamodel 提取的中文产品名（现已通过 Config Admin API 管理，publish 时自动导出 JSON）
-- [ ] 更新 `adding-new-product-guide.md` — 补充 datamodel 迁移工具的使用方法 + 新增配置项说明（hidden_meters, meter_labels, meter_order, meter_free_quota）
-- [ ] Storage 类产品调研 — datamodel 中有 54 个 storage 条目，需要归并策略
-- [ ] 研究 CN 特有产品 — 部分产品可能在 Global API 中不存在，需特殊处理
+---
+
+## Phase 4: 数据源切换（独立规划）
+
+- [ ] CN CSV → ETL → PostgreSQL (`retail_prices` 表)
+- [ ] `explore.py`: `fetch_global_prices()` → 本地 DB 查询
+- [ ] `price_drift_report.py` 验证价格一致性
+- [ ] `region_constraints` 在 cascade 中实际生效

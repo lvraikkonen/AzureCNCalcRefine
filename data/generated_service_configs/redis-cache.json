@@ -1,27 +1,37 @@
 {
   "service_name": "Azure Cache for Redis",
-  "_acn_slug": "redis-cache",
-  "_acn_display_name": "Redis 缓存 - 用于 Redis 的 Azure 缓存",
   "quantity_model": "instances_x_hours",
   "quantity_label": "Instances",
   "dimension_labels": {
     "skuName": "Tier"
   },
   "sku_groups": {
-    "基本": [
+    "Basic": [
       "Basic"
     ],
-    "标准": [
+    "Standard": [
       "Standard"
     ],
-    "高级": [
+    "Premium": [
       "Premium"
     ]
   },
   "defaults": {
     "selections": {
-      "armRegionName": "eastus"
+      "armRegionName": "chinaeast2",
+      "skuName": "Basic"
     },
     "hours_per_month": 730
+  },
+  "_legacy_reference": {
+    "slug": "redis-cache",
+    "display_name_cn": "Azure Redis 缓存",
+    "structure": [
+      "基本: [default (hourly, unit=个, sizes=[C0, C1, C2, C3, C4...+2], CNY 0.14~5.31)]",
+      "标准: [default (hourly, unit=个, sizes=[C0, C1, C2, C3, C4...+2], CNY 0.35~13.28)]",
+      "高级: [default (hourly, unit=个, sizes=[P1, P2, P3, P4, P5], CNY 3.72~63.92)]"
+    ],
+    "pricing_pattern": "A",
+    "pricing_pattern_name": "instances_x_hours"
   }
 }
