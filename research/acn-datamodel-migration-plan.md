@@ -199,4 +199,3 @@ ELSE:
 - `research/acn-datamodel-todo.md` — 产品接入进度追踪
 - `research/product-pricing-patterns.md` — Global API 定价模式分类（6 种，20+ 产品调研）
 - `plan/MVP-plan.md` — MVP 范围、Admin 工作流、实现计划
-- `plan/acn-datamodel-onboarding-plan.md` — Step 6 产品接入工作流

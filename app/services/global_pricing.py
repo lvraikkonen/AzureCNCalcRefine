@@ -39,7 +39,18 @@ async def fetch_global_prices(filters: dict, max_pages: int = 10) -> list[dict]:
 
 
 def filter_primary_non_devtest(items: list[dict]) -> list[dict]:
-    """Standard filter: isPrimaryMeterRegion=True + exclude DevTestConsumption."""
+    """Standard filter: isPrimaryMeterRegion=True + exclude DevTestConsumption.
+
+    Only safe for services whose meters have isPrimaryMeterRegion=True in the
+    queried region (e.g. Virtual Machines in eastus).  For globally-priced
+    services (Service Bus, Azure Firewall, Event Grid …) most or all rows in
+    a concrete region are isPrimary=False — use filter_non_devtest() instead.
+
+    Background: each meterId has exactly ONE primary region.  Old/global
+    meters set primary to "Global" and broadcast copies (isPrimary=False) to
+    every concrete region at the same price.  Newer region-specific meters
+    have their own meterId with isPrimary=True only in that region.
+    """
     return [
         i for i in items
         if i.get("isPrimaryMeterRegion", True)
@@ -50,8 +61,15 @@ def filter_primary_non_devtest(items: list[dict]) -> list[dict]:
 def filter_non_devtest(items: list[dict]) -> list[dict]:
     """Exclude DevTestConsumption only (no isPrimaryMeterRegion filter).
 
-    Used by cascade where isPrimaryMeterRegion would incorrectly hide
-    regions for services like Azure Firewall whose items are all non-primary.
+    Used by cascade/meters for services where isPrimaryMeterRegion=True would
+    incorrectly drop all data.  Examples:
+    - Service Bus eastus:  9/10 rows isPrimary=False (old global meterId)
+    - Azure Firewall eastus: ALL rows isPrimary=False
+    - Traffic Manager: global service, armRegionName is zone-based
+
+    Prices in isPrimary=False rows are identical to their primary copies, so
+    keeping them is safe — but callers must deduplicate by
+    (meterName, unitOfMeasure, tierMinimumUnits) when needed.
     """
     return [i for i in items if i.get("type") != "DevTestConsumption"]
 

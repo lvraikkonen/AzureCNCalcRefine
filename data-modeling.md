@@ -1,7 +1,56 @@
-# 级联筛选算法与数据建模
+# 数据架构与级联筛选算法
 
-> 本文档是 Azure.cn Pricing Calculator 的核心设计文档，覆盖级联筛选算法、数据结构分析、索引策略，以及与 Azure 国际版的对比。
-> 所有数据示例均来自实际 CSV 数据 (`sample-data/AzureRetailPrices.csv`, 46,877 行) 和 Azure 国际版 Retail Prices API。
+> 本文档是 Azure.cn Pricing Calculator 的核心设计文档，覆盖三层数据架构、级联筛选算法、数据结构分析和索引策略。
+> 所有数据示例均来自实际 CN CSV 数据（46,877 行）和 Azure Global Retail Prices API 真实响应。
+
+---
+
+## 零、整体数据架构
+
+系统有三条独立的数据管道，各自职责不同：
+
+```
+┌─ 配置数据 (How to present) ──────────────────────────────────────────┐
+│ 描述每个产品的 UI 结构和价格映射关系                                    │
+│ 字段: quantity_model, display_maps, meter_overrides, defaults...      │
+│ 存储: PostgreSQL service_configs 表 + JSON 文件双写                    │
+│ 管理: Admin UI（CRUD + draft/publish 工作流）                          │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌─ CN 价格数据 (What does it cost — China) ────────────────────────────┐
+│ CN 真实定价数据，CNY，定期更新                                         │
+│ 字段: meter_id, retail_price, unit_price, tier_min_units, type, term  │
+│ 存储: PostgreSQL retail_prices 表（从 CN CSV 导入）                    │
+│ 接口: CN 价格 API（与 Global Retail API 相同格式）                      │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌─ Global 价格数据 (开发/调试) ────────────────────────────────────────┐
+│ Azure 国际站价格，USD                                                  │
+│ 来源: prices.azure.com（实时代理，当前 Explore API 使用此数据源）         │
+│ 用途: 开发调试 + 数据结构对照验证                                        │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+### 配置 ↔ 价格的关系
+
+```
+service_configs（配置数据）          retail_prices（CN 价格数据）
+┌──────────────────────┐            ┌──────────────────────┐
+│ quantity_model        │            │ product_name, sku_name│
+│ display_maps          │  控制展示   │ retail_price          │  提供数值
+│ meter_overrides       │ ─────────→ │ tier_min_units        │ ─────────→ Calculator UI
+│ product_sub_dims      │  怎么展示   │ type, term            │  展示什么
+│ defaults              │            │ arm_region_name       │
+└──────────────────────┘            └──────────────────────┘
+        ↑                                    ↑
+   通过 service_name 关联               通过 service_name 查询
+```
+
+### 关键设计约束
+
+- **JSON 控制内容，代码控制结构**：JSON 参数化"显示什么/叫什么名/什么时候显示"，渲染模板（代码）控制布局和计算引擎
+- **Legacy calculatordatamodel.js 是一次性参考**：提取中文名和 UI 分组用，其中的价格数据已过时不可用
+- **5 种 `quantity_model`** 对应 5 种渲染模板：`instances_x_hours`、`per_meter`、`compute_plus_storage`、`resource_dimensions`、`cross_service_composite`
 
 ---
 
@@ -377,6 +426,37 @@ chinaeast2 下有 13 个 product，差异巨大：
 ---
 
 ## 八、数据建模深度分析
+
+### 8.0 数据库表概览
+
+系统使用两张核心表：
+
+**`retail_prices`** — CN 价格数据，直接映射 CSV 列（每次导入 TRUNCATE + INSERT）
+```sql
+retail_prices (
+    meter_id, sku_id, product_name, sku_name, service_name, service_family,
+    arm_region_name, type, term, tier_min_units, retail_price, unit_price,
+    unit_of_measure, meter_name, is_primary_meter_region, ...
+)
+-- 46,877 行，全部 CN 定价数据
+```
+
+**`service_configs`** — 产品 UI 配置，由 Admin UI 管理（长期存在，不随价格导入更新）
+```sql
+service_configs (
+    id, service_name, display_name_cn, quantity_model,
+    config_json,        -- 完整 JSON 配置（display_maps, meter_overrides, defaults 等）
+    status,             -- 'draft' | 'published'
+    version, created_at, updated_at
+)
+-- 每个产品维护一条 published 记录（可有多条 draft 历史）
+```
+
+**`product_catalog`** — 物化视图，从 retail_prices 聚合（数据导入后 REFRESH）
+
+两张表通过 `service_name` 关联：`service_configs.service_name` 用于在 `retail_prices` 中查询价格。
+
+---
 
 ### 8.1 数据的三层结构
 

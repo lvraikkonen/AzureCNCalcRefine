@@ -244,26 +244,7 @@ MVP (当前):
 > 在每个条目后标注状态和负责人，讨论意见直接追加在对应条目下方。
 > 状态：⬜ 待讨论 | 🟡 讨论中 | ✅ 已确认 | 🚧 开发中 | ✔️ 已完成 | ❌ 否决
 
-### 方案确认（需线下对齐）
 
-- ✅ **[设计] 两阶段模型是否采纳？** — 级联筛选走 API + 本地计算 vs 保持全程 API
-  - 讨论点：前端缓存 meters 后断网 / 过期如何处理？是否需要 TTL？
-  - 结论：**采纳**。MVP 阶段直连 Azure Global Retail Price API，延迟高（500ms-2s），本地缓存 meters + 本地计算更有必要。前端只依赖 `/explore/meters` 的 schema，数据源透明。未来切换到本地 DB（ETL + Airflow DAG + PostgreSQL）时，前端代码完全复用，后端仅需将 `fetch_global_prices()` 替换为 SQLAlchemy 查询。
-- ⬜ **[设计] Reservation unitPrice 语义对齐** — 确认后端 meters 端点返回的是承诺期总价
-  - 需要对照实际数据验证：`unitPrice × qty` = 总费用，`monthlyCost = total / termMonths`
-  - 结论：_待填写_
-- ✅ **[设计] Savings Radio vs Dropdown** — 是否替换为单选按钮分组
-  - 讨论点：移动端空间是否足够？折扣百分比的显示精度（取整 vs 一位小数）
-  - 结论：使用Radio Button可以，折扣百分比只需取整(约等于符号)
-- ✅ **[设计] 数量输入模式** — PAYG 时长单位切换（Hours/Days/Months）是否需要
-  - 讨论点：Azure 国际站有此功能，但 MVP 是否必要
-  - 结论：MVP也需要进行市场单位切换（Hours/Days/Months）
-- ⬜ **[设计] Task 6 默认值加载** — 是否新增后端端点 `GET /service-config/` 还是前端硬编码
-  - 讨论点：后端返回 vs 前端 SERVICE_DEFAULTS 扩展，哪个更灵活
-  - 结论：_待填写_
-- ⬜ **[设计] Task 8 关联服务** — 是否纳入本轮迭代
-  - 讨论点：Managed Disks / Bandwidth 等子面板复杂度高，建议拆为独立迭代
-  - 结论：_待填写_
 
 ### 开发任务追踪
 

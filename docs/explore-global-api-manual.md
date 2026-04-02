@@ -85,15 +85,19 @@ uv run python scripts/explore_global_api.py cascade "Virtual Machines" --region 
 
 #### `isPrimaryMeterRegion` 与 `--region Global` 的关系
 
-这是 cascade 中最容易踩的坑：
+这是 cascade 中最容易踩的坑。核心原因：全球统一定价的服务使用老 meterId，其 primary region 是 `"Global"`（字面量），在 eastus 等具体区域全部 isPrimary=False。
 
 | 查询 | 现象 | 原因 |
 |------|------|------|
 | `cascade "Functions" --region eastus` | 看不到消耗计划（Standard SKU）| 消耗计划主 region 是 `Global`，eastus 下 isPrimary=False |
 | `cascade "Event Hubs" --region eastus` | 看不到 Basic SKU | Basic 的主 region 是 `Global` |
 | `cascade "Functions" --region Global` | 只看到 Functions + Standard SKU | 这才是消耗计划的主记录 |
+| `cascade "Azure Firewall" --region eastus` | 全部 isPrimary=False | Firewall 所有 meter 的 primary 在其他区域 |
+| `cascade "Service Bus" --region eastus` | 仅 1 行 isPrimary=True（Geo Replication）| 其余 9 行 Standard meter 全是老 global meterId 的副本 |
 
-**规律**：全球统一定价的 SKU 的主 region 是 `"Global"`（字面量）。在具体地理区域下查询时这些 SKU 会被 cascade 过滤掉。
+**规律**：全球统一定价的 SKU 的主 region 是 `"Global"`（字面量）或少数新区域（如 polandcentral）。在主流区域下查询时 isPrimary=False 的行**价格完全相同**，不过滤也不会产生错误结果，只是可能出现重复行（同一 meterName 有新旧两个 meterId）。
+
+**代码处理**：`cascade` 和 `meters` API 使用 `filter_non_devtest()`（不过滤 isPrimary），通过 `(meterName, unitOfMeasure, tierMinimumUnits)` 分组去重。详见"关键概念速查"中的完整说明。
 
 #### `term` 字段处理
 
@@ -343,12 +347,44 @@ Basic SKU 的 `isPrimaryMeterRegion=True` 仅在 `"Global"` 和少数小型 regi
 
 ### `isPrimaryMeterRegion` 字段
 
-| 值 | 含义 | `cascade` 中 |
-|----|------|-------------|
-| `True` | 该 meter 在此 region 有独立主记录 | **保留** |
-| `False` | 该 meter 在别处定价，此处为引用副本 | **过滤掉** |
+#### 核心机制
 
-需要用 `--region Global` 才能看到的 SKU：
+每个 `meterId` 在全球只有 **一个** primary region，其余 region 的同一 meterId 行是副本（`isPrimary=False`），**价格完全相同**。
+
+| 值 | 含义 | 数量 |
+|----|------|------|
+| `True` | 该 meterId 的"归属"region，权威记录 | 每个 meterId 恰好 1 个 |
+| `False` | 从主 region 广播的副本，价格相同 | 0 ~ N 个 |
+
+#### 两种定价模式
+
+| 模式 | primary region | 代表服务 | 按 isPrimary=True 过滤 |
+|------|---------------|---------|----------------------|
+| **区域化定价** | 各 region 有自己的 meterId，primary 就在该 region | VM, App Service | ✅ 安全 |
+| **全球统一定价** | 老/全球 meterId 的 primary 在 `"Global"` 或少数新区域，主流 region（eastus 等）全部 isPrimary=False | Service Bus, Firewall, Event Grid, Traffic Manager | ❌ 会丢失全部数据 |
+
+**实测验证**（Service Bus Standard "Base Unit" meter）：
+```
+meterId 9d0c5c5c (old global meter):
+  primary region = "Global" (仅 1 行 isPrimary=True)
+  副本分布在 42 个 region，全部 isPrimary=False
+  价格 = $0.013441/hr（所有 region 相同）
+
+meterId 03f9a257 (new region-specific meter):
+  primary region = "polandcentral" (仅 1 行，isPrimary=True)
+  无副本
+  价格 = $0.013441/hr
+```
+
+#### 对代码的影响
+
+| 场景 | 过滤策略 | 原因 |
+|------|---------|------|
+| `cascade` / `meters` | `filter_non_devtest()`（**不**过滤 isPrimary） | Firewall 等服务在 eastus 全部 isPrimary=False |
+| `service` 命令 | 不过滤 isPrimary | 探索性查询，需要看到全貌 |
+| CN 数据（retail_prices 表） | 按 `(meterName, unitOfMeasure, tierMinimumUnits)` 去重 | CN CSV 没有 isPrimaryMeterRegion 字段 |
+
+#### 需要用 `--region Global` 才能看到的 SKU
 
 | 服务 | SKU / 特征 | 原因 |
 |------|-----------|------|

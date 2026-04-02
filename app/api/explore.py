@@ -255,6 +255,9 @@ async def explore_cascade(req: CascadeRequest):
     )
     items = await fetch_global_prices(api_filters)
     total_rows = len(items)
+    # Don't filter isPrimaryMeterRegion here — globally-priced services
+    # (Service Bus, Firewall, etc.) have all isPrimary=False in concrete
+    # regions.  See filter_non_devtest() docstring for details.
     items = filter_non_devtest(items)
     filtered_rows = len(items)
 
