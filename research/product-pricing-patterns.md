@@ -199,6 +199,15 @@ Premium P1:
   RI 仅在 "Cache Instance" meter 上提供
 ```
 
+ **Note: 以下的`productName` 其实为Azure Managed Redis 产品的产品线：**
+
+- Azure Managed Redis - Balanced
+- Azure Managed Redis - Compute Optimized
+- Azure Managed Redis - Memory Optimized
+- Azure Managed Redis - Flash Optimized
+
+
+
 **Azure Calculator UI 布局**（已验证截图）：
 
 ```
@@ -226,7 +235,7 @@ Savings Options:
 - **API 用 "Cache Instance" meter**（per-node），UI 展示的 $0.28 即此价格
 - **Instance 下拉含规格信息**：`P1: 6,144 MB cache, $0.554/hour`（$0.554 是 per-shard 价格，即 2 nodes）
 - **无 Savings Plan**，仅有 RI 1Y/3Y
-- **Managed Redis 系列是新产品线**，只有 "Cache Instance" meter（无 "Cache"），结构更简洁
+- **Azure Managed Redis 系列是新产品线**，只有 "Cache Instance" meter（无 "Cache"），结构更简洁
 
 #### Power BI Embedded
 
@@ -336,7 +345,7 @@ Monthly cost   $0.31
 | 费用展示 | 单一计算行 | 多行 meter × 用量 |
 | RI/SP | 常见 | 通常无 |
 
-### 3.1 Service Bus ✅
+### 3.1 Service Bus
 
 ```
 serviceName = "Service Bus"
@@ -432,7 +441,7 @@ WCF Relays
 - 小时费率 → 月价转换：部分 meter 用 `unitOfMeasure = "1/Hour"` 但 UI 展示月费
 - 免费层用 info 提示文字而非阶梯价格展示
 
-### 3.2 Azure Firewall ✅
+### 3.2 Azure Firewall
 
 ```
 serviceName = "Azure Firewall"
@@ -510,7 +519,7 @@ Data processed
 - `hidden_meters`: 隐藏 "Capacity Unit" meter（Standard/Premium 的 Capacity Unit 存在于 API 但 UI 不展示）
 - Deployment meter 使用 Pattern A 风格布局（units × hours × price），而非普通 per_meter 的单输入框
 
-### 3.3 Event Grid ✅
+### 3.3 Event Grid 
 
 ```
 serviceName = "Event Grid"
@@ -576,7 +585,6 @@ MQTT Operations
 
 | UI Tier | 展示的 Meter | API meterName |
 |---------|-------------|---------------|
-| Basic | Event Operations | Standard Event Operations |
 | Basic | Operations | Standard Operations |
 | Standard | Throughput | Standard Throughput Unit |
 | Standard | Event Operations | Standard Event Operations |
@@ -587,7 +595,7 @@ MQTT Operations
 ```json
 {
   "virtual_tiers": {
-    "Basic": { "meters": ["Standard Event Operations", "Standard Operations"] },
+    "Basic": { "meters": ["Standard Operations"] },
     "Standard": { "meters": ["Standard Throughput Unit", "Standard Event Operations", "Standard MQTT Operations"] }
   }
 }
@@ -599,7 +607,7 @@ MQTT Operations
 - 免费层用 info 提示文字展示
 - Throughput meter 使用 instances×hours 布局（跨 Pattern 复用）
 
-### 3.4 Traffic Manager ✅
+### 3.4 Traffic Manager 
 
 ```
 serviceName = "Traffic Manager"
@@ -692,7 +700,7 @@ Traffic View
 - `hidden_dimensions`: 隐藏 productName（唯一值）
 - `meter_groups`: Health Checks 下有 Azure/External 分组，可能需要 meter 分组配置
 
-### 3.5 Notification Hubs ✅
+### 3.5 Notification Hubs 
 
 ```
 serviceName = "Notification Hubs"
