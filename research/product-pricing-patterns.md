@@ -296,21 +296,94 @@ Monthly cost   $0.31
 
 
 
-### Pattern A 内部变体总结
+### Pattern A 四产品对比表
 
-| 维度 | VM | App Service | Redis | DMS | Power BI | Azure ML |
-|------|----|----|-------|-----|---------|---------|
-| **级联层级** | 7（Region→OS→Type→Tier→Category→Series→Instance） | 4（Region→OS→Tier→Instance） | 3（Region→Tier→Instance） | 3（Region→PricingTier→Instance） | 2（Region→Instance） | 2（Region→Instance） |
-| **productName 子维度** | 5（OS/Series/Type/Tier/部署） | 2（Tier/OS） | 1（Tier=productName） | 1（Tier=productName） | 无 | 无 |
-| **Savings Plan** | ✅ SP 1Y/3Y (UI有，API无) | ✅ SP 1Y/3Y (UI有，API无) | ❌ | ❌ | ❌ | ❌ |
-| **Reservation** | ✅ RI 1Y/3Y | ✅ RI 1Y/3Y (Pv3/Pv4/Iv2) | ✅ RI 1Y/3Y (Premium+) | ❌ | ❌ | ❌ |
-| **DevTest** | ✅ | ✅ (Basic/Std/Pv2-v4) | ❌ | ❌ | ❌ | ❌ |
-| **特殊量化** | Compute+OS 双价格列 | 无 | Premium: Shard×Replicas | 无 | 无 | 无 |
-| **Related Services** | Disks+Storage+Bandwidth | SSL+Domain | 无 | 无 | 无 | 无 |
-| **Instance 描述** | vCPU/RAM/Storage/$/hr | vCPU/RAM/Storage/$/hr | MB cache/$/hr | vCore | 规格代号 | GPU型号 |
-| **serviceName** | Virtual Machines | Azure App Service | Redis Cache ⚠️ | Azure Database Migration Service | Power BI Embedded | Azure Machine Learning |
+| 对比维度 | Virtual Machines | App Service | Redis Cache | DMS |
+|---------|-----------------|-------------|-------------|-----|
+| **serviceName** | `Virtual Machines` | `Azure App Service` | `Redis Cache` ⚠️ | `Azure Database Migration Service` |
+| **serviceFamily** | Compute | Compute | Databases | Databases |
+| **productName 数** | 440+ | 21 | 10 | 4 |
+| **skuName 数** | 993 | 60 | 70 | 6 |
+| **总行数 (eastus)** | 10,000+ | 269 | 193 | 11 |
+| **级联层级** | 7（Region→OS→Type→Tier→Category→Series→Instance） | 4（Region→OS→Tier→Instance） | 3（Region→Tier→Instance） | 3（Region→PricingTier→Instance） |
+| **productName 子维度** | 5（OS/Series/Type/Tier/部署） | 2（Tier/OS） | 1（Tier=productName） | 1（Tier=productName） |
+| **unitOfMeasure** | 统一 `1 Hour` | `1 Hour`(266) + `1/Month`(2) + `1/Year`(1) | 统一 `1 Hour` | `1 Hour`(9) + `1 GB/Month`(2, 全$0) |
+| **Savings Plan** | ✅ SP 1Y/3Y (UI有，API无) | ✅ SP 1Y/3Y (UI有，API无) | ❌ | ❌ |
+| **Reservation** | ✅ RI 1Y/3Y | ✅ RI 1Y/3Y (仅Pv3/Pv4/Iv2) | ✅ RI 1Y/3Y (仅Premium+) | ❌ |
+| **DevTest** | ✅ | ✅ (Basic/Std/Pv2-v4) | ❌ | ❌ |
+| **特殊量化** | Compute+OS 双价格列 | 无 | Premium: Shard×Replicas×Instance | 无 |
+| **Related Services** | Disks+Storage+Bandwidth | SSL+Domain | 无 | 无 |
+| **Instance 下拉描述** | `D2 v3: 2 vCPUs, 8 GB RAM, 50 GB, $0.188/hour` | `P0V3: 1 vCPU(s), 4 GB RAM, 250 GB Storage, $0.088` | `P1: 6,144 MB cache, $0.554/hour` | `4 vCore`（纯规格代号） |
+| **双 meter 问题** | 无 | 无 | ✅ Cache(per-shard) vs Cache Instance(per-node) | 无 |
+| **免费 meter** | 无 | 无 | 无 | ✅ `1 vCore vCore - Free` ($0) |
+| **配置复杂度** | 最高（5个子维度+双价格+Related） | 中高（RI按Tier+Related+排除非计算产品） | 中高（双meter+Premium量化公式） | 最低（3下拉+无Savings） |
 
 > ⚠️ Redis serviceName = `"Redis Cache"`（不是 `"Azure Cache for Redis"`）
+
+### Pattern A 配置要素总结
+
+| 配置项 | 说明 | 使用产品 |
+|--------|------|---------|
+| `product_sub_dimensions` | 从 productName 解析子维度（OS、Tier、Series 等），用于级联筛选 | VM（5个子维度）, App Service（2个: Tier+OS） |
+| `excluded_products` | 排除非计算实例的 productName（SSL、Domain、$0 Storage 等） | App Service（SSL Connections, Domain）, DMS（Storage $0 行） |
+| `dual_meter_selection` | 同一 SKU 有"Cache"和"Cache Instance"两个 meter 时，选择正确的计费 meter | Redis（UI 使用 Cache Instance per-node 价格） |
+| `instance_description_format` | Instance 下拉显示的规格信息格式（vCPU/RAM/Storage/Price） | VM, App Service, Redis（各自格式不同） |
+| `savings_options` | 控制哪些 Tier 可用 SP/RI，以及具体期限 | VM（全Tier SP+RI）, App Service（仅Pv3/Pv4/Iv2）, Redis（仅Premium+） |
+| `related_services` | 折叠的关联服务（独立 serviceName，不影响主产品计算） | VM（Managed Disks/Storage/Bandwidth）, App Service（SSL/Domain） |
+| `quantity_formula` | 自定义量化公式（覆盖默认的 Instance×Hours） | Redis Premium: `shards × (1 primary + 1 built-in + additional) × instances × hours × per_node_price` |
+| `compute_os_split` | Compute + OS 双价格列，各自独立计价 + 独立 Savings 选项 | VM（Windows: Compute 价格 + OS License 价格，含 Azure Hybrid Benefit） |
+| `tier_determines_ri` | 不同 Tier 的 RI 可用性差异——不是所有 Tier 都有 RI | App Service（仅 Pv3/Pv4/Iv2 有 RI）, Redis（仅 Premium/Enterprise/Managed 有 RI） |
+| `free_tier_handling` | 免费 Tier/SKU 的处理 | App Service（Free Plan = F1, $0）, DMS（Basic 1 vCore Free, $0） |
+
+### Pattern A 关键设计要点
+
+1. **`productName` 承载的子维度复杂度差异巨大**（本 Pattern 最核心的复杂性来源）：
+   - VM：5 个子维度（OS/Series/Type/Tier/部署方式），需要 5 个解析器从 productName 中提取
+   - App Service：2 个子维度（Tier/OS），后缀 `- Linux` 判断 OS
+   - Redis / DMS：1 个子维度（Tier = productName），无需解析，直接映射
+   - **设计影响**：`product_sub_dimensions` 配置是 Pattern A 的核心，决定了级联筛选的层级数量
+
+2. **统一 `unitOfMeasure = "1 Hour"` 是 Pattern A 的判定标准**：
+   - 所有 4 个产品的计算 meter 都是 `1 Hour`
+   - 少量例外全部是非计算 meter（App Service 的 SSL `1/Month` + Domain `1/Year`，DMS 的 Storage `1 GB/Month`），应通过 `excluded_products` 排除
+   - 这与 Pattern B 的多种 unitOfMeasure 形成鲜明对比
+
+3. **"Instance 选择 + 数量 × 时长"是通用交互模型**：
+   - 所有产品都有：`[N] Instances × [H] Hours/Days/Months` 输入
+   - Instance 下拉含规格+价格描述（但格式各产品不同）
+   - 默认公式：`unitPrice × instances × hours`，前端 `pricing.js` 已支持
+
+4. **Savings Options 按产品/Tier 差异化**（不是"有或没有"的二元选择）：
+   - VM / App Service：SP 1Y/3Y + RI 1Y/3Y，但 App Service 的 RI **仅限 Pv3/Pv4/Iv2 Tier**
+   - Redis：只有 RI（无 SP），且**仅限 Premium / Enterprise / Managed 系列**
+   - DMS：完全无 Savings Options
+   - **SavingsPlan 在 Global API 不返回数据**：VM 和 App Service 的 SP 在 UI 显示但 API 不返回，CN CSV 中可能存在
+   - **设计影响**：`savings_options` 配置需要表达"哪些 Tier 有哪些 Savings 类型"
+
+5. **Redis Premium 量化公式是 Pattern A 中最复杂的**：
+   - 公式：`shards × (1 primary + 1 built-in + additional_replicas) = nodes_per_instance → nodes × instances × hours × per_node_price`
+   - UI 使用 "Cache Instance" meter（per-node $0.277），不是 "Cache" meter（per-shard $0.555）
+   - 需要 `quantity_formula` 配置覆盖默认的 `instances × hours`
+   - Basic/Standard 使用简单的 `instances × hours`——**同一产品内 Tier 不同则量化模型不同**
+
+6. **Related Services 是 UI 层捆绑，不影响主产品计算**：
+   - VM：Managed Disks / Storage transactions / Bandwidth 是**独立 serviceName**
+   - App Service：SSL Connections / Custom Domain 是同一 serviceName 下的特殊 productName
+   - Calculator 仅在 UI 层折叠展示，每个 Related Service 有独立的配置和计算
+   - **设计影响**：Related Services 配置只需记录"关联哪些 serviceName"，不影响主产品的数据查询和计算
+
+7. **Compute + OS 双价格列是 VM 独有特性**：
+   - Windows VM 的 UI 分为 Compute（D2 v3 价格）+ OS（Windows License 价格）两列
+   - 两列各自有独立的 Savings Options（Compute 有 SP/RI，OS 有 License included / Azure Hybrid Benefit）
+   - 总价 = Compute 费 + OS 费（$70.08 + $67.16 = $137.24）
+   - **设计影响**：需要 `compute_os_split` 配置，在前端渲染双列 Savings 和双价格行
+
+8. **Instance 下拉描述格式不统一**（需要 per-product 配置）：
+   - VM：`D2 v3: 2 vCPUs, 8 GB RAM, 50 GB, $0.188/hour`
+   - App Service：`P0V3: 1 vCPU(s), 4 GB RAM, 250 GB Storage, $0.088`
+   - Redis：`P1: 6,144 MB cache, $0.554/hour`
+   - DMS：纯规格代号 `4 vCore`（无描述信息）
+   - 描述信息来源：API 不直接提供 vCPU/RAM 等规格——VM 通过外部 sizes API 或静态映射获取，其他产品通过配置定义
 
 ---
 
@@ -1185,41 +1258,19 @@ HDInsight
 
 与 Databricks 相比简单之处：服务费和 VM 费使用**相同 skuName**（如 "D12 v2"），可直接按名匹配相加，不需要外部映射表。
 
-#### Azure Machine Learning（Surcharge 大部分 $0）
 
-```
-serviceName = "Azure Machine Learning"
-
-费用公式:
-  总费用/hr = ML Surcharge + VM 费
-  ML Surcharge 大部分 $0，实际费用几乎全来自 VM。
-
-productName = "Machine Learning service":
-  "Standard vCPU Surcharge":    $0.00/hr (tracking)
-  "GPU Surcharge":              $0.11/hr
-  "PB vCPU Surcharge":          $0.055/hr
-  "Evaluation Input Tokens":    $0.02/1K
-  "Evaluation Output Tokens":   $0.06/1K
-
-productName = "Managed Model Hosting Service":
-  GPU 实例小时费 ($0.45~$12.29/hr)
-
-废弃 — "Enterprise Inferencing" (6 items): 全部 $0
-```
-
-Azure Calculator UI 中的 Savings Plan/RI 选项实际来自底层 VM 服务，不在 `serviceName = "Azure Machine Learning"` 的 API 数据中。
 
 ### Pattern F 产品对比
 
-| | Databricks | HDInsight | Azure ML |
-|---|-----------|-----------|----------|
-| 服务费查询 | `"Azure Databricks"` | `"HDInsight"` | `"Azure Machine Learning"` |
-| VM 费查询 | `"Virtual Machines"` | `"Virtual Machines"` | `"Virtual Machines"` |
-| 关联方式 | 外部 DBU 映射表 | 相同 skuName 直接相加 | surcharge 大部分 $0 |
-| 多节点角色 | ✅ (Driver + Worker) | ✅ (Head + Worker + ZK) | ❌ |
-| Serverless 模式 | ✅ (只按 DBU) | ❌ | ❌ |
-| Savings Options | 底层 VM 有 RI | 无 | 底层 VM 有 RI/SP |
-| MVP 近似 | ❌ 暂不接入 | Pattern A 近似（仅服务费） | Pattern A 近似 ✅ |
+| | Databricks | HDInsight |
+|---|-----------|-----------|
+| 服务费查询 | `"Azure Databricks"` | `"HDInsight"` |
+| VM 费查询 | `"Virtual Machines"` | `"Virtual Machines"` |
+| 关联方式 | 外部 DBU 映射表 | 相同 skuName 直接相加 |
+| 多节点角色 | ✅ (Driver + Worker) | ✅ (Head + Worker + ZK) |
+| Serverless 模式 | ✅ (只按 DBU) | ❌ |
+| Savings Options | 底层 VM 有 RI | 无 |
+| MVP 近似 | ❌ 暂不接入 | Pattern A 近似（仅服务费） |
 
 ---
 
@@ -1229,43 +1280,7 @@ Azure Calculator UI 中的 Savings Plan/RI 选项实际来自底层 VM 服务，
 |--------|------|------|---------|-------------|
 | **Compute** | Virtual Machines | A | ✅ | 已实现 |
 | | App Service | A | ✅ | 已实现 |
-| | Container Instances | D | ❌ | per_meter 近似 |
-| | Azure Functions | — | — | Global API 返回 0 |
-| | AKS | — | — | Global API 返回 0 |
-| **Networking** | Azure Firewall | B | ✅ | 已实现 |
-| | Load Balancer | B | ✅ | 已实现 |
-| | VPN Gateway | E | ⚠️ | per_meter 近似 |
-| | Application Gateway | B | ⚠️ | Batch 2 待接入 |
-| | DDoS Protection | B | ⚠️ | Batch 1 待接入 |
-| | Traffic Manager | B | ⚠️ | Batch 2 待接入 |
-| | Network Watcher | B | ⚠️ | Batch 2 待接入 |
-| | Public IP Addresses | B | ⚠️ | Batch 2 待接入 |
-| | Bandwidth | E | ⚠️ | per_meter 近似 (11 级阶梯) |
-| **Storage** | Storage Accounts | C | ❌ | Pattern A 近似（复杂，暂缓） |
-| | Managed Disks | — | — | Global API serviceName 不匹配 |
-| **Databases** | SQL Database | C | ❌ | Pattern A 近似 (DTU `1/Day` 特殊) |
-| | Azure Cache for Redis | A | ⚠️ | Batch 1 待接入 |
-| | Azure Cosmos DB | C | ❌ | Pattern A 近似 (RU/s 模型特殊) |
-| | Azure Database for MySQL | C | ❌ | Pattern A 近似 |
-| | Azure Database for PostgreSQL | C | ❌ | Pattern A 近似 |
-| | Container Registry | B | ⚠️ | Batch 1 待接入 |
-| | Database Migration Service | A | ⚠️ | Batch 1 待接入 |
-| **AI + ML** | Azure Machine Learning | F→A | ⚠️ | Pattern A 近似 (忽略 surcharge) |
-| | Cognitive Services | — | — | Global API 返回 0 |
-| **Analytics** | HDInsight | F | ❌ | Pattern A 近似 (仅服务费) |
-| | Power BI Embedded | A | ✅ | 已实现 |
-| | Azure Databricks | F | ❌ | 暂不接入 (最复杂) |
-| **Web** | Azure SignalR Service | B | ✅ | 已实现 |
-| | Azure CDN | — | — | Global API 返回 0 |
-| **Integration** | API Management | B | — | catalog 中有 |
-| | Event Grid | B | ✅ | 已实现 |
-| | Service Bus | B | ✅ | 已实现 |
-| | Notification Hubs | B | ⚠️ | Batch 1 待接入 |
-| **Security** | Key Vault | E→B | — | per_meter 可处理 |
-| **DevOps** | Azure DevOps | — | — | Global API 返回 0 |
-| | Managed Grafana | B | ⚠️ | Batch 1 待接入 |
-
-> 标注 `—` 的产品在 Global API 中使用了不同的 serviceName，需进一步调查。
+| |                  |      |          |              |
 
 ---
 
@@ -1293,18 +1308,16 @@ Azure Calculator UI 中的 Savings Plan/RI 选项实际来自底层 VM 服务，
 
 | 产品 | 尝试的 serviceName | 可能的实际名称 |
 |------|-------------------|--------------|
-| Azure Functions | "Azure Functions" | 可能归入 "Azure App Service" |
-| AKS | "Azure Kubernetes Service (AKS)" | 控制面免费，节点用 VM 计费 |
-| Managed Disks | "Managed Disks" | 可能归入 "Storage" (serviceName = "Storage") |
-| Azure CDN | "Azure CDN" | 可能是 "Content Delivery Network" |
-| Cognitive Services | "Cognitive Services" | 可能按具体子服务拆分 |
-| Azure DevOps | "Azure DevOps" | 可能不在 Retail Prices API 中 |
+|      |                    |                |
+|      |                    |                |
+|      |                    |                |
+|      |                    |                |
+|      |                    |                |
+|      |                    |                |
 
 ### 其他未解决问题
 
 1. **SavingsPlan 数据源差异**：Global API 不返回 VM SavingsPlan 数据，但 CN CSV 有
-2. **Azure ML Token 计费**：特定区域的 LLM 模型 token 计费（`unitOfMeasure = "1K"`）不适合 `instances_x_hours`
-3. **Azure ML $0 surcharge**：cascade 中会出现大量 $0 meter，需通过 `excluded_products` 排除
 
 ---
 
