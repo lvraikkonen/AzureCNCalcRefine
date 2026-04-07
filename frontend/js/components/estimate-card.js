@@ -5,7 +5,8 @@
 
 import { getItem, updateItem, removeItem, emit } from '../state.js';
 import { fetchCascade, fetchPreload, fetchMeters, fetchServiceConfig } from '../api.js';
-import { calculateLocalPrice, calculatePerMeterPrice, getAvailableSavingsOptions } from '../pricing.js';
+import { calculateLocalPrice, calculatePerMeterPrice, getAvailableSavingsOptions, evaluateFormula, resolveFormulaQuantity } from '../pricing.js';
+import { renderCostCalculation } from './cost-calculation.js';
 import { buildGroupedRegions, getRegionDisplay } from '../regions.js';
 
 // ── Static vs dynamic dimension sets ────────────────────────
@@ -77,8 +78,10 @@ export class EstimateCard {
     this.el.className = 'estimate-card';
     this.el.dataset.itemId = itemId;
     this.meterOpen = false;
+    this.costCalcOpen = false;
     this.collapsed = false;
     this.preloadData = null;
+    this.formulaSteps = null;       // resolved display_steps from active formula
     this.render();
     this.initCard();
   }
@@ -106,6 +109,8 @@ export class EstimateCard {
         meter_free_quota: configData.meter_free_quota || {},
         meter_labels: configData.meter_labels || {},
         meter_order: configData.meter_order || [],
+        quantity_formula: configData.quantity_formula || null,
+        meter_overrides: configData.meter_overrides || {},
       };
       if (configData.defaults) {
         const cfg = configData.defaults;
@@ -164,6 +169,29 @@ export class EstimateCard {
     return hidden?.includes(field) || false;
   }
 
+  /**
+   * Get the active quantity_formula config if applies_to matches current selections.
+   * Returns the formula config object or null.
+   */
+  get activeFormula() {
+    const formula = this.item?.serviceConfig?.quantity_formula;
+    if (!formula) return null;
+    const appliesTo = formula.applies_to;
+    if (!appliesTo) return formula;  // No condition → always active
+    const selections = this.item?.selections || {};
+    // Check each field in applies_to: value must be in the allowed list
+    for (const [field, allowedValues] of Object.entries(appliesTo)) {
+      const currentVal = selections[field] || this.item?.cascadeData?.dimensions?.find(d => d.field === field)?.selected;
+      if (!currentVal) return null;
+      // Support sub-dimension fields by also checking productName from cascadeData
+      const matched = Array.isArray(allowedValues)
+        ? allowedValues.some(v => currentVal.includes(v))
+        : currentVal.includes(allowedValues);
+      if (!matched) return null;
+    }
+    return formula;
+  }
+
   get serviceIcon() {
     return SERVICE_ICONS[this.item?.serviceName] || '📦';
   }
@@ -214,6 +242,7 @@ export class EstimateCard {
         ${this.renderError(item)}
         ${this.renderQuantity(item)}
         ${this.renderMeters(item)}
+        ${this.renderCostCalc(item)}
         ${this.renderPriceSummary(item)}
       </div>
     `;
@@ -450,6 +479,12 @@ export class EstimateCard {
       return this.renderPerMeterQuantity(item);
     }
 
+    // Formula inputs: when quantity_formula applies, show custom inputs
+    const formula = this.activeFormula;
+    if (formula?.inputs) {
+      return this.renderFormulaInputs(item, formula);
+    }
+
     const type = item.selections.type || 'Consumption';
     const isConsumption = type === 'Consumption';
     const disabled = item.loading ? ' disabled' : '';
@@ -465,6 +500,46 @@ export class EstimateCard {
       </div>`;
 
     // Duration only for Consumption (PAYG)
+    if (isConsumption) {
+      const unit = item.hoursUnit || 'hours';
+      const displayValue = this.hoursToDisplay(item.hoursPerMonth, unit);
+      html += `
+        <div class="quantity-group quantity-duration">
+          <label class="form-label">Duration</label>
+          <div class="duration-input-group">
+            <input type="number" class="form-input" data-field="duration"
+                   value="${displayValue}" min="0" step="any"${disabled}>
+            <select class="form-select duration-unit" data-field="hoursUnit"${disabled}>
+              <option value="hours"${unit === 'hours' ? ' selected' : ''}>Hours</option>
+              <option value="days"${unit === 'days' ? ' selected' : ''}>Days</option>
+              <option value="months"${unit === 'months' ? ' selected' : ''}>Months</option>
+            </select>
+          </div>
+        </div>`;
+    }
+
+    html += '</div>';
+    return html;
+  }
+
+  renderFormulaInputs(item, formula) {
+    const disabled = item.loading ? ' disabled' : '';
+    const formulaInputs = item.formulaInputs || {};
+    const type = item.selections.type || 'Consumption';
+    const isConsumption = type === 'Consumption';
+
+    let html = '<div class="quantity-row formula-inputs">';
+    for (const inp of formula.inputs) {
+      const val = formulaInputs[inp.key] ?? inp.default ?? 1;
+      html += `
+        <div class="quantity-group">
+          <label class="form-label">${this.escHtml(inp.label)}</label>
+          <input type="number" class="form-input formula-input" data-formula-key="${this.escHtml(inp.key)}"
+                 value="${val}" min="${inp.min ?? 0}" step="1"${disabled}>
+        </div>`;
+    }
+
+    // Duration for Consumption
     if (isConsumption) {
       const unit = item.hoursUnit || 'hours';
       const displayValue = this.hoursToDisplay(item.hoursPerMonth, unit);
@@ -534,8 +609,28 @@ export class EstimateCard {
 
     const freeOffsets = this.computeMeterFreeOffsets(item);
     const meterLabels = item.serviceConfig?.meter_labels || {};
+    const meterOverrides = item.serviceConfig?.meter_overrides || {};
 
     for (const m of meterInfos) {
+      // Check for meter_overrides (endsWith matching, longest key wins)
+      const override = this.getMeterOverride(m.name, meterOverrides);
+
+      // is_base_fee: fixed quantity, no user input
+      if (override?.is_base_fee) {
+        const fixedQty = override.fixed_quantity ?? 1;
+        const unitPrice = m.tiers?.[0]?.unit_price ?? 0;
+        const baseCost = fixedQty * unitPrice;
+        const displayName = this.getMeterDisplayName(m.name, meterLabels);
+        html += `<div class="per-meter-section">`;
+        html += `<div class="per-meter-header">${this.escHtml(displayName)} <span class="per-meter-base-fee-badge">Base fee</span></div>`;
+        html += `<div class="per-meter-input-row">`;
+        html += `<div class="per-meter-field"><span class="per-meter-price">${fmt.format(unitPrice)}/mo</span></div>`;
+        html += `<span class="per-meter-eq">=</span>`;
+        html += `<span class="per-meter-cost">${fmt.format(baseCost)}</span>`;
+        html += `</div></div>`;
+        continue;
+      }
+
       const isHourly = m.unit === '1 Hour' || m.unit === '1/Hour';
       const isDaily = m.unit === '1 Day' || m.unit === '1/Day';
       const isMonthly = m.unit === '1/Month';
@@ -667,6 +762,22 @@ export class EstimateCard {
       }
     }
     return bestLabel;
+  }
+
+  /**
+   * Look up meter_overrides config for a meter using endsWith matching (longest key wins).
+   * e.g. "S1 Gateway" with overrides {"Gateway": {is_base_fee: true}} → {is_base_fee: true}
+   */
+  getMeterOverride(meterName, overrides) {
+    if (!overrides) return null;
+    let bestKey = '', bestOverride = null;
+    for (const [suffix, override] of Object.entries(overrides)) {
+      if (meterName.endsWith(suffix) && suffix.length > bestKey.length) {
+        bestKey = suffix;
+        bestOverride = override;
+      }
+    }
+    return bestOverride;
   }
 
   /**
@@ -835,6 +946,15 @@ export class EstimateCard {
     return type;
   }
 
+  renderCostCalc(item) {
+    return renderCostCalculation({
+      item,
+      quantityModel: this.quantityModel,
+      formulaSteps: this.formulaSteps,
+      open: this.costCalcOpen,
+    });
+  }
+
   renderPriceSummary(item) {
     if (item.cost == null) return '';
 
@@ -954,6 +1074,11 @@ export class EstimateCard {
       inp.addEventListener('input', (e) => this.onPerMeterDailyChange(e));
     });
 
+    // Formula inputs
+    this.el.querySelectorAll('.formula-input').forEach(inp => {
+      inp.addEventListener('input', (e) => this.onFormulaInputChange(e));
+    });
+
     // Per-meter volume unit selector (GB/TB)
     this.el.querySelectorAll('.per-meter-volume-unit').forEach(sel => {
       sel.addEventListener('change', (e) => this.onPerMeterVolumeUnitChange(e));
@@ -1000,6 +1125,13 @@ export class EstimateCard {
     const meterBtn = this.el.querySelector('[data-action="toggle-meters"]');
     if (meterBtn) meterBtn.addEventListener('click', () => {
       this.meterOpen = !this.meterOpen;
+      this.render();
+    });
+
+    // Cost calculation toggle
+    const calcBtn = this.el.querySelector('[data-action="toggle-cost-calc"]');
+    if (calcBtn) calcBtn.addEventListener('click', () => {
+      this.costCalcOpen = !this.costCalcOpen;
       this.render();
     });
   }
@@ -1100,6 +1232,19 @@ export class EstimateCard {
     // Convert display value to base unit (GB) if volume unit is TB
     const volumeUnit = (item.meterVolumeUnits || {})[meterName] || 'GB';
     item.meterQuantities[meterName] = volumeUnit === 'TB' ? displayValue * 1024 : displayValue;
+    updateItem(this.itemId, item);
+
+    debounce(`qty-${this.itemId}`, () => this.recalculateLocal(), 300);
+  }
+
+  onFormulaInputChange(e) {
+    const key = e.target.dataset.formulaKey;
+    const value = parseFloat(e.target.value) || 0;
+    const item = this.item;
+    if (!item) return;
+
+    if (!item.formulaInputs) item.formulaInputs = {};
+    item.formulaInputs[key] = value;
     updateItem(this.itemId, item);
 
     debounce(`qty-${this.itemId}`, () => this.recalculateLocal(), 300);
@@ -1308,16 +1453,46 @@ export class EstimateCard {
     const term = item.selections.term || null;
 
     let result;
+    this.formulaSteps = null;
+
     if (this.quantityModel === 'per_meter') {
+      // Apply fixed_quantity from meter_overrides for is_base_fee meters
+      const mq = { ...(item.meterQuantities || {}) };
+      const overrides = item.serviceConfig?.meter_overrides || {};
+      for (const g of item.metersCache) {
+        const ov = this.getMeterOverride(g.meter, overrides);
+        if (ov?.is_base_fee) {
+          mq[g.meter] = ov.fixed_quantity ?? 1;
+        }
+      }
       result = calculatePerMeterPrice(
         item.metersCache, type, term,
-        item.meterQuantities || {},
+        mq,
         this.computeMeterFreeOffsets(item),
       );
     } else {
+      // Check for active formula
+      const formula = this.activeFormula;
+      let quantity = item.quantity || 1;
+
+      if (formula?.formula) {
+        // Build formula input values with defaults
+        const inputs = {};
+        for (const inp of formula.inputs || []) {
+          inputs[inp.key] = item.formulaInputs?.[inp.key] ?? inp.default ?? 1;
+        }
+        try {
+          const resolved = resolveFormulaQuantity(formula, inputs, item.metersCache, item.hoursPerMonth || 730);
+          quantity = resolved.quantity;
+          this.formulaSteps = resolved.steps;
+        } catch (e) {
+          console.warn('Formula eval error:', e);
+        }
+      }
+
       result = calculateLocalPrice(
         item.metersCache, type, term,
-        item.quantity || 1, item.hoursPerMonth || 730,
+        quantity, item.hoursPerMonth || 730,
       );
     }
 

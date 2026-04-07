@@ -12,3 +12,4 @@ from app.models.config import (  # noqa: F401, E402
     ServiceConfig,
     ServiceConfigHistory,
 )
+from app.models.retail_price import RetailPrice  # noqa: F401, E402

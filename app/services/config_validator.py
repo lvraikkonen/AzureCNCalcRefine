@@ -137,5 +137,5 @@ def _parser_exists(parser_name: str) -> bool:
     # We can't directly look up by parser field name without refactoring.
     # For now, try known parser names via service name convention.
     # Future: expose a parser registry lookup function.
-    known_parsers = {"vm_product_parser", "app_service_parser"}
+    known_parsers = {"vm_product_parser", "app_service_parser", "redis_parser"}
     return parser_name in known_parsers

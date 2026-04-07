@@ -16,6 +16,12 @@ export function configList() {
     statusFilter: "",
     actionLoading: null,
 
+    // Template import modal state
+    showTemplateModal: false,
+    templates: [],
+    templatesLoading: false,
+    importingSlug: null,
+
     get filtered() {
       const q = this.search.toLowerCase();
       return this.configs.filter((c) => {
@@ -64,6 +70,46 @@ export function configList() {
         alert("归档失败: " + e.message);
       } finally {
         this.actionLoading = null;
+      }
+    },
+
+    async openTemplateModal() {
+      this.showTemplateModal = true;
+      this.templatesLoading = true;
+      try {
+        this.templates = await api.listTemplates();
+      } catch (e) {
+        alert("加载模板失败: " + e.message);
+        this.showTemplateModal = false;
+      } finally {
+        this.templatesLoading = false;
+      }
+    },
+
+    async importTemplate(slug) {
+      this.importingSlug = slug;
+      try {
+        const result = await api.importTemplate(slug);
+        if (result.action === "created") {
+          // Refresh template list to update already_imported flags
+          this.templates = await api.listTemplates();
+          await this.load();
+        } else {
+          alert(`跳过: ${result.detail}`);
+        }
+      } catch (e) {
+        alert("导入失败: " + e.message);
+      } finally {
+        this.importingSlug = null;
+      }
+    },
+
+    async importAllTemplates() {
+      const available = this.templates.filter((t) => !t.already_imported);
+      if (!available.length) return;
+      if (!confirm(`批量导入 ${available.length} 个模板？`)) return;
+      for (const t of available) {
+        await this.importTemplate(t.slug);
       }
     },
 

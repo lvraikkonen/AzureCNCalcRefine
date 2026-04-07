@@ -165,6 +165,21 @@ class FamilyResponse(BaseModel):
 # ---------------------------------------------------------------------------
 
 
+class TemplateListItem(BaseModel):
+    slug: str
+    service_name: str
+    pricing_pattern: str | None = None
+    quantity_model: str | None = None
+    already_imported: bool = False
+
+
+class TemplateImportResponse(BaseModel):
+    action: Literal["created", "skipped"]
+    service_name: str
+    slug: str
+    detail: str | None = None
+
+
 class ImportJsonFilesRequest(BaseModel):
     overwrite: bool = False
 

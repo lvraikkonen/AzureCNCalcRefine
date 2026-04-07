@@ -550,6 +550,62 @@ body {
   text-decoration: line-through;
 }
 
+/* ── Cost Calculation ─────────────────────────────────────── */
+.cost-calculation-section {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+}
+.calc-toggle {
+  font-size: 13px;
+  color: var(--azure-blue);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: var(--font);
+  font-weight: 600;
+  padding: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.calc-toggle:hover { text-decoration: underline; }
+.calc-detail { padding: 8px 0 4px; }
+.calc-detail.hidden { display: none; }
+.calc-step {
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 2px 0;
+  font-family: var(--font-mono, monospace);
+}
+.calc-meter-name { font-weight: 500; color: var(--text); }
+.calc-total {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  padding-top: 4px;
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Base Fee Badge ──────────────────────────────────────── */
+.per-meter-base-fee-badge {
+  font-size: 10px;
+  color: var(--text-muted);
+  background: var(--bg-secondary, #f3f4f6);
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  font-weight: 400;
+}
+
+/* -- Formula Inputs ------------------------------------------------- */
+.formula-inputs {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
 /* ── Savings Radio ────────────────────────────────────────── */
 .savings-section {
   grid-column: 1 / -1;

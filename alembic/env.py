@@ -1,12 +1,14 @@
 import asyncio
-import os
 from logging.config import fileConfig
 
+from dotenv import load_dotenv
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
+
+load_dotenv()
 
 config = context.config
 
@@ -18,12 +20,15 @@ from app.models import Base  # noqa: E402
 
 target_metadata = Base.metadata
 
-# Override sqlalchemy.url from environment variable if set
-database_url = os.environ.get("DATABASE_URL")
-if database_url:
-    # Alembic uses sync driver; convert asyncpg to psycopg2 if needed
-    # For autogenerate we can use the async URL directly with async_engine_from_config
-    config.set_main_option("sqlalchemy.url", database_url)
+# Build sqlalchemy.url from individual DB_* env vars
+from app.database import build_database_url  # noqa: E402
+
+try:
+    # Escape '%' for configparser interpolation (e.g. url-encoded passwords like %2C)
+    url = build_database_url("asyncpg").replace("%", "%%")
+    config.set_main_option("sqlalchemy.url", url)
+except RuntimeError:
+    pass  # DB vars not set — offline mode or CI
 
 
 def run_migrations_offline() -> None:

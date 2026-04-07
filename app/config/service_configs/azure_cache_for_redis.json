@@ -1,0 +1,18 @@
+{
+  "defaults": {
+    "selections": {
+      "armRegionName": "chinanorth3"
+    },
+    "hours_per_month": 730
+  },
+  "service_name": "Redis Cache",
+  "quantity_label": "实例",
+  "quantity_model": "instances_x_hours",
+  "api_service_name": "Redis Cache",
+  "dimension_labels": {
+    "skuName": "层级 / 规格"
+  },
+  "hidden_dimensions": [
+    "productName"
+  ]
+}

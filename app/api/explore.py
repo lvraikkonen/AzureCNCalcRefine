@@ -1,6 +1,12 @@
-"""Explore API — exposes Azure Global Retail Prices data for frontend interaction.
+"""Explore API — exposes Azure pricing data for frontend interaction.
 
-Five endpoint groups mirroring the explore CLI tool:
+Supports two data sources:
+- Global: Azure Global Retail Prices API (prices.azure.com)
+- CN: Local PostgreSQL retail_prices table (imported from ACN CSV)
+
+Data source routing: auto-detect by region (china* → CN) or explicit `data_source` param.
+
+Five endpoint groups:
 - service:      dimension distribution summary
 - cascade:      cascading filter with sub-dimension support
 - meters:       meter/tier pricing details
@@ -9,6 +15,7 @@ Five endpoint groups mirroring the explore CLI tool:
 """
 
 import json
+import logging
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -43,12 +50,66 @@ from app.services.global_pricing import (
     filter_primary_non_devtest,
     get_effective_term,
 )
+from app.services.cn_pricing import fetch_cn_prices
 from app.services.config_repo import get_cached_config
 from app.services.sub_dimensions import get_sub_dimension_parser
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/explore", tags=["explore"])
 
 _CONFIG_DIR = Path(__file__).resolve().parent.parent / "config" / "service_configs"
+
+# CN region patterns (from confirmed data: chinanorth/2/3, chinaeast/2/3, China, CN Zone 1/2, etc.)
+_CN_REGION_PREFIXES = ("china", "China", "CN ")
+
+
+def _is_cn_region(region: str | None) -> bool:
+    """Check if a region string indicates a CN data source."""
+    if not region:
+        return False
+    return any(region.startswith(prefix) for prefix in _CN_REGION_PREFIXES)
+
+
+def _resolve_data_source(data_source: str | None, region: str | None) -> str:
+    """Determine the data source: 'cn' or 'global'.
+
+    Priority: explicit data_source param > auto-detect by region > default to global.
+    """
+    if data_source in ("cn", "global"):
+        return data_source
+    if _is_cn_region(region):
+        return "cn"
+    return "global"
+
+
+async def _fetch_prices(
+    service_name: str,
+    data_source: str,
+    config: dict | None,
+    region: str | None = None,
+    product: str | None = None,
+    sku: str | None = None,
+) -> list[dict]:
+    """Unified price fetching — routes to CN or Global based on data_source.
+
+    Uses cn_service_name from config when querying CN data source if the
+    service name differs between Global and CN (e.g. "Azure Cache for Redis" vs "Redis Cache").
+    """
+    # Resolve the API-level service name
+    api_name = service_name
+    if config and "api_service_name" in config:
+        api_name = config["api_service_name"]
+
+    if data_source == "cn":
+        # For CN, use cn_service_name if provided (handles naming mismatches)
+        cn_name = config.get("cn_service_name") if config else None
+        effective_name = cn_name or api_name
+        filters = build_api_filters(effective_name, region=region, product=product, sku=sku)
+        return await fetch_cn_prices(filters)
+    else:
+        filters = build_api_filters(api_name, region=region, product=product, sku=sku)
+        return await fetch_global_prices(filters)
 
 
 def _load_service_config(service_name: str) -> dict | None:
@@ -203,11 +264,15 @@ def _collect_options(items: list[dict], field: str) -> list[str]:
 # ═══════════════════════════════════════════════════════════════════════
 
 @router.get("/service/{service_name}", response_model=ServiceResponse)
-async def explore_service(service_name: str, region: str | None = None):
+async def explore_service(
+    service_name: str,
+    region: str | None = None,
+    data_source: str | None = None,
+):
     """按服务查询各维度值域分布（不过滤 isPrimaryMeterRegion）。"""
-    api_name = _resolve_api_service_name(service_name)
-    filters = build_api_filters(api_name, region=region)
-    items = await fetch_global_prices(filters)
+    config = _load_service_config(service_name)
+    ds = _resolve_data_source(data_source, region)
+    items = await _fetch_prices(service_name, ds, config, region=region)
 
     dim_names = ["productName", "skuName", "type", "term", "unitOfMeasure"]
     dimensions = []
@@ -246,14 +311,17 @@ async def explore_cascade(req: CascadeRequest):
     # could only ever return the already-selected sku as an option for the skuName
     # dimension (defeating the purpose of cascade).  The in-memory cascade loop below
     # handles skuName filtering correctly without this API-level restriction.
-    api_name = _resolve_api_service_name(req.service_name)
+    config = _load_service_config(req.service_name)
     sku_groups = _load_sku_groups(req.service_name)
-    api_filters = build_api_filters(
-        api_name,
-        region=req.selections.get("armRegionName"),
+    region = req.selections.get("armRegionName")
+    data_source = _resolve_data_source(req.data_source, region)
+    items = await _fetch_prices(
+        req.service_name,
+        data_source,
+        config,
+        region=region,
         product=req.selections.get("productName"),
     )
-    items = await fetch_global_prices(api_filters)
     total_rows = len(items)
     # Don't filter isPrimaryMeterRegion here — globally-priced services
     # (Service Bus, Firewall, etc.) have all isPrimary=False in concrete
@@ -347,6 +415,7 @@ async def explore_cascade(req: CascadeRequest):
         total_rows=total_rows,
         filtered_rows=filtered_rows,
         dimensions=dimensions,
+        data_source=data_source,
     )
 
 
@@ -357,14 +426,19 @@ async def explore_cascade(req: CascadeRequest):
 @router.post("/meters", response_model=MetersResponse)
 async def explore_meters(req: MetersRequest):
     """查看具体配置的 meter 分层定价结构。"""
-    api_name = _resolve_api_service_name(req.service_name)
+    config = _load_service_config(req.service_name)
     sku_groups = _load_sku_groups(req.service_name)
     # When sku_groups is defined, don't pass virtual tier to API; filter locally instead
     api_sku = None if sku_groups else req.sku
-    filters = build_api_filters(
-        api_name, region=req.region, product=req.product, sku=api_sku,
+    data_source = _resolve_data_source(req.data_source, req.region)
+    items = await _fetch_prices(
+        req.service_name,
+        data_source,
+        config,
+        region=req.region,
+        product=req.product,
+        sku=api_sku,
     )
-    items = await fetch_global_prices(filters)
     # Local filter: expand virtual tier to real skuNames
     if sku_groups and req.sku:
         real_skus = set(_resolve_sku_group(sku_groups, req.sku))
@@ -428,6 +502,7 @@ async def explore_meters(req: MetersRequest):
         total_rows=len(items),
         groups=groups,
         raw_items=raw_items,
+        data_source=data_source,
     )
 
 

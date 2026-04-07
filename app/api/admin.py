@@ -35,6 +35,8 @@ from app.schemas.admin import (
     ServiceEntryCreate,
     ServiceEntryResponse,
     ServiceEntryUpdate,
+    TemplateImportResponse,
+    TemplateListItem,
     ValidationResult,
 )
 from app.services import config_repo
@@ -46,6 +48,7 @@ router = APIRouter(prefix="/api/v1/admin", tags=["admin"])
 
 _CONFIG_DIR = Path(__file__).resolve().parent.parent / "config" / "service_configs"
 _CATALOG_PATH = Path(__file__).resolve().parent.parent / "config" / "product_catalog.json"
+_TEMPLATE_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "generated_service_configs"
 
 
 def _export_config_json(slug: str, config: dict) -> None:
@@ -310,6 +313,74 @@ async def reorder_catalog(body: ReorderRequest, _: AdminAuth, session: DBSession
             )
     await session.commit()
     await _refresh_catalog_cache(session)
+
+
+# ---------------------------------------------------------------------------
+# Onboarding — template import
+# ---------------------------------------------------------------------------
+
+
+@router.get("/onboarding/templates", response_model=list[TemplateListItem])
+async def list_templates(_: AdminAuth, session: DBSession):
+    """List available generated templates, marking those already imported."""
+    if not _TEMPLATE_DIR.exists():
+        return []
+
+    # Gather existing config service_names for "already_imported" flag
+    existing_configs = await config_repo.list_configs(session, limit=1000)
+    existing_names = {c.service_name for c in existing_configs}
+
+    templates = []
+    for path in sorted(_TEMPLATE_DIR.glob("*.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+
+        service_name = data.get("service_name", path.stem.replace("-", " ").title())
+        legacy_ref = data.get("_legacy_reference", {})
+
+        templates.append(TemplateListItem(
+            slug=path.stem,
+            service_name=service_name,
+            pricing_pattern=legacy_ref.get("pricing_pattern"),
+            quantity_model=data.get("quantity_model"),
+            already_imported=service_name in existing_names,
+        ))
+
+    return templates
+
+
+@router.post("/onboarding/import/{slug}", response_model=TemplateImportResponse)
+async def import_template(slug: str, _: AdminAuth, session: DBSession):
+    """Import a generated template as a new draft config."""
+    template_path = _TEMPLATE_DIR / f"{slug}.json"
+    if not template_path.exists():
+        raise HTTPException(status_code=404, detail=f"Template not found: {slug}")
+
+    try:
+        config = json.loads(template_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        raise HTTPException(status_code=422, detail=f"Invalid JSON: {e}")
+
+    service_name = config.get("service_name", slug.replace("-", " ").title())
+
+    # Check if already imported
+    existing = await config_repo.get_config(session, service_name)
+    if existing:
+        return TemplateImportResponse(
+            action="skipped",
+            service_name=service_name,
+            slug=slug,
+            detail=f"Config already exists (status={existing.status}, v{existing.version})",
+        )
+
+    await config_repo.create_config(session, service_name, slug, config, "template_import")
+    return TemplateImportResponse(
+        action="created",
+        service_name=service_name,
+        slug=slug,
+    )
 
 
 # ---------------------------------------------------------------------------

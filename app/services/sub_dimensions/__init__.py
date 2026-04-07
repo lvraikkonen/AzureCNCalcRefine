@@ -12,6 +12,7 @@ Currently supported:
 from .base import SubDimensionDef, SubDimensionParser
 from .vm_parser import VmParsedProduct, parse_vm_product_name
 from .appservice_parser import AppServiceParsedProduct, parse_appservice_product_name
+from .redis_parser import RedisParsedProduct, parse_redis_product_name
 
 from app.schemas.configuration import SubDimension
 
@@ -81,11 +82,38 @@ class AppServiceProductNameParser(SubDimensionParser):
         return str(raw_value)
 
 
+class RedisProductNameParser(SubDimensionParser):
+    """Extracts tier from Redis productName values."""
+
+    _SUB_DIMS = [
+        SubDimensionDef(field="tier", label="Tier", attr="tier", order=0),
+    ]
+
+    def target_field(self) -> str:
+        return "product_name"
+
+    def parse(self, value: str) -> RedisParsedProduct:
+        return parse_redis_product_name(value)
+
+    def sub_dimension_definitions(self) -> list[SubDimensionDef]:
+        return self._SUB_DIMS
+
+    def is_excluded(self, parsed: object) -> bool:
+        return isinstance(parsed, RedisParsedProduct) and parsed.excluded
+
+    def normalize_value(self, field: str, raw_value: object) -> str | None:
+        if raw_value is None or raw_value == "":
+            return None
+        return str(raw_value)
+
+
 # ── Registry ──────────────────────────────────────────────────────────
 
 _REGISTRY: dict[str, SubDimensionParser] = {
     "Virtual Machines": VmProductNameParser(),
     "App Service": AppServiceProductNameParser(),
+    "Redis Cache": RedisProductNameParser(),
+    "Azure Cache for Redis": RedisProductNameParser(),  # CN service name variant
 }
 
 

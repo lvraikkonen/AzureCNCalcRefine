@@ -25,7 +25,7 @@ export function configEditor(serviceName) {
       dimension_labels: "{}",
       hidden_dimensions: "",
     },
-    activePanel: "form",    // "form" | "json"
+    activePanel: "form",    // "form" | "json" | "api-preview"
     loading: false,
     saving: false,
     publishing: false,
@@ -34,6 +34,18 @@ export function configEditor(serviceName) {
     successMsg: null,
     changedBy: "",
     changeSummary: "",
+
+    // API Preview state
+    preview: {
+      dataSource: "global",       // "cn" | "global"
+      region: "eastus",
+      cascadeLoading: false,
+      cascadeResult: null,        // CascadeResponse
+      cascadeError: null,
+      metersLoading: false,
+      metersResult: null,         // MetersResponse
+      metersError: null,
+    },
 
     // ── Lifecycle ────────────────────────────────────────────────────────────
 
@@ -88,6 +100,19 @@ export function configEditor(serviceName) {
       if (!this._parseJson()) return;
       this._syncJsonToForm();
       this.activePanel = "form";
+    },
+
+    switchToApiPreview() {
+      // Sync form → JSON to ensure current config is up-to-date
+      if (this.activePanel === "form") this._syncFormToJson();
+      this.activePanel = "api-preview";
+      // Pre-fill region from config defaults
+      const cfg = this._currentConfig();
+      if (cfg?.defaults?.selections?.armRegionName) {
+        this.preview.region = cfg.defaults.selections.armRegionName;
+        // Auto-detect data source from region
+        this.preview.dataSource = this.preview.region.startsWith("china") ? "cn" : "global";
+      }
     },
 
     // ── Form ↔ JSON sync ─────────────────────────────────────────────────────
@@ -220,6 +245,105 @@ export function configEditor(serviceName) {
       } finally {
         this.publishing = false;
       }
+    },
+
+    // ── API Preview ─────────────────────────────────────────────────────────
+
+    _previewServiceName() {
+      const cfg = this._currentConfig();
+      return cfg?.api_service_name || cfg?.service_name || this.serviceName || "";
+    },
+
+    async previewCascade() {
+      const sn = this._previewServiceName();
+      if (!sn) return;
+      this.preview.cascadeLoading = true;
+      this.preview.cascadeError = null;
+      this.preview.cascadeResult = null;
+      this.preview.metersResult = null;
+      try {
+        const body = {
+          service_name: sn,
+          selections: {},
+          data_source: this.preview.dataSource,
+        };
+        if (this.preview.region) {
+          body.selections.armRegionName = this.preview.region;
+        }
+        this.preview.cascadeResult = await api.exploreCascade(body);
+      } catch (e) {
+        this.preview.cascadeError = e.message;
+      } finally {
+        this.preview.cascadeLoading = false;
+      }
+    },
+
+    async previewCascadeWithSelections() {
+      const sn = this._previewServiceName();
+      if (!sn || !this.preview.cascadeResult) return;
+      this.preview.cascadeLoading = true;
+      this.preview.cascadeError = null;
+      try {
+        const selections = {};
+        for (const dim of this.preview.cascadeResult.dimensions) {
+          if (dim.selected) selections[dim.field] = dim.selected;
+        }
+        this.preview.cascadeResult = await api.exploreCascade({
+          service_name: sn,
+          selections,
+          data_source: this.preview.dataSource,
+        });
+      } catch (e) {
+        this.preview.cascadeError = e.message;
+      } finally {
+        this.preview.cascadeLoading = false;
+      }
+    },
+
+    async previewMeters() {
+      const sn = this._previewServiceName();
+      if (!sn || !this.preview.cascadeResult) return;
+      this.preview.metersLoading = true;
+      this.preview.metersError = null;
+      this.preview.metersResult = null;
+      try {
+        const dims = this.preview.cascadeResult.dimensions;
+        const sel = (field) => dims.find((d) => d.field === field)?.selected;
+        this.preview.metersResult = await api.exploreMeters({
+          service_name: sn,
+          region: sel("armRegionName"),
+          product: sel("productName"),
+          sku: sel("skuName"),
+          data_source: this.preview.dataSource,
+        });
+      } catch (e) {
+        this.preview.metersError = e.message;
+      } finally {
+        this.preview.metersLoading = false;
+      }
+    },
+
+    previewMeterNames() {
+      if (!this.preview.metersResult?.groups) return [];
+      const names = [];
+      for (const g of this.preview.metersResult.groups) {
+        if (!names.includes(g.meter)) names.push(g.meter);
+      }
+      return names;
+    },
+
+    previewSuggestedMeterLabels() {
+      const names = this.previewMeterNames();
+      if (!names.length) return "";
+      const obj = {};
+      for (const n of names) obj[n] = n;
+      return JSON.stringify(obj, null, 2);
+    },
+
+    previewSuggestedMeterOrder() {
+      const names = this.previewMeterNames();
+      if (!names.length) return "";
+      return JSON.stringify(names, null, 2);
     },
 
     // ── Helpers ──────────────────────────────────────────────────────────────

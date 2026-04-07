@@ -188,6 +188,70 @@ export function calculatePerMeterPrice(metersGroups, type, term, meterQuantities
 }
 
 /**
+ * Evaluate a simple arithmetic formula string with variable substitution.
+ * Supports: +, -, *, /, parentheses, and numeric literals.
+ * Variables are looked up from the `vars` object.
+ *
+ * @param {string} formula - e.g. "shards * (1 + 1 + additional_replicas) * instances"
+ * @param {Object} vars - e.g. { shards: 2, additional_replicas: 1, instances: 1 }
+ * @returns {number} evaluated result
+ */
+export function evaluateFormula(formula, vars = {}) {
+  // Replace variable names with their values (longest first to avoid partial matches)
+  const keys = Object.keys(vars).sort((a, b) => b.length - a.length);
+  let expr = formula;
+  for (const key of keys) {
+    expr = expr.replaceAll(key, String(Number(vars[key]) || 0));
+  }
+  // Validate: only allow digits, operators, parens, dots, whitespace
+  if (!/^[\d\s+\-*/().]+$/.test(expr)) {
+    throw new Error(`Invalid formula expression: ${expr}`);
+  }
+  return Function(`"use strict"; return (${expr});`)();
+}
+
+/**
+ * Resolve quantity from a quantity_formula config.
+ *
+ * @param {Object} formulaConfig - the quantity_formula object from service_config
+ * @param {Object} inputs - current formula input values { shards: 2, ... }
+ * @param {Array} metersCache - MeterGroup[] for price lookup
+ * @param {number} hours - hours per month
+ * @returns {{ quantity: number, useMeter: string|null, steps: string[] }}
+ */
+export function resolveFormulaQuantity(formulaConfig, inputs, metersCache, hours = 730) {
+  const vars = { ...inputs };
+  const quantity = evaluateFormula(formulaConfig.formula, vars);
+
+  // Build display steps by substituting variables
+  const useMeter = formulaConfig.use_meter || null;
+
+  // Find price for the target meter
+  let price = 0;
+  if (useMeter && metersCache) {
+    const consumption = metersCache.filter(g => g.type === 'Consumption');
+    const meterGroup = consumption.find(g => g.meter.includes(useMeter));
+    if (meterGroup?.tiers?.length) {
+      price = meterGroup.tiers[0].unit_price;
+    }
+  }
+
+  const total = quantity * hours * price;
+  const allVars = { ...vars, nodes: quantity, hours, price, total };
+
+  const steps = (formulaConfig.display_steps || []).map(template => {
+    let s = template;
+    for (const [k, v] of Object.entries(allVars)) {
+      const display = typeof v === 'number' && !Number.isInteger(v) ? v.toFixed(4) : String(v);
+      s = s.replaceAll(`{${k}}`, display);
+    }
+    return s;
+  });
+
+  return { quantity, useMeter, steps };
+}
+
+/**
  * Extract available savings options (type/term combos) from cached meter groups,
  * with discount percentages relative to PAYG.
  *

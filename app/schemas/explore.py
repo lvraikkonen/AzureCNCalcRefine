@@ -45,6 +45,7 @@ class CascadeRequest(BaseModel):
     service_name: str
     selections: dict[str, str] = {}
     sub_selections: dict[str, str] = {}
+    data_source: str | None = None  # "cn" | "global" | None (auto-detect by region)
 
 
 class CascadeResponse(BaseModel):
@@ -52,6 +53,7 @@ class CascadeResponse(BaseModel):
     total_rows: int
     filtered_rows: int
     dimensions: list[CascadeDimension]
+    data_source: str | None = None  # "cn" or "global"
 
 
 # ── meters ────────────────────────────────────────────────────────────
@@ -79,6 +81,7 @@ class MetersRequest(BaseModel):
     product: str | None = None
     sku: str | None = None
     raw: int | None = None
+    data_source: str | None = None  # "cn" | "global" | None (auto-detect by region)
 
 
 class MetersResponse(BaseModel):
@@ -86,6 +89,7 @@ class MetersResponse(BaseModel):
     total_rows: int
     groups: list[MeterGroup]
     raw_items: list[dict] | None = None
+    data_source: str | None = None  # "cn" or "global"
 
 
 # ── productparse ──────────────────────────────────────────────────────

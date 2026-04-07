@@ -104,6 +104,37 @@ export const deleteServiceEntry = (serviceName) =>
 export const reorderCatalog = (body) =>
   apiFetch("/catalog/reorder", { method: "POST", body: JSON.stringify(body) });
 
+// ── Explore API (for API Preview tab) ────────────────────────────────────────
+
+const EXPLORE_BASE = "/api/v1/explore";
+
+export const exploreCascade = (body) =>
+  fetch(EXPLORE_BASE + "/cascade", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  }).then((r) => {
+    if (!r.ok) return r.text().then((t) => { throw new Error(t); });
+    return r.json();
+  });
+
+export const exploreMeters = (body) =>
+  fetch(EXPLORE_BASE + "/meters", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  }).then((r) => {
+    if (!r.ok) return r.text().then((t) => { throw new Error(t); });
+    return r.json();
+  });
+
+// ── Onboarding — template import ─────────────────────────────────────────────
+
+export const listTemplates = () => apiFetch("/onboarding/templates");
+
+export const importTemplate = (slug) =>
+  apiFetch(`/onboarding/import/${encodeURIComponent(slug)}`, { method: "POST" });
+
 // ── Import ───────────────────────────────────────────────────────────────────
 
 export const importJsonFiles = (overwrite = false) =>

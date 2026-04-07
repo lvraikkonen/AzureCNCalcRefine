@@ -411,3 +411,89 @@ Week 4:  Task 9 (Batch 1 接入)        ← 逐个产品上线
 | 4 | ~~Batch 1 产品在 CN 数据库中的数据覆盖情况~~ ✅ 已确认：8 个产品全部有数据。Redis Cache 最丰富（609 行，7 region，含 Reservation）；Grafana（4 行，1 region）和 Traffic Manager（8 行，1 region）数据较少但够用。无覆盖缺口，全部可接入。 | MVP 范围无需缩减 | 高 |
 | 5 | ~~CN 数据是否有 Reservation / SavingsPlan 类型~~ ✅ 已确认：**均有**。Consumption 26,942 行、SavingsPlanConsumption 7,638 行、Reservation 6,751 行、DevTestConsumption 5,546 行。Batch 1 中 Redis Cache 有 Reservation（264 行，1Y/3Y），其余 7 个仅 Consumption。前端 Savings Options 逻辑无需改动。 | Savings Options 完全可用 | 中 |
 | 6 | ~~CN 数据的 `armRegionName` 值~~ ✅ 已确认：共 12 种值。6 个标准 region（chinanorth/2/3, chinaeast/2/3），加上空值（3,546 行，全局服务）、`China`（国家级聚合）、`CN Zone 1/2`（带宽区域）、`Azure Stack CN`、`Zone 1 (China)`（旧格式）。MVP 默认 region 建议 `chinaeast2` 或 `chinanorth3`（数据最多）。路由规则需覆盖 `china*`、`China`、`CN *`、空值等情况。 | region 路由规则需比预想更全面 | 中 |
+
+---
+
+## 开发进度追踪
+
+> 分支: `mvp-v1` | 开始日期: 2026-04-03
+
+### Task 1: CN 价格数据 API [P0-A]
+
+- [x] **1.1** 创建 `RetailPrice` ORM 模型 (`app/models/retail_price.py`) ✅ 2026-04-03
+- [x] **1.2** Alembic migration: `retail_prices` 表 + 索引 ✅ 2026-04-03
+- [x] **1.3** CSV 导入脚本 (`scripts/import_cn_prices.py`): camelCase→snake_case, 导入 ~47k 行 ✅ 2026-04-03
+- [x] **1.4** 创建 CN 价格查询服务 (`app/services/cn_pricing.py`): 从 PostgreSQL 查询, 返回 camelCase dict ✅ 2026-04-03
+- [x] **1.5** 修改 Explore API 数据源路由: `data_source` 参数 + region 自动检测 ✅ 2026-04-03
+- [x] **1.6** schema 更新: CascadeRequest/MetersRequest/Response 增加 `data_source` 字段 ✅ 2026-04-03
+- [x] **1.7** service_config 支持 `cn_service_name` 字段 (在 `_fetch_prices` 中实现) ✅ 2026-04-03
+- [x] **1.8** 验证: CN region 查询返回 CNY 价格; Global 不受影响 ✅ 2026-04-03 (Redis Cache chinaeast2: 135 rows, CNY, Reservation 1Y/3Y)
+
+### Task 2: 模板导入功能 [P0-B]
+
+- [x] **2.0** 重新生成模板: `extract_acn_metadata.py` + `generate_service_configs.py --batch 1` → 9 个 Batch 1 模板 ✅ 2026-04-03
+- [x] **2.1** 后端 `GET /admin/onboarding/templates` + `POST /admin/onboarding/import/{slug}` ✅ 2026-04-03
+- [x] **2.2** 前端 Config List 页面 "从模板导入" 按钮 + modal (含批量导入) ✅ 2026-04-03
+- [x] **2.3** 前端 API: `listTemplates()` / `importTemplate(slug)` ✅ 2026-04-03
+- [x] **2.4** 验证: 模板列表 9 个, already_imported 标记正确; 导入 → draft 创建; 重复导入 → skip ✅ 2026-04-03
+
+### Task 3: API 预览 Tab [P0-C]
+
+- [x] **3.1** Config Editor 新增 "API 预览" tab (第三个 tab, 与表单/JSON 并列) ✅ 2026-04-03
+- [x] **3.2** Cascade 测试区: 数据源+region 输入 → cascade 查询 → 维度下拉框联动 ✅ 2026-04-03
+- [x] **3.3** Meters 测试区: 从 cascade 选择 → meters 查询 → 价格表 ✅ 2026-04-03
+- [x] **3.4** 支持 CN / Global 数据源切换 + region 自动检测 ✅ 2026-04-03
+- [x] **3.5** 配置建议: 根据 meters 结果自动生成 meter_labels / meter_order JSON ✅ 2026-04-03
+- [x] **3.6** 验证: Service Bus cascade (Global, eastus) → 3 skuName; Redis Cache cascade (CN, chinaeast2) → 135 rows ✅ 2026-04-03
+
+### Task 4: quantity_formula + View Cost Calculation [P1-B]
+
+- [x] **4.1** 公式计算引擎: `evaluateFormula()` + `resolveFormulaQuantity()` in `pricing.js` ✅ 2026-04-03
+- [x] **4.2** View Cost Calculation 组件: 可折叠, 三种模式 (instances_x_hours / per_meter / formula steps) ✅ 2026-04-03
+- [x] **4.3** formula inputs 条件渲染: `activeFormula` getter + `renderFormulaInputs()` + `onFormulaInputChange()` ✅ 2026-04-03
+- [x] **4.4** CSS: cost-calculation-section + formula-inputs 样式 ✅ 2026-04-03
+- [ ] **4.5** 验证: Redis Premium 自定义公式 + Redis Basic 默认公式 (待 Task 8 端到端 Demo 时验证)
+
+### Task 5: Pattern A/B 配置增强 [P1-C]
+
+- [x] **5.1** Redis sub_dimensions parser: `redis_parser.py` + registry 注册 (Redis Cache / Azure Cache for Redis) ✅ 2026-04-03
+- [x] **5.2** `meter_overrides` + `is_base_fee` + `fixed_quantity` 支持: estimate-card 渲染 + recalculateLocal 计算 ✅ 2026-04-03
+- [x] **5.3** 验证: Redis Tier Basic→C0-C6, Premium→P1-P5; is_base_fee 代码逻辑完成 ✅ 2026-04-03
+
+### Task 6: Admin WYSIWYG 预览 [P1-A]
+
+- [ ] **6.1** 后端: `?draft=true` 参数支持
+- [ ] **6.2** 前端 Calculator: `?preview=<service_name>` 模式
+- [ ] **6.3** Admin "在 Calculator 中预览" 按钮
+- [ ] **6.4** 验证: 修改 config → 保存 → 预览正确
+
+### Task 7: Legacy 中文内容提取 [P1-D]
+
+- [ ] **7.1** 提取脚本 (`scripts/extract_legacy_chinese.py`)
+- [ ] **7.2** 更新 `slug_to_service_name.json` 中文名
+- [ ] **7.3** 验证: 输出含中文 Tier 名、Size 描述
+
+### Task 8: 端到端 Demo — redis-cache [P1-E]
+
+- [ ] **8.1** 全流程: 模板导入 → 编辑 → API 预览 → WYSIWYG → 发布
+- [ ] **8.2** CN 价格 + formula 计算正确
+- [ ] **8.3** 回归测试 `uv run pytest` 全部通过
+
+### Task 9: Batch 1 产品接入 [P2]
+
+- [ ] **9.1** Redis Cache (Pattern A + quantity_formula + sub_dimensions)
+- [ ] **9.2** Container Registry (Pattern B + meter_overrides)
+- [ ] **9.3** DDoS Protection (Pattern B, 简单)
+- [ ] **9.4** Managed Grafana (Pattern B, 简单)
+- [ ] **9.5** Notification Hubs (Pattern B + sku_filter + 阶梯)
+- [ ] **9.6** Database Migration Service (Pattern A, 最简)
+- [ ] **9.7** Traffic Manager (Pattern B + region_to_zone)
+- [ ] **9.8** Application Gateway (Pattern B + meter_overrides)
+
+### 既有功能验证 (mvp-v1 分支)
+
+- [ ] **V.1** Explore API: cascade / meters 正常工作 (Global)
+- [ ] **V.2** Admin CRUD: config 创建/编辑/发布/版本历史
+- [ ] **V.3** Product Catalog: 28 产品, 10 family, 导航正常
+- [ ] **V.4** Frontend: 两阶段计算流程, estimate card 渲染
+- [ ] **V.5** 数据库连接 + Alembic migration 正常

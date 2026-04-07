@@ -94,7 +94,10 @@
       <div class="p-6" x-data="configList()">
         <div class="flex items-center justify-between mb-4">
           <h1 class="text-xl font-semibold">服务配置</h1>
-          <a href="#/configs/new" class="bg-blue-600 text-white text-sm px-4 py-2 rounded-md hover:bg-blue-700">+ 新建配置</a>
+          <div class="flex gap-2">
+            <button @click="openTemplateModal()" class="border border-blue-600 text-blue-600 text-sm px-4 py-2 rounded-md hover:bg-blue-50">从模板导入</button>
+            <a href="#/configs/new" class="bg-blue-600 text-white text-sm px-4 py-2 rounded-md hover:bg-blue-700">+ 新建配置</a>
+          </div>
         </div>
         <!-- Filters -->
         <div class="flex gap-3 mb-4">
@@ -160,6 +163,69 @@
           </table>
         </div>
         <div class="mt-2 text-xs text-gray-400" x-text="`共 ${filtered.length} 条`"></div>
+
+        <!-- Template Import Modal -->
+        <template x-if="showTemplateModal">
+          <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="showTemplateModal = false">
+            <div class="bg-white rounded-lg shadow-xl w-[600px] max-h-[80vh] flex flex-col">
+              <div class="flex items-center justify-between px-5 py-4 border-b">
+                <h2 class="text-lg font-semibold">从模板导入</h2>
+                <button @click="showTemplateModal = false" class="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
+              </div>
+              <div class="flex-1 overflow-y-auto px-5 py-3">
+                <div x-show="templatesLoading" class="text-gray-400 text-sm py-4 text-center">加载模板列表...</div>
+                <div x-show="!templatesLoading && templates.length === 0" class="text-gray-400 text-sm py-4 text-center">
+                  没有可用的模板。请先运行 <code class="bg-gray-100 px-1 rounded">generate_service_configs.py</code>
+                </div>
+                <table x-show="!templatesLoading && templates.length > 0" class="w-full text-sm">
+                  <thead class="text-xs text-gray-500 uppercase tracking-wide">
+                    <tr>
+                      <th class="text-left py-2">服务名</th>
+                      <th class="text-left py-2">Pattern</th>
+                      <th class="text-left py-2">模型</th>
+                      <th class="text-right py-2">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-100">
+                    <template x-for="t in templates" :key="t.slug">
+                      <tr>
+                        <td class="py-2">
+                          <span x-text="t.service_name"></span>
+                          <span class="text-xs text-gray-400 font-mono ml-1" x-text="t.slug"></span>
+                        </td>
+                        <td class="py-2 text-gray-500" x-text="t.pricing_pattern || '—'"></td>
+                        <td class="py-2 text-gray-500 text-xs" x-text="t.quantity_model || '—'"></td>
+                        <td class="py-2 text-right">
+                          <template x-if="t.already_imported">
+                            <span class="text-xs text-green-600">已导入</span>
+                          </template>
+                          <template x-if="!t.already_imported">
+                            <button @click="importTemplate(t.slug)"
+                              :disabled="importingSlug === t.slug"
+                              class="text-xs text-blue-600 hover:underline disabled:opacity-50"
+                              x-text="importingSlug === t.slug ? '导入中...' : '导入'"></button>
+                          </template>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
+              <div class="px-5 py-3 border-t flex justify-between items-center">
+                <span class="text-xs text-gray-400" x-text="`${templates.filter(t => t.already_imported).length}/${templates.length} 已导入`"></span>
+                <div class="flex gap-2">
+                  <button @click="importAllTemplates()"
+                    x-show="templates.some(t => !t.already_imported)"
+                    :disabled="importingSlug"
+                    class="text-sm text-blue-600 border border-blue-600 px-3 py-1.5 rounded-md hover:bg-blue-50 disabled:opacity-50">
+                    全部导入
+                  </button>
+                  <button @click="showTemplateModal = false" class="text-sm text-gray-500 px-3 py-1.5">关闭</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
       </div>
     </template>
 
@@ -204,6 +270,115 @@
               :class="['px-4 py-1.5 text-sm rounded-md transition', activePanel === 'json' ? 'bg-white shadow text-blue-700 font-medium' : 'text-gray-500 hover:text-gray-700']">
               JSON 模式
             </button>
+            <button @click="switchToApiPreview()"
+              :class="['px-4 py-1.5 text-sm rounded-md transition', activePanel === 'api-preview' ? 'bg-white shadow text-blue-700 font-medium' : 'text-gray-500 hover:text-gray-700']">
+              API 预览
+            </button>
+          </div>
+
+          <!-- API Preview Panel -->
+          <div x-show="activePanel === 'api-preview'" class="space-y-4">
+            <!-- Controls -->
+            <div class="bg-white rounded-lg border p-4">
+              <div class="flex items-end gap-3 flex-wrap">
+                <div>
+                  <label class="block text-xs text-gray-500 mb-1">数据源</label>
+                  <select x-model="preview.dataSource" class="border rounded px-2 py-1.5 text-sm w-28">
+                    <option value="global">Global</option>
+                    <option value="cn">CN</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs text-gray-500 mb-1">Region</label>
+                  <input type="text" x-model="preview.region" placeholder="eastus / chinaeast2"
+                    class="border rounded px-2 py-1.5 text-sm w-44" />
+                </div>
+                <button @click="previewCascade()" :disabled="preview.cascadeLoading"
+                  class="bg-blue-600 text-white text-sm px-4 py-1.5 rounded hover:bg-blue-700 disabled:opacity-50"
+                  x-text="preview.cascadeLoading ? '查询中...' : 'Cascade 查询'"></button>
+              </div>
+            </div>
+
+            <!-- Cascade Error -->
+            <div x-show="preview.cascadeError" class="bg-red-50 border border-red-200 text-red-700 text-sm rounded px-4 py-2" x-text="preview.cascadeError"></div>
+
+            <!-- Cascade Result -->
+            <template x-if="preview.cascadeResult">
+              <div class="bg-white rounded-lg border p-4 space-y-3">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-sm font-semibold">Cascade 结果
+                    <span class="font-normal text-gray-400 text-xs" x-text="`(${preview.cascadeResult.filtered_rows}/${preview.cascadeResult.total_rows} rows, source: ${preview.cascadeResult.data_source || preview.dataSource})`"></span>
+                  </h3>
+                  <button @click="previewMeters()" :disabled="preview.metersLoading"
+                    class="text-sm text-blue-600 border border-blue-600 px-3 py-1 rounded hover:bg-blue-50 disabled:opacity-50"
+                    x-text="preview.metersLoading ? '查询中...' : 'Meters 查询'"></button>
+                </div>
+                <div class="space-y-2">
+                  <template x-for="dim in preview.cascadeResult.dimensions" :key="dim.field">
+                    <div class="flex items-center gap-2" x-show="dim.visible !== false">
+                      <label class="text-xs text-gray-500 w-32 shrink-0" x-text="dim.label || dim.field"></label>
+                      <select x-model="dim.selected" @change="previewCascadeWithSelections()"
+                        class="border rounded px-2 py-1 text-sm flex-1 max-w-xs">
+                        <option value="">-- 不限 --</option>
+                        <template x-for="opt in dim.options" :key="opt">
+                          <option :value="opt" x-text="opt"></option>
+                        </template>
+                      </select>
+                      <span class="text-xs text-gray-400" x-text="`${dim.options.length} 项`"></span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+
+            <!-- Meters Error -->
+            <div x-show="preview.metersError" class="bg-red-50 border border-red-200 text-red-700 text-sm rounded px-4 py-2" x-text="preview.metersError"></div>
+
+            <!-- Meters Result -->
+            <template x-if="preview.metersResult">
+              <div class="bg-white rounded-lg border p-4 space-y-3">
+                <h3 class="text-sm font-semibold">Meters 结果
+                  <span class="font-normal text-gray-400 text-xs" x-text="`(${preview.metersResult.groups.length} meters, ${preview.metersResult.total_rows} rows)`"></span>
+                </h3>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-xs">
+                    <thead class="text-gray-500 uppercase tracking-wide border-b">
+                      <tr>
+                        <th class="text-left py-2 pr-3">Meter</th>
+                        <th class="text-left py-2 pr-3">Type</th>
+                        <th class="text-left py-2 pr-3">Term</th>
+                        <th class="text-left py-2 pr-3">Unit</th>
+                        <th class="text-right py-2">Unit Price</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                      <template x-for="(g, gi) in preview.metersResult.groups" :key="gi">
+                        <tr>
+                          <td class="py-1.5 pr-3 font-medium" x-text="g.meter"></td>
+                          <td class="py-1.5 pr-3 text-gray-500" x-text="g.type"></td>
+                          <td class="py-1.5 pr-3 text-gray-500" x-text="g.term || '—'"></td>
+                          <td class="py-1.5 pr-3 text-gray-500" x-text="g.unit"></td>
+                          <td class="py-1.5 text-right font-mono" x-text="g.tiers.length === 1 ? g.tiers[0].unit_price.toFixed(4) : g.tiers.map(t => t.unit_price.toFixed(4)).join(' / ')"></td>
+                        </tr>
+                      </template>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Suggestions -->
+                <div class="mt-3 border-t pt-3 space-y-2">
+                  <h4 class="text-xs font-semibold text-gray-600">配置建议</h4>
+                  <div x-show="previewMeterNames().length > 0">
+                    <p class="text-xs text-gray-500 mb-1">meter_labels (可复制到 JSON):</p>
+                    <pre class="text-xs bg-gray-50 rounded p-2 overflow-x-auto select-all" x-text="previewSuggestedMeterLabels()"></pre>
+                  </div>
+                  <div x-show="previewMeterNames().length > 0">
+                    <p class="text-xs text-gray-500 mb-1">meter_order:</p>
+                    <pre class="text-xs bg-gray-50 rounded p-2 overflow-x-auto select-all" x-text="previewSuggestedMeterOrder()"></pre>
+                  </div>
+                </div>
+              </div>
+            </template>
           </div>
 
           <!-- Form Panel -->
