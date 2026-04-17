@@ -5,6 +5,28 @@
  * app/api/explore.py (_calculate_one) for local price computation.
  */
 
+/**
+ * Create a currency formatter (2 decimal places).
+ * @param {string} currency - ISO 4217 code, e.g. 'USD' or 'CNY'
+ */
+export function makeFmt(currency = 'USD') {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency', currency,
+    minimumFractionDigits: 2, maximumFractionDigits: 2,
+  });
+}
+
+/**
+ * Create a currency formatter with up to 6 decimal places (for unit prices).
+ * @param {string} currency - ISO 4217 code, e.g. 'USD' or 'CNY'
+ */
+export function makeFmtPrice(currency = 'USD') {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency', currency,
+    minimumFractionDigits: 2, maximumFractionDigits: 6,
+  });
+}
+
 /** Check if a unitOfMeasure represents hourly pricing. */
 function isHourlyUnit(unit) {
   return unit === '1 Hour' || unit === '1/Hour';
@@ -217,10 +239,17 @@ export function evaluateFormula(formula, vars = {}) {
  * @param {Object} inputs - current formula input values { shards: 2, ... }
  * @param {Array} metersCache - MeterGroup[] for price lookup
  * @param {number} hours - hours per month
+ * @param {string} currency - ISO 4217 currency code for formatted display vars
  * @returns {{ quantity: number, useMeter: string|null, steps: string[] }}
  */
-export function resolveFormulaQuantity(formulaConfig, inputs, metersCache, hours = 730) {
+export function resolveFormulaQuantity(formulaConfig, inputs, metersCache, hours = 730, currency = 'USD') {
   const vars = { ...inputs };
+
+  // Evaluate intermediate_vars first (used in display_steps separately from formula total)
+  for (const [key, expr] of Object.entries(formulaConfig.intermediate_vars || {})) {
+    vars[key] = evaluateFormula(String(expr), vars);
+  }
+
   const quantity = evaluateFormula(formulaConfig.formula, vars);
 
   // Build display steps by substituting variables
@@ -237,7 +266,20 @@ export function resolveFormulaQuantity(formulaConfig, inputs, metersCache, hours
   }
 
   const total = quantity * hours * price;
-  const allVars = { ...vars, nodes: quantity, hours, price, total };
+  const fmtP = makeFmtPrice(currency);
+  const fmtT = makeFmt(currency);
+
+  // allVars: spread order ensures intermediate_vars (already in vars) override the
+  // default "nodes: quantity" fallback, so display_steps can show per-instance node counts.
+  const allVars = {
+    nodes: quantity,   // default fallback (overridden by intermediate_vars if defined)
+    ...vars,
+    hours,
+    price,
+    total,
+    fmtPrice: fmtP.format(price),
+    fmtTotal: fmtT.format(total),
+  };
 
   const steps = (formulaConfig.display_steps || []).map(template => {
     let s = template;

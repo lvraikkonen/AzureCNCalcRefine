@@ -203,7 +203,7 @@ async def get_service_config(service_name: str):
     static_subs = config.get("static_subs", all_sub_fields)
     hidden_subs = config.get("hidden_subs", [])
 
-    return {
+    resp = {
         "service_name": service_name,
         "defaults": config.get("defaults", {}),
         "quantity_label": config.get("quantity_label", "VMs"),
@@ -216,6 +216,10 @@ async def get_service_config(service_name: str):
         "meter_labels": config.get("meter_labels", {}),
         "meter_order": config.get("meter_order", []),
     }
+    # Include quantity_formula if defined (e.g. Redis Premium tier formula)
+    if "quantity_formula" in config:
+        resp["quantity_formula"] = config["quantity_formula"]
+    return resp
 
 
 # ── Cascade dimension definitions ────────────────────────────────────
@@ -315,6 +319,16 @@ async def explore_cascade(req: CascadeRequest):
     sku_groups = _load_sku_groups(req.service_name)
     region = req.selections.get("armRegionName")
     data_source = _resolve_data_source(req.data_source, region)
+    # When no region is selected yet (preload / initial cascade) and no explicit
+    # data_source was given, fall back to the service config's default region to
+    # decide CN vs Global.  This ensures the region dropdown is populated with CN
+    # regions for services whose default region is in China (e.g. "chinaeast2").
+    if data_source == "global" and not region and req.data_source is None and config:
+        default_region = (
+            config.get("defaults", {}).get("selections", {}).get("armRegionName")
+        )
+        if _is_cn_region(default_region):
+            data_source = "cn"
     items = await _fetch_prices(
         req.service_name,
         data_source,
@@ -496,6 +510,7 @@ async def explore_meters(req: MetersRequest):
         ))
 
     raw_items = items[: req.raw] if req.raw else None
+    currency = "CNY" if data_source == "cn" else "USD"
 
     return MetersResponse(
         service_name=req.service_name,
@@ -503,6 +518,7 @@ async def explore_meters(req: MetersRequest):
         groups=groups,
         raw_items=raw_items,
         data_source=data_source,
+        currency=currency,
     )
 
 

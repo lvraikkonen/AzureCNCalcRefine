@@ -175,6 +175,12 @@ async def publish_config(
         raise HTTPException(status_code=404, detail=str(e))
     config_repo.set_cached_config(service_name, obj.config)
     _export_config_json(obj.slug, obj.config)
+    # Also export to the service_name-derived slug path so that the JSON fallback
+    # in _load_service_config() stays in sync (it derives path from service_name,
+    # which may differ from obj.slug when service_name changed after import).
+    sn_slug = service_name.lower().replace(" ", "_")
+    if sn_slug != obj.slug:
+        _export_config_json(sn_slug, obj.config)
     return obj
 
 

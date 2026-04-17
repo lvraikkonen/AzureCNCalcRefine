@@ -2,29 +2,29 @@
  * Cost Calculation display — collapsible section showing how price is computed.
  *
  * Three modes:
- * 1. instances_x_hours (default): N Instance x H Hours x $price/hr = $total
+ * 1. instances_x_hours (default): N Instance x H Hours x price/hr = total
  * 2. per_meter (default): per-meter breakdown lines
  * 3. formula: custom display_steps from quantity_formula config
  */
 
-const fmt = new Intl.NumberFormat('en-US', {
-  style: 'currency', currency: 'USD',
-  minimumFractionDigits: 2, maximumFractionDigits: 2,
-});
+import { makeFmt, makeFmtPrice } from '../pricing.js';
 
-const fmtPrice = new Intl.NumberFormat('en-US', {
-  style: 'currency', currency: 'USD',
-  minimumFractionDigits: 2, maximumFractionDigits: 6,
-});
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
 
 /**
  * Render cost calculation HTML for instances_x_hours model.
  * @param {Object} item - estimate item state
+ * @param {string} currency - 'USD' or 'CNY'
  * @returns {string} HTML
  */
-function renderInstancesXHours(item) {
+function renderInstancesXHours(item, currency) {
   if (!item.meters?.length || item.cost == null) return '';
 
+  const fmt = makeFmt(currency);
+  const fmtPrice = makeFmtPrice(currency);
   const quantity = item.quantity || 1;
   const hours = item.hoursPerMonth || 730;
   const type = item.selections?.type || 'Consumption';
@@ -55,11 +55,14 @@ function renderInstancesXHours(item) {
 /**
  * Render cost calculation HTML for per_meter model.
  * @param {Object} item - estimate item state
+ * @param {string} currency - 'USD' or 'CNY'
  * @returns {string} HTML
  */
-function renderPerMeter(item) {
+function renderPerMeter(item, currency) {
   if (!item.meters?.length || item.cost == null) return '';
 
+  const fmt = makeFmt(currency);
+  const fmtPrice = makeFmtPrice(currency);
   let lines = '';
   for (const m of item.meters) {
     if (m.usage === 0 && m.monthly_cost === 0) continue;
@@ -77,11 +80,13 @@ function renderPerMeter(item) {
  * Render cost calculation HTML from formula display_steps.
  * @param {string[]} steps - resolved display_steps with values filled in
  * @param {number} monthlyCost
+ * @param {string} currency - 'USD' or 'CNY'
  * @returns {string} HTML
  */
-function renderFormulaSteps(steps, monthlyCost) {
+function renderFormulaSteps(steps, monthlyCost, currency) {
   if (!steps?.length) return '';
 
+  const fmt = makeFmt(currency);
   let lines = '';
   for (const step of steps) {
     lines += `<div class="calc-step">${esc(step)}</div>`;
@@ -92,11 +97,6 @@ function renderFormulaSteps(steps, monthlyCost) {
   return lines;
 }
 
-function esc(s) {
-  if (!s) return '';
-  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
 /**
  * Build full collapsible cost calculation HTML block.
  *
@@ -105,18 +105,19 @@ function esc(s) {
  * @param {string} opts.quantityModel - 'instances_x_hours' | 'per_meter'
  * @param {string[]|null} opts.formulaSteps - resolved display_steps if formula active
  * @param {boolean} opts.open - whether section is expanded
+ * @param {string} [opts.currency] - 'USD' or 'CNY' (default: 'USD')
  * @returns {string} HTML
  */
-export function renderCostCalculation({ item, quantityModel, formulaSteps, open }) {
+export function renderCostCalculation({ item, quantityModel, formulaSteps, open, currency = 'USD' }) {
   if (item.cost == null) return '';
 
   let innerHtml;
   if (formulaSteps?.length) {
-    innerHtml = renderFormulaSteps(formulaSteps, item.cost);
+    innerHtml = renderFormulaSteps(formulaSteps, item.cost, currency);
   } else if (quantityModel === 'per_meter') {
-    innerHtml = renderPerMeter(item);
+    innerHtml = renderPerMeter(item, currency);
   } else {
-    innerHtml = renderInstancesXHours(item);
+    innerHtml = renderInstancesXHours(item, currency);
   }
 
   if (!innerHtml) return '';

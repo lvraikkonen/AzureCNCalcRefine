@@ -5,7 +5,7 @@
 
 import { getItem, updateItem, removeItem, emit } from '../state.js';
 import { fetchCascade, fetchPreload, fetchMeters, fetchServiceConfig } from '../api.js';
-import { calculateLocalPrice, calculatePerMeterPrice, getAvailableSavingsOptions, evaluateFormula, resolveFormulaQuantity } from '../pricing.js';
+import { calculateLocalPrice, calculatePerMeterPrice, getAvailableSavingsOptions, evaluateFormula, resolveFormulaQuantity, makeFmt } from '../pricing.js';
 import { renderCostCalculation } from './cost-calculation.js';
 import { buildGroupedRegions, getRegionDisplay } from '../regions.js';
 
@@ -61,13 +61,6 @@ function debounce(key, fn, ms = 300) {
   clearTimeout(debounceTimers.get(key));
   debounceTimers.set(key, setTimeout(fn, ms));
 }
-
-// ── Format currency ─────────────────────────────────────────
-
-const fmt = new Intl.NumberFormat('en-US', {
-  style: 'currency', currency: 'USD',
-  minimumFractionDigits: 2, maximumFractionDigits: 2,
-});
 
 // ── Card class ──────────────────────────────────────────────
 
@@ -167,6 +160,11 @@ export class EstimateCard {
   isDimensionHidden(field) {
     const hidden = this.item?.serviceConfig?.hidden_dimensions;
     return hidden?.includes(field) || false;
+  }
+
+  /** Currency formatter based on the current item's currency (CNY or USD). */
+  get fmt() {
+    return makeFmt(this.item?.currency || 'USD');
   }
 
   /**
@@ -952,6 +950,7 @@ export class EstimateCard {
       quantityModel: this.quantityModel,
       formulaSteps: this.formulaSteps,
       open: this.costCalcOpen,
+      currency: item.currency || 'USD',
     });
   }
 
@@ -1434,6 +1433,7 @@ export class EstimateCard {
       updateItem(this.itemId, {
         metersCache: resp.groups,
         metersCacheKey: cacheKey,
+        currency: resp.currency || 'USD',  // CNY for CN data, USD for global
         meterQuantities: {},       // Clear per-meter quantities on cache refresh
         meterHourlyDetails: {},    // Clear hourly decomposition too
         meterVolumeUnits: {},      // Clear volume unit selections too
@@ -1482,7 +1482,7 @@ export class EstimateCard {
           inputs[inp.key] = item.formulaInputs?.[inp.key] ?? inp.default ?? 1;
         }
         try {
-          const resolved = resolveFormulaQuantity(formula, inputs, item.metersCache, item.hoursPerMonth || 730);
+          const resolved = resolveFormulaQuantity(formula, inputs, item.metersCache, item.hoursPerMonth || 730, item.currency || 'USD');
           quantity = resolved.quantity;
           this.formulaSteps = resolved.steps;
         } catch (e) {

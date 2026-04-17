@@ -41,6 +41,7 @@ function createItem(serviceName) {
     loading: false,
     metersCache: null,     // MetersResponse.groups — all meter data (all type/term)
     metersCacheKey: null,  // cache key: `${region}|${product}|${sku}`
+    currency: 'USD',       // currency code from meters response ("CNY" or "USD")
     meterQuantities: {},   // per-meter resolved usage: { "meterName": number } (for per_meter model)
     meterHourlyDetails: {}, // hourly meter decomposition: { "meterName": { units, hours } }
     meterVolumeUnits: {},  // per-meter display unit for volume meters: { "meterName": "GB" | "TB" }

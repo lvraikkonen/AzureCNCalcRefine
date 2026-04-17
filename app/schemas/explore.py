@@ -90,6 +90,7 @@ class MetersResponse(BaseModel):
     groups: list[MeterGroup]
     raw_items: list[dict] | None = None
     data_source: str | None = None  # "cn" or "global"
+    currency: str | None = None  # "CNY" for CN data, "USD" for global
 
 
 # ── productparse ──────────────────────────────────────────────────────
